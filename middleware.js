@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { obsoleteUrls as originalObsoleteUrls } from './src/data/obsolete-urls';
 
+
 // Process obsolete URLs to keep full paths with query parameters
 const processedObsoleteUrls = originalObsoleteUrls
   .map(fullUrl => {
