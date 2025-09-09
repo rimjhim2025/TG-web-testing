@@ -133,7 +133,7 @@ const ReelsDetailSection = ({ param, reelDetailData, isMobile, youtubeCount }) =
                     reelData.url_of_video.includes("autoplay=1")
                       ? `${reelData.url_of_video}&mute=1&playsinline=1`
                       : `${reelData.url_of_video}${reelData.url_of_video.includes("?") ? "&" : "?"
-                      }autoplay=1&mute=1&playsinline=1`
+                      }autoplay=1&mute=1&playsinline=1&controls=1`
                   }
 
                   title={reelData.title}
