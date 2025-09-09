@@ -5,6 +5,7 @@ import hitranslations from "./Locales/hi.json";
 import gutranslations from "./Locales/gu.json";
 import mrtranslations from "./Locales/mr.json";
 
+
 const getSavedLanguage = () => {
   if (typeof window !== "undefined") {
     return localStorage.getItem("language") || "en";
