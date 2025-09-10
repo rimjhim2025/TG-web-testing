@@ -27,7 +27,7 @@ const DesktopTractorsByBrands = ({
               <BrandCards
                 imgUrl={item.image}
                 name={langPrefix === "hi" ? item.name_hi : item.name}
-                url={(langPrefix === "hi" ? "/hi" : "") + (isMiniTractorPage ? item.url.replaceAll("/tractor", "/mini-tractor-in-india") : item.url)}
+                url={(langPrefix === "hi" ? "/hi" : "") + (isMiniTractorPage ? '/mini-tractors-in-india/' + (item.name.replaceAll(" ", "-")).toLowerCase() : item.url)}
               />
             </div>
           ))}

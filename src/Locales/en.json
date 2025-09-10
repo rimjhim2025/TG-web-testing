@@ -859,7 +859,10 @@
     "leadingTractorGroup": "Leading Tractor Group",
     "selectTractorSubsidyStates": "Select Tractor Subsidy States",
     "popularSecondHandTractors": "Popular Second Hand Tractors",
-    "blogsAndNews": "{prefix} Blogs & News"
+    "blogsAndNews": "{prefix} Blogs & News",
+    "miniTractorsByBrands": "{brand} Mini Tractors",
+    "popularSecondHandTractorsByBrand": "Popular {brand} Second Hand Tractors",
+    "popularTractorComparison": "Popular Tractor Comparison"
   },
   "tyreDetail": {
     "about": "About",

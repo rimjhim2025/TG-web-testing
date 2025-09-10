@@ -6,7 +6,7 @@ import Slider from 'react-slick';
 import Image from 'next/image';
 import CompareTractorsSection from './CompareTractorsSection';
 
-const CompareTractorsSlider = ({ cta, currentTractor, compareTractors, isMobile, currentLang, isComparisonPage = false }) => {
+const CompareTractorsSlider = ({ cta, currentTractor, compareTractors, isMobile, currentLang, isComparisonPage = false, tractorBrands, viewMode = true, showCheckPrice = true }) => {
   const [windowWidth, setWindowWidth] = useState(
     typeof window !== 'undefined' ? window.innerWidth : 1200
   );
@@ -77,12 +77,15 @@ const CompareTractorsSlider = ({ cta, currentTractor, compareTractors, isMobile,
           <div className="w-full flex gap-4 mb-4">
             <CompareTractorsSection
               cta={cta}
-              viewMode={true}
+              viewMode={viewMode}
+              showCheckPrice={showCheckPrice}
               itemsToShow={2}
               // currentTractor={currentTractor}
               // compareTractor={compareTractor || null}
               currentTractor={isComparisonPage ? compareTractor?.tractor1 : currentTractor}
               compareTractor={isComparisonPage ? compareTractor?.tractor2 : compareTractor || null}
+              currentLang={currentLang}
+              tractorbrands={tractorBrands}
             />
           </div>
         ))}

@@ -936,7 +936,10 @@
     "leadingTractorGroup": "अग्रणी ट्रैक्टर समूह",
     "selectTractorSubsidyStates": "राज्यों के अनुसार ट्रैक्टर सब्सिडी का चयन करें",
     "popularSecondHandTractors": "लोकप्रिय सेकेंड हैंड ट्रैक्टर",
-    "blogsAndNews": "{prefix} ब्लॉग्स और समाचार"
+    "blogsAndNews": "{prefix} ब्लॉग्स और समाचार",
+    "miniTractorsByBrands": "{brand} मिनी ट्रैक्टर्स",
+    "popularSecondHandTractorsByBrand": "लोकप्रिय सेकेंड हैंड {brand} ट्रैक्टर",
+    "popularTractorComparison": "लोकप्रिय ट्रैक्टर तुलना"
   },
   "tyreDetail": {
     "about": "के बारे में",

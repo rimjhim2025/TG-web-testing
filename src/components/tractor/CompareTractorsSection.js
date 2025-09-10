@@ -5,7 +5,7 @@
 // 2. /compare-tractors
 // =================================
 import MainHeadings from '@/src/features/tyreComponents/commonComponents/MainHeadings';
-import React, { useState, useRef, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import CompareTractorSelectionCard from '../ui/cards/CompareTractorSelectionCard';
 import TG_Button from '../ui/buttons/MainButtons';
 import Image from 'next/image';
@@ -35,8 +35,10 @@ const VsIndicator = ({ className, viewMode, itemsToShow }) => {
 
 const ChangeBtnGroup = ({ disabled = false, onRemove }) => {
   return (
-    <div className="absolute right-1 top-2 flex w-full flex-row-reverse items-center justify-between gap-2 px-2 md:right-0 md:top-4 md:flex-row md:justify-end md:px-0 md:pr-3">
-      <button onClick={onRemove}>
+    <div
+      onClick={onRemove}
+      className="absolute right-1 top-2 flex w-full flex-row-reverse items-center justify-between gap-2 px-2 md:right-0 md:top-4 md:flex-row md:justify-end md:px-0 md:pr-3">
+      <button>
         <Image
           src="https://images.tractorgyan.com/uploads/119880/1751721362close-icon.webp"
           height={40}
@@ -67,13 +69,24 @@ const CompareTractorsSection = ({
   currentTractor,
   compareTractor,
   compareTractor2,
-  isLeftSection = true,
+  currentLang,
+  tractorbrands,
+  showCheckPrice = true,
+
 }) => {
   const router = useRouter();
-  const [selectedTractors, setSelectedTractors] = useState({});
+  // const [selectedTractors, setSelectedTractors] = useState({});
+  const [selectedTractors, setSelectedTractors] = useState(() => ({
+    0: currentTractor || null,
+    1: compareTractor || null,
+    2: compareTractor2 || null,
+  }));
+  // :: Using this to handle Change Tractor button on the card, check if we can utlize the the above selectedTractors instead
+  // const [showTractorRemoveBtn, setShowTractorRemoveBtn] = useState([true, true, true]);
+
   const [compareTractors, setCompareTractors] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const brandSelectRefs = useRef({});
+  const [userHasModifiedSelections, setUserHasModifiedSelections] = useState(false);
 
   // Legacy effect for backward compatibility (when productId and hp are provided)
   useEffect(() => {
@@ -84,7 +97,17 @@ const CompareTractorsSection = ({
 
   // New effect for when tractors are provided directly
   useEffect(() => {
-    if (currentTractor && compareTractor) {
+    console.log('::01::');
+    if (currentTractor && compareTractor && compareTractor2) {
+      const tractorsToShow = [currentTractor, compareTractor, compareTractor2];
+      setCompareTractors(tractorsToShow);
+
+      const autoSelected = {};
+      tractorsToShow.forEach((tractor, index) => {
+        autoSelected[index] = tractor;
+      });
+      setSelectedTractors(autoSelected);
+    } else if (currentTractor && compareTractor) {
       const tractorsToShow = [currentTractor, compareTractor];
       setCompareTractors(tractorsToShow);
 
@@ -156,7 +179,19 @@ const CompareTractorsSection = ({
       ...prev,
       [cardIndex]: tractorData,
     }));
+    
+    // Mark that user has modified selections
+    setUserHasModifiedSelections(true);
+    
+    // TODO:: if user explicitly changes tractor, then stop showing prefilled
+    if (tractorData === null) {
+      setCompareTractors(null);   // clear prefilled tractor
+    }
   }, []);
+
+  // useEffect(() => {
+  //   console.log("selectedTractors changed:", selectedTractors);
+  // }, [selectedTractors]);
 
   const handlePlaceholderClick = useCallback(cardIndex => {
     // This function is no longer needed as we handle it directly in the child component
@@ -169,6 +204,9 @@ const CompareTractorsSection = ({
       delete newState[cardIndex];
       return newState;
     });
+    
+    // Mark that user has modified selections
+    setUserHasModifiedSelections(true);
   }, []);
 
   const extractSlugFromUrl = pageUrl => {
@@ -183,13 +221,21 @@ const CompareTractorsSection = ({
   const handleCompareClick = () => {
     let selectedTractorsList;
 
-    if (currentTractor && compareTractor) {
-      // New mode: use current and compare tractors directly
-      selectedTractorsList = [currentTractor, compareTractor].filter(Boolean);
-    } else {
-      // Legacy mode: use selected tractors
+    console.log('=====currentTractor=====', currentTractor);
+    console.log('=====selectedTractors=====', selectedTractors);
+
+    // TODO:: Checking if user has made any changes, then use selection based data, else continue as old logic
+    if (currentTractor?.id != selectedTractors[0]?.id || compareTractor?.id != selectedTractors[1]?.id || compareTractor2?.id != selectedTractors[2]?.id) {
       selectedTractorsList = Object.values(selectedTractors).filter(Boolean);
     }
+    else
+      if (currentTractor && compareTractor) {
+        // New mode: use current and compare tractors directly
+        selectedTractorsList = [currentTractor, compareTractor].filter(Boolean);
+      } else {
+        // Legacy mode: use selected tractors
+        selectedTractorsList = Object.values(selectedTractors).filter(Boolean);
+      }
 
     if (selectedTractorsList.length < 2) {
       alert('Please select at least 2 tractors to compare');
@@ -214,12 +260,27 @@ const CompareTractorsSection = ({
   };
 
   const getSelectedTractorsCount = () => {
-    if (currentTractor && compareTractor) {
+    if (currentTractor && compareTractor && compareTractor2) {
+      return 3;
+    } else if (currentTractor && compareTractor) {
       return 2;
     } else if (currentTractor && !compareTractor) {
       return 1;
     }
     return Object.values(selectedTractors).filter(Boolean).length;
+  };
+
+  const isCompareButtonDisabled = () => {
+    const hasAtLeastTwoTractors = getSelectedTractorsCount() >= 2;
+    
+    // If we have pre-selected tractors (currentTractor and compareTractor exist)
+    // and user hasn't modified selections, disable the button
+    if ((currentTractor && compareTractor) && !userHasModifiedSelections) {
+      return true;
+    }
+    
+    // Otherwise, use the standard condition of needing at least 2 tractors
+    return !hasAtLeastTwoTractors;
   };
 
   // Simple tractor display card for API fetched data
@@ -294,9 +355,13 @@ const CompareTractorsSection = ({
     );
   };
 
+  // const compareTractorCardWrapperClx = `
+  //   relative
+  //   ${viewMode ? 'w-[calc(50%-1rem)]' : 'w-[calc(50%-2rem)]'}
+  //   ${itemsToShow > 2 ? 'w-[calc(33.33%-1rem)]' : 'w-[calc(50%-1rem)] text-sm'}
+  // `;
   const compareTractorCardWrapperClx = `
     relative
-    ${viewMode ? 'w-[calc(50%-1rem)]' : 'w-[calc(50%-2rem)]'}
     ${itemsToShow > 2 ? 'w-[calc(33.33%-1rem)]' : 'w-[calc(50%-1rem)] text-sm'}
   `;
 
@@ -311,31 +376,74 @@ const CompareTractorsSection = ({
               <span className="text-gray-main">Loading compare tractors...</span>
             </div>
           ) : currentTractor ? (
+            // ) : currentTractor && !allowChange ? (
             // New mode: show current tractor vs compare tractor
             <div className="flex items-center justify-between">
               <div className={compareTractorCardWrapperClx}>
-                <TractorCompareCard
+                {/* <TractorCompareCard
                   tractor={currentTractor}
                   viewMode={viewMode}
                   isCurrentTractor={true}
+                  allowChange={allowChange}
+                /> */}
+                <CompareTractorSelectionCard
+                  // isSelected={showTractorRemoveBtn[0] ? false : true}
+                  isSelected={false}
+                  viewMode={viewMode}
+                  allowChange={allowChange}
+                  cardIndex={0}
+                  onTractorSelect={handleTractorSelect}
+                  selectedTractor={selectedTractors[0] ?? null}
+                  onPlaceholderClick={handlePlaceholderClick}
+                  currentLang={currentLang}
+                  brands={tractorbrands}
+                  showCheckPrice={showCheckPrice}
                 />
               </div>
               <VsIndicator viewMode={viewMode} itemsToShow={itemsToShow} />
               <div className={compareTractorCardWrapperClx}>
-                <TractorCompareCard
+                {/* <TractorCompareCard
                   tractor={compareTractor}
                   viewMode={viewMode}
                   isCurrentTractor={false}
+                /> */}
+                <CompareTractorSelectionCard
+                  // isSelected={showTractorRemoveBtn[1] ? false : true}
+                  isSelected={false}
+                  viewMode={viewMode}
+                  allowChange={allowChange}
+                  cardIndex={1}
+                  onTractorSelect={handleTractorSelect}
+                  selectedTractor={selectedTractors[1] ?? null}
+                  onPlaceholderClick={handlePlaceholderClick}
+                  currentLang={currentLang}
+                  brands={tractorbrands}
+                  showCheckPrice={showCheckPrice}
+
                 />
               </div>
               {itemsToShow > 2 && (
                 <>
                   <VsIndicator viewMode={viewMode} itemsToShow={itemsToShow} />
                   <div className={compareTractorCardWrapperClx}>
-                    <TractorCompareCard
+                    {/* <TractorCompareCard
                       tractor={compareTractor2}
                       viewMode={viewMode}
                       isCurrentTractor={false}
+                    /> */}
+                    <CompareTractorSelectionCard
+                      // isSelected={showTractorRemoveBtn[2] ? false : true}
+                      isSelected={false}
+                      viewMode={viewMode}
+                      allowChange={allowChange}
+                      cardIndex={2}
+                      onTractorSelect={handleTractorSelect}
+                      selectedTractor={selectedTractors[2] ?? null}
+                      onPlaceholderClick={handlePlaceholderClick}
+                      currentLang={currentLang}
+                      brands={tractorbrands}
+                      showCheckPrice={showCheckPrice}
+
                     />
                   </div>
                 </>
@@ -369,6 +477,11 @@ const CompareTractorsSection = ({
                   onTractorSelect={handleTractorSelect}
                   selectedTractor={selectedTractors[0]}
                   onPlaceholderClick={handlePlaceholderClick}
+                  currentLang={currentLang}
+                  brands={tractorbrands}
+                  showCheckPrice={showCheckPrice}
+
+
                 />
               </div>
               <VsIndicator viewMode={viewMode} />
@@ -386,12 +499,18 @@ const CompareTractorsSection = ({
                   onTractorSelect={handleTractorSelect}
                   selectedTractor={selectedTractors[1]}
                   onPlaceholderClick={handlePlaceholderClick}
+                  currentLang={currentLang}
+                  brands={tractorbrands}
+                  showCheckPrice={showCheckPrice}
+
+
                 />
               </div>
               {itemsToShow > 2 && (
                 <>
                   <VsIndicator viewMode={viewMode} className="hidden md:flex" />
-                  <div className="relative hidden w-[calc(33.33%-4rem)] md:block">
+                  <div className={`${compareTractorCardWrapperClx} hidden md:block`}>
+                    {/* <div className="relative hidden w-[calc(33.33%-4rem)] md:block"> */}
                     {allowChange && selectedTractors[2] && (
                       <ChangeBtnGroup onRemove={() => handleRemoveTractor(2)} />
                     )}
@@ -403,6 +522,11 @@ const CompareTractorsSection = ({
                       onTractorSelect={handleTractorSelect}
                       selectedTractor={selectedTractors[2]}
                       onPlaceholderClick={handlePlaceholderClick}
+                      currentLang={currentLang}
+                      brands={tractorbrands}
+                      showCheckPrice={showCheckPrice}
+
+
                     />
                   </div>
                 </>
@@ -415,7 +539,7 @@ const CompareTractorsSection = ({
               <TG_Button
                 variant={viewMode ? 'outline' : 'primary'}
                 onClick={handleCompareClick}
-                disabled={getSelectedTractorsCount() < 2}
+                disabled={isCompareButtonDisabled()}
               >
                 Compare Tractors
               </TG_Button>

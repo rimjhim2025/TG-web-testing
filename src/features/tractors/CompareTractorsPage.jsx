@@ -12,7 +12,6 @@ import TractorsByBrands from '@/src/components/tractor/TractorsByBrands';
 import { getAllTractorBrands } from '@/src/services/tractor/all-tractor-brands';
 import PopularSection from '@/src/components/shared/popularSection/PopularSection';
 import { getTractorPopularDetails } from '@/src/services/tractor/tractor-popular-details';
-import { getAllTractorSubsidyStates } from '@/src/services/geo/get-subsidy-states';
 import { getCompareTractorRecord } from '@/src/services/tractor/compare-tractor-brands';
 import CompareTractorsSection from '@/src/components/tractor/CompareTractorsSection';
 import Image from 'next/image';
@@ -324,7 +323,7 @@ export default async function CompareTractorsPage({ params }) {
         /* Comparison Results Page with Old UI */
         <>
           {/* Main Comparison Display */}
-          <section className="bg-section-gray">
+          <section className="bg-section-white">
             <div className="justfiy-between container flex">
               <div className="hidden flex-col justify-center gap-4 pr-4 font-medium md:flex">
                 Share
@@ -339,7 +338,10 @@ export default async function CompareTractorsPage({ params }) {
                   currentTractor={comparisonData.tractor_0}
                   compareTractor={comparisonData.tractor_1}
                   compareTractor2={comparisonData.tractor_2 ? comparisonData.tractor_2 : ''}
-                  itemsToShow={comparisonData.tractor_2 ? 3 : 2}
+                  // itemsToShow={comparisonData.tractor_2 ? 3 : 2}
+                  itemsToShow={isMobile ? 2 : 3}
+                  currentLang={currentLang}
+                  tractorbrands={allTractorBrands}
                 />
               ) : (
                 <div className="flex h-64 items-center justify-center w-full">
@@ -387,23 +389,30 @@ export default async function CompareTractorsPage({ params }) {
             </div>
           </section> */}
 
-          <section className="bg-section-gray">
+          {!isComparisonPage ? <section className="bg-section-gray">
             <CompareTractorsSection
               heading="Compare Tractors"
               cta="Compare Tractors"
               bgColor="bg-section-gray"
+              currentLang={currentLang}
+              tractorbrands={allTractorBrands}
+
+            // allowChange={true}
             />
-          </section>
+          </section> : null}
 
           {/* Compare More Tractors Section */}
           <section className="bg-white">
             <div className="container">
-              <MainHeadings text="Compare Tractors" />
+              <MainHeadings text={translation.headings.popularTractorComparison} />
               <CompareTractorsSlider
                 cta={translation?.buttons?.compareTractor || 'Compare Tractors'}
                 compareTractors={moreComparisonList || null}
                 isMobile={isMobile}
                 isComparisonPage={true}
+                viewMode={true}
+                showCheckPrice={false}
+                tractorBrands={allTractorBrands}
               />
 
             </div>
@@ -472,7 +481,6 @@ export default async function CompareTractorsPage({ params }) {
       <WhatsAppTopButton
         translation={translation}
         currentLang={currentLang}
-        defaultEnquiryType={'Tractor'}
         isMobile={isMobile}
       />
     </main>

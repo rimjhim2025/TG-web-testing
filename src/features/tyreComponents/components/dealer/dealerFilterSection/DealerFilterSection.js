@@ -46,7 +46,7 @@ export default async function DealerFilterSection({
     page === 'implement'
       ? 'https://images.tractorgyan.com/uploads/118597/67f9091c36751-implement-dealer-desktop-banner.webp'
       : dealerType === 'tractor'
-        ? 'https://images.tractorgyan.com/uploads/120678/68a6dcd8de076-tractor-dealer-banner.webp' // Use appropriate tractor banner
+        ? 'https://images.tractorgyan.com/uploads/120980/1757481146Tractor-Dealers-Banner.webp' // Use appropriate tractor banner
         : 'https://images.tractorgyan.com/uploads/117673/67988ae001a95-tyre-dealer-banner-desktop.webp';
   const bannerImageMobile =
     page === 'implement'
@@ -218,7 +218,7 @@ export default async function DealerFilterSection({
             />
           </div>
           {/* Filter Overlay */}
-          <div className="top-0 z-[5px] h-full w-full p-4 md:absolute md:flex md:items-center md:justify-center md:p-0">
+          <div className="top-0 z-[5px] h-full w-full p-4 md:absolute md:flex md:flex-col md:items-center md:justify-center md:p-0">
             <DealerFilterClient
               page={page}
               urlSlug={urlSlug}

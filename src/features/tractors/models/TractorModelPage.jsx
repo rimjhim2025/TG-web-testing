@@ -476,6 +476,8 @@ export default async function TractorModelPage({ params }) {
               currentTractor={tractorDetail}
               compareTractors={compareTractors || null}
               isMobile={isMobile}
+              tractorBrands={allTractorBrands}
+
             />
             {/* <div className="flex gap-4">
               <div className="flex w-full flex-col gap-4 md:w-[calc(50%-.5rem)]">
