@@ -127,7 +127,7 @@ const LoanDetailsForm = ({ isMobile, activeTab, description, translation, curren
     if (selectedModelObject) {
       setForm(f => ({
         ...f,
-        model: selectedModelObject.model_en,
+        model: selectedModelObject.model,
         product_id: selectedModelObject.product_id,
       }));
     } else {
@@ -236,8 +236,8 @@ const LoanDetailsForm = ({ isMobile, activeTab, description, translation, curren
                       value={form.model}
                       onChange={handleModelChange}
                       options={models}
-                      optionLabelKey="model_en"
-                      optionValueKey="model_en"
+                      optionLabelKey="model"
+                      optionValueKey="model"
                       placeholder={translation?.enquiryForm?.selectModel}
                       fallback={translation.buttons.Loading}
                     />

@@ -11,6 +11,7 @@ import TG_SelectField from '../inputs/TG_SelectField';
 // import TG_Button from '../buttons/MainButtons';
 // import { getTractorBrands } from '@/src/services/tractor/all-tractor-brands-v2';
 import { getTractorModelsByBrand } from '@/src/services/tractor/get-model-by-brand-v2';
+import { fetchSecondOptionToCompare } from '@/src/services/tractor/get-compare-tractors-list';
 import TG_LinkButton from '../buttons/TgLinkButton';
 
 const CompareTractorSelectionCard = ({
@@ -24,6 +25,7 @@ const CompareTractorSelectionCard = ({
   currentLang,
   brands,
   showCheckPrice = true,
+  onSecondOptionSuggestion, // New callback for second option suggestion
 }) => {
   // const [brands, setBrands] = useState([]);
   console.log("selectedTractor::", selectedTractor);
@@ -33,6 +35,8 @@ const CompareTractorSelectionCard = ({
   const [selectedModel, setSelectedModel] = useState('');
   const [isLoadingBrands, setIsLoadingBrands] = useState(false);
   const [isLoadingModels, setIsLoadingModels] = useState(false);
+  const [isLoadingSecondOption, setIsLoadingSecondOption] = useState(false);
+  const [isUpdatingFromParent, setIsUpdatingFromParent] = useState(false);
   const brandSelectRef = useRef(null);
 
   // Load brands on component mount
@@ -43,22 +47,28 @@ const CompareTractorSelectionCard = ({
   // Sync local state when selectedTractor prop changes
   useEffect(() => {
     if (selectedTractor && selectedTractor.brand && selectedTractor.model) {
-      // Don't update local state if user has made their own selections
-      if (!selectedBrand && !selectedModel) {
-        setSelectedBrand(selectedTractor.brand);
-        setSelectedModel(selectedTractor.model);
-        // Load models for the brand if not already loaded
-        if (selectedTractor.brand && models.length === 0) {
-          loadModels(selectedTractor.brand);
-        }
+      // Set flag to indicate we're updating from parent
+      setIsUpdatingFromParent(true);
+      
+      // Update local state when selectedTractor changes (e.g., from parent suggestion)
+      setSelectedBrand(selectedTractor.brand);
+      setSelectedModel(selectedTractor.model);
+      
+      // Load models for the brand if not already loaded
+      if (selectedTractor.brand && models.length === 0) {
+        loadModels(selectedTractor.brand);
       }
+      
+      // Reset flag after a brief delay
+      setTimeout(() => setIsUpdatingFromParent(false), 100);
     } else if (!selectedTractor) {
       // Clear local state when selectedTractor is removed
       setSelectedBrand('');
       setSelectedModel('');
       setModels([]);
+      setIsUpdatingFromParent(false);
     }
-  }, []);
+  }, [selectedTractor]); // Add selectedTractor as dependency
 
   // Reset models when brand changes
   useEffect(() => {
@@ -73,13 +83,21 @@ const CompareTractorSelectionCard = ({
 
   // Notify parent when tractor is fully selected
   useEffect(() => {
+    // Skip if we're updating from parent to avoid infinite loops
+    if (isUpdatingFromParent) return;
+    
     // Only trigger onTractorSelect if user has actively made selections
-    // Don't interfere with prop-based selectedTractor
     if (selectedBrand && selectedModel) {
       const selectedTractorData = models.find(model => model.model === selectedModel);
       if (selectedTractorData && onTractorSelect) {
         onTractorSelect(cardIndex, selectedTractorData);
         console.log('onTractorSelect::', cardIndex, selectedTractorData);
+        
+        // If this is the first tractor card and we have a valid tractor ID,
+        // fetch second option suggestion
+        if (cardIndex === 0 && selectedTractorData.id) {
+          fetchAndSuggestSecondOption(selectedTractorData.id);
+        }
       }
     } else if (selectedBrand || selectedModel) {
       // Only reset to null if user has started making selections but hasn't completed them
@@ -88,7 +106,7 @@ const CompareTractorSelectionCard = ({
         onTractorSelect(cardIndex, null);
       }
     }
-  }, [selectedBrand, selectedModel, models, cardIndex, selectedTractor]);
+  }, [selectedBrand, selectedModel, models, cardIndex, selectedTractor, isUpdatingFromParent]);
 
   // const loadBrands = async () => {
   //   try {
@@ -114,6 +132,51 @@ const CompareTractorSelectionCard = ({
     }
   };
 
+  const fetchAndSuggestSecondOption = async (tractorId) => {
+    if (!onSecondOptionSuggestion) return;
+    
+    try {
+      setIsLoadingSecondOption(true);
+      const response = await fetchSecondOptionToCompare(tractorId);
+      
+      if (response && response.success && response.code === 200) {
+        // Find matching tractor from models based on the suggestion
+        const suggestedModel = response.model;
+        const suggestedBrand = response.brand?.[0];
+        
+        if (suggestedModel && suggestedBrand) {
+          // Load models for the suggested brand to get complete tractor data
+          const modelsData = await getTractorModelsByBrand(suggestedBrand.name);
+          
+          // Find the matching model in the models data
+          const matchingTractor = modelsData?.find(model => 
+            model.id === suggestedModel.product_id || 
+            model.model === suggestedModel.model
+          );
+          
+          if (matchingTractor) {
+            // Enhance the matching tractor with additional info from suggestion
+            const enhancedTractor = {
+              ...matchingTractor,
+              brand: suggestedBrand.name,
+              brand_name_en: suggestedBrand.name_en || suggestedBrand.name,
+              // Use original API data but fallback to suggestion if needed
+              hp: matchingTractor.hp || suggestedModel.hp,
+              model: matchingTractor.model || suggestedModel.model,
+            };
+            
+            // Call parent callback with the suggested tractor
+            onSecondOptionSuggestion(enhancedTractor, response);
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching second option to compare:', error);
+    } finally {
+      setIsLoadingSecondOption(false);
+    }
+  };
+
   const handleBrandChange = e => {
     setSelectedBrand(e.target.value);
   };
@@ -121,6 +184,15 @@ const CompareTractorSelectionCard = ({
   const handleModelChange = e => {
     setSelectedModel(e.target.value);
     console.log('model changed...', selectedTractor);
+    
+    // If this is the first tractor (cardIndex === 0) and a model is selected,
+    // fetch second option suggestion
+    if (cardIndex === 0 && e.target.value) {
+      const selectedTractorData = models.find(model => model.model === e.target.value);
+      if (selectedTractorData?.id) {
+        fetchAndSuggestSecondOption(selectedTractorData.id);
+      }
+    }
   };
 
   const handlePlaceholderClick = () => {
@@ -285,6 +357,12 @@ const CompareTractorSelectionCard = ({
       {(!viewMode || !selectedTractor) && (
         // {!viewMode && (
         <div className='min-w-[80px] md:min-w-[280px] max-w-[300px] mx-auto mb-4'>
+          {/* Show loading indicator for second option when first tractor is being processed */}
+          {cardIndex === 0 && isLoadingSecondOption && (
+            <div className="mb-2 text-center">
+              <span className="text-xs text-gray-main">Finding best comparison option...</span>
+            </div>
+          )}
           <div className="mt-2">
             <TG_SelectField
               ref={brandSelectRef}

@@ -24,7 +24,6 @@ import { getPopularImplements } from '@/src/services/implement/popular-implement
 import { getAllImplementTypes } from '@/src/services/implement/all-implement-types';
 import { getAllImplementCategories } from '@/src/services/implement/all-implement-categories';
 import { getImplementNews } from '@/src/services/implement/implement-news';
-import { getAllImplementBrands } from '@/src/services/implement/all-implement-brands';
 import { getImplementHomeBanner } from '@/src/services/implement/get-implement-home-banner';
 import { getAllImplementBrandsDetail } from '@/src/services/implement/get-all-implement-brands';
 import { getLatestImplements } from '@/src/services/implement/get-latest-implements';
@@ -107,14 +106,6 @@ export default async function TractorImplementsPage({ params }) {
     implementCategories = [];
   }
 
-  let allImplementBrands;
-  try {
-    allImplementBrands = await getAllImplementBrands();
-  } catch (error) {
-    console.error('Failed to fetch implement brands data:', error);
-    allImplementBrands = [];
-  }
-
   let allImplementBrandsWithDetails;
   try {
     allImplementBrandsWithDetails = await getAllImplementBrandsDetail();
@@ -161,6 +152,7 @@ export default async function TractorImplementsPage({ params }) {
         heading="Implements By Brands"
         allImplementBrands={allImplementBrandsWithDetails}
         itemsShown={isMobile ? 9 : 10}
+        translation={translation}
       />
 
       <ImplementsCategorySlider

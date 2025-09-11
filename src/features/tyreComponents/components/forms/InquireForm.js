@@ -13,6 +13,7 @@ import { getFetchDistricts } from '@/src/services/tyre/all-distric';
 import { getFetchTehsil } from '@/src/services/tyre/all-tehsil';
 import { tg_getTittleFromNestedKey } from '@/src/utils';
 import { tgi_arrow_right } from '@/src/utils/assets/icons';
+import { getAllImplementBrandListing } from '@/src/services/implement/get-all-implement-brand-listing';
 
 const TyrePriceInquireForm = ({
   hideBanner = false,
@@ -107,11 +108,19 @@ const TyrePriceInquireForm = ({
             }
           })
         }
+      } else if (type === 'IMPLEMENT' && selectedBrand !== '') {
+        // Handle Implement Case Here
+        const data = await getAllImplementBrandListing({
+          brand: selectedBrand,
+          start_limit: 0,
+          end_limit: 100, // TODO:: Refactor | This is a required field, so setting 100 for now
+          // lang: currentLang,
+        });
+        setTyreModels(data.items);
       } else {
         const data = await getTyreModal(selectedBrand);
         setTyreModels(data);
       }
-
 
     };
     fetchModels();
@@ -426,6 +435,9 @@ const TyrePriceInquireForm = ({
                             if (type === 'TRACTOR') {
                               setSelectedModel(selectedModelItem.model_en);
                               setProductId(selectedModelItem.product_id);
+                            } if (type === 'IMPLEMENT') {
+                              setSelectedModel(selectedModelItem.model);
+                              setProductId(selectedModelItem.id);
                             } else {
                               setSelectedModel(selectedModelItem.modal_name);
                               setProductId(selectedModelItem.id);
@@ -441,9 +453,9 @@ const TyrePriceInquireForm = ({
                           tyreModels.map((modelItem, index) => (
                             <option
                               key={index}
-                              value={type === 'TRACTOR' ? modelItem.model_en : modelItem.modal_name}
+                              value={type === 'TRACTOR' ? modelItem.model_en : type === 'IMPLEMENT' ? modelItem.model : modelItem.modal_name}
                             >
-                              {type === 'TRACTOR' ? modelItem.model_en : modelItem.modal_name}
+                              {type === 'TRACTOR' ? modelItem.model_en : type === 'IMPLEMENT' ? modelItem.model : modelItem.modal_name}
                             </option>
                           ))
                         ) : (

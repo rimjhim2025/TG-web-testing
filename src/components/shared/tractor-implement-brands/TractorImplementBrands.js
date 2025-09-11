@@ -40,7 +40,7 @@ const TractorImplementBrands = ({
   placedInFilter = false,
   showAll = false,
   prefLang,
-  translation
+  translation,
 }) => {
 
   return (

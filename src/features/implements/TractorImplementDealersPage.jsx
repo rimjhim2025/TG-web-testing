@@ -117,6 +117,7 @@ export default async function TractorImplementDealersPage({ params, searchParams
         heading='Implements By Brands'
         allImplementBrands={allImplementBrands}
         itemsShown={isMobile ? 9 : 12}
+        translation={translation}
       />
       <TyreDealersByStates
         heading="Implement Dealers By State"

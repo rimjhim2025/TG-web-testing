@@ -69,7 +69,7 @@ const CompareTractorsFeaturesSection = ({
                     key={headerIndex}
                     className={`${headerIndex ? 'text-black justify-center' : 'text-gray-dark'} ${group.headers.length > 3 ? 'w-1/4' : 'w-1/3'} flex items-center`}
                   >
-                    <span>{header}</span>
+                    <span className={headerIndex > 0 ? 'font-semibold' : ''}>{header.replace(/\*\*/g, '')}</span>
                   </div>
                 ))}
               </li>

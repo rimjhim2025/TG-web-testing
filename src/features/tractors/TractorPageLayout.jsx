@@ -244,7 +244,7 @@ export default async function TractorPageLayout(config, { params, searchParams }
 
     // Default listing configuration
     const defaultListingConfig = {
-      showBrandFilter: true,
+      showBrandFilter: isMiniTractorBrandPage ? false : true,
       showSizeFilter: false,
       showTractorHPFilter: true,
       showTyreBrandsSection: false,
@@ -329,15 +329,17 @@ export default async function TractorPageLayout(config, { params, searchParams }
           staticMetadata={{}}
           paginationLinks={{
             canonical:
-              currentPage > 1
-                ? `${process.env.NEXT_PUBLIC_API_URL || 'https://tractorgyan.com'}${basePath}?page=${currentPage}`
-                : `${process.env.NEXT_PUBLIC_API_URL || 'https://tractorgyan.com'}${basePath}`,
+              isMiniTractorBrandPage ? `${(process.env.NEXT_PUBLIC_API_URL || 'https://tractorgyan.com') + '/' + 'mini-tractors-in-india/' + param.brand}` : currentPage > 1
+                ? `${(process.env.NEXT_PUBLIC_API_URL || 'https://tractorgyan.com')}${(currentLang == 'hi' ? '/hi' : '') + basePath}?page=${currentPage}`
+                : `${(process.env.NEXT_PUBLIC_API_URL || 'https://tractorgyan.com')}${(currentLang == 'hi' ? '/hi' : '') + basePath}`,
             prev:
               currentPage > 1
-                ? `${process.env.NEXT_PUBLIC_API_URL || 'https://tractorgyan.com'}${basePath}?page=${currentPage - 1}`
+                ? isMiniTractorBrandPage ? `${process.env.NEXT_PUBLIC_API_URL || 'https://tractorgyan.com' + '/' + 'mini-tractors-in-india/' + param.brand}?page=${currentPage - 1}` : `${process.env.NEXT_PUBLIC_API_URL || 'https://tractorgyan.com'}${basePath}?page=${currentPage - 1}`
                 : null,
             next: hasNextPage
-              ? `${process.env.NEXT_PUBLIC_API_URL || 'https://tractorgyan.com'}${basePath}?page=${currentPage + 1}`
+              ? isMiniTractorBrandPage ?
+                `${((process.env.NEXT_PUBLIC_API_URL || 'https://tractorgyan.com')) + '/' + 'mini-tractors-in-india/' + param.brand}?page=${currentPage + 1}` :
+                `${(process.env.NEXT_PUBLIC_API_URL || 'https://tractorgyan.com')}${(currentLang == 'hi' ? '/hi' : '') + basePath}?page=${currentPage + 1}`
               : null,
           }}
         />
@@ -378,7 +380,24 @@ export default async function TractorPageLayout(config, { params, searchParams }
                   dataKey: item => item.price_range,
                 },
               ]}
-              breadcrumbs={[
+              breadcrumbs={isMiniTractorBrandPage ? [
+                {
+                  label: translation?.breadcrubm?.tractorGyanHome,
+                  href: (currentLang == 'hi' ? '/hi' : '') + '/',
+                  title: translation?.breadcrubm?.tractorGyanHome,
+                },
+                {
+                  label: breadcrumbTitle,
+                  title: breadcrumbTitle,
+                  href: (currentLang == 'hi' ? '/hi' : '') + '/mini-tractors-in-india',
+                },
+                {
+                  label: brandByLang.name,
+                  title: brandByLang.name,
+                  isCurrent: true,
+
+                },
+              ] : [
                 {
                   label: translation?.breadcrubm?.tractorGyanHome,
                   href: (currentLang == 'hi' ? '/hi' : '') + '/',

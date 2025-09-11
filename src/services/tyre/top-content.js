@@ -2,6 +2,8 @@ import { postData } from '../apiMethods';
 
 export async function getTyreTopContent({ ad_title, currentLang, device_type }) {
   try {
+    console.log("Fetching tyre top content with:", { ad_title, currentLang, device_type });
+
     const result = await postData('/api/tyre_top_content', {
       ad_title,
       ad_type_content_lang: currentLang === 'hi' ? 'hindi' : 'english',
@@ -15,8 +17,8 @@ export async function getTyreTopContent({ ad_title, currentLang, device_type }) 
 
 export async function getMiniTractorTopContent(payload) {
   try {
+    console.log("Mini Tractor Top Content Result:", payload);
     const result = await postData('/api/mini_tractor_top_content', payload);
-    console.log("Mini Tractor Top Content Result:", payload, result);
 
     if (result.data) {
       // TODO to fix this

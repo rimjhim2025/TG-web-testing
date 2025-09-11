@@ -217,9 +217,9 @@ export default async function CompareTractorsPage({ params }) {
         title: category.title,
         headers: [
           'Specification',
-          `${tractor0.brand} ${tractor0.model}`,
-          `${tractor1.brand} ${tractor1.model}`,
-          ...(tractor2 ? [`${tractor2?.brand || ''} ${tractor2?.model || ''}`] : []), // add header only if tractor2 exists
+          `**${tractor0.brand} ${tractor0.model}**`,
+          `**${tractor1.brand} ${tractor1.model}**`,
+          ...(tractor2 ? [`**${tractor2?.brand || ''} ${tractor2?.model || ''}**`] : []), // add header only if tractor2 exists
         ],
         features: features,
       };
@@ -389,17 +389,21 @@ export default async function CompareTractorsPage({ params }) {
             </div>
           </section> */}
 
-          {!isComparisonPage ? <section className="bg-section-gray">
-            <CompareTractorsSection
-              heading="Compare Tractors"
-              cta="Compare Tractors"
-              bgColor="bg-section-gray"
-              currentLang={currentLang}
-              tractorbrands={allTractorBrands}
+          {!isComparisonPage ?
+            <section className="bg-section-gray">
+              <CompareTractorsSection
+                heading="Compare Tractors"
+                cta="Compare Tractors"
+                bgColor="bg-section-gray"
+                currentLang={currentLang}
+                tractorbrands={allTractorBrands}
+                helpText='Select atleast 2 tractors for comparison'
+                itemsToShow={isMobile ? 2 : 3}
+                showCheckPrice={false}
 
-            // allowChange={true}
-            />
-          </section> : null}
+              // allowChange={true}
+              />
+            </section> : null}
 
           {/* Compare More Tractors Section */}
           <section className="bg-white">

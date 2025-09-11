@@ -11,11 +11,13 @@ import TG_Button from '../ui/buttons/MainButtons';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { postData } from '@/src/services/apiMethods';
+import { fetchSecondOptionToCompare, fetchThirdOptionToCompare } from '@/src/services/tractor/get-compare-tractors-list';
+import { getTractorModelsByBrand } from '@/src/services/tractor/get-model-by-brand-v2';
 
 const VsIndicator = ({ className, viewMode, itemsToShow }) => {
   return (
     <div
-      className={`${className} relative flex h-[160px] items-center justify-center md:h-[280px]`}
+      className={`${className} ${viewMode ? 'md:h-[280px md:items-center' : 'md:h-[240px md:items-start'} relative flex h-[160px] items-center justify-center]`}
     >
       <div className="absolute left-1/2 top-0 z-0 h-full w-[2px] -translate-x-1/2 transform bg-section-gray" />
 
@@ -72,7 +74,7 @@ const CompareTractorsSection = ({
   currentLang,
   tractorbrands,
   showCheckPrice = true,
-
+  helpText
 }) => {
   const router = useRouter();
   // const [selectedTractors, setSelectedTractors] = useState({});
@@ -87,6 +89,8 @@ const CompareTractorsSection = ({
   const [compareTractors, setCompareTractors] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [userHasModifiedSelections, setUserHasModifiedSelections] = useState(false);
+  const [secondOptionSuggested, setSecondOptionSuggested] = useState(false);
+  const [thirdOptionSuggested, setThirdOptionSuggested] = useState(false);
 
   // Legacy effect for backward compatibility (when productId and hp are provided)
   useEffect(() => {
@@ -179,15 +183,92 @@ const CompareTractorsSection = ({
       ...prev,
       [cardIndex]: tractorData,
     }));
-    
+
     // Mark that user has modified selections
     setUserHasModifiedSelections(true);
     
+    // Reset suggestion states based on which tractor is changed
+    if (cardIndex === 0) {
+      setSecondOptionSuggested(false);
+      setThirdOptionSuggested(false);
+    } else if (cardIndex === 1) {
+      setThirdOptionSuggested(false);
+    }
+
     // TODO:: if user explicitly changes tractor, then stop showing prefilled
     if (tractorData === null) {
       setCompareTractors(null);   // clear prefilled tractor
     }
   }, []);
+
+  const handleSecondOptionSuggestion = useCallback(async (suggestedTractor, apiResponse) => {
+    console.log('Second option suggested:', suggestedTractor);
+    console.log('API Response:', apiResponse);
+    
+    // Only auto-suggest if the second slot is empty and we haven't already suggested
+    if (!selectedTractors[1] && !secondOptionSuggested) {
+      setSelectedTractors(prev => ({
+        ...prev,
+        1: suggestedTractor,
+      }));
+      
+      setSecondOptionSuggested(true);
+      
+      // If we have 3 slots and first tractor exists, also fetch third option
+      if (itemsToShow > 2 && selectedTractors[0] && suggestedTractor.id) {
+        handleThirdOptionSuggestion(selectedTractors[0].id, suggestedTractor.id);
+      }
+    }
+  }, [selectedTractors, secondOptionSuggested, itemsToShow]);
+
+  const handleThirdOptionSuggestion = useCallback(async (firstTractorId, secondTractorId) => {
+    // Only auto-suggest if the third slot is empty and we haven't already suggested
+    if (!selectedTractors[2] && !thirdOptionSuggested && itemsToShow > 2) {
+      try {
+        console.log('Fetching third option with IDs:', firstTractorId, secondTractorId);
+        const response = await fetchThirdOptionToCompare(firstTractorId, secondTractorId);
+        
+        if (response && response.success && response.code === 200) {
+          // Find matching tractor from models based on the suggestion
+          const suggestedModel = response.model;
+          const suggestedBrand = response.brand?.[0];
+          
+          if (suggestedModel && suggestedBrand) {
+            // Load models for the suggested brand to get complete tractor data
+            const modelsData = await getTractorModelsByBrand(suggestedBrand.name);
+            
+            // Find the matching model in the models data
+            const matchingTractor = modelsData?.find(model => 
+              model.id === suggestedModel.product_id || 
+              model.model === suggestedModel.model
+            );
+            
+            if (matchingTractor) {
+              // Enhance the matching tractor with additional info from suggestion
+              const enhancedTractor = {
+                ...matchingTractor,
+                brand: suggestedBrand.name,
+                brand_name_en: suggestedBrand.name_en || suggestedBrand.name,
+                // Use original API data but fallback to suggestion if needed
+                hp: matchingTractor.hp || suggestedModel.hp,
+                model: matchingTractor.model || suggestedModel.model,
+              };
+              
+              setSelectedTractors(prev => ({
+                ...prev,
+                2: enhancedTractor,
+              }));
+              
+              setThirdOptionSuggested(true);
+              console.log('Third option suggested:', enhancedTractor);
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching third option to compare:', error);
+      }
+    }
+  }, [selectedTractors, thirdOptionSuggested, itemsToShow]);
 
   // useEffect(() => {
   //   console.log("selectedTractors changed:", selectedTractors);
@@ -204,9 +285,17 @@ const CompareTractorsSection = ({
       delete newState[cardIndex];
       return newState;
     });
-    
+
     // Mark that user has modified selections
     setUserHasModifiedSelections(true);
+    
+    // Reset suggestion states based on which tractor is removed
+    if (cardIndex === 0) {
+      setSecondOptionSuggested(false);
+      setThirdOptionSuggested(false);
+    } else if (cardIndex === 1) {
+      setThirdOptionSuggested(false);
+    }
   }, []);
 
   const extractSlugFromUrl = pageUrl => {
@@ -272,13 +361,13 @@ const CompareTractorsSection = ({
 
   const isCompareButtonDisabled = () => {
     const hasAtLeastTwoTractors = getSelectedTractorsCount() >= 2;
-    
+
     // If we have pre-selected tractors (currentTractor and compareTractor exist)
     // and user hasn't modified selections, disable the button
     if ((currentTractor && compareTractor) && !userHasModifiedSelections) {
       return true;
     }
-    
+
     // Otherwise, use the standard condition of needing at least 2 tractors
     return !hasAtLeastTwoTractors;
   };
@@ -369,8 +458,13 @@ const CompareTractorsSection = ({
     <div className={`${bgColor} w-full`}>
       <div className={`${viewMode ? '' : 'container'}`}>
         <div className={`${viewMode ? 'rounded-xl bg-white px-0 md:px-2 shadow-main' : ''}`}>
-          {heading && <MainHeadings text={heading} />}
-
+          {heading &&
+            <div className='flex gap-4'>
+              <MainHeadings text={heading} />
+              <p className='hidden md:block mt-3 text-sm text-gray-main'>{helpText}</p>
+            </div>
+          }
+          
           {isLoading ? (
             <div className="flex items-center justify-center py-8">
               <span className="text-gray-main">Loading compare tractors...</span>
@@ -395,6 +489,7 @@ const CompareTractorsSection = ({
                   onTractorSelect={handleTractorSelect}
                   selectedTractor={selectedTractors[0] ?? null}
                   onPlaceholderClick={handlePlaceholderClick}
+                  onSecondOptionSuggestion={handleSecondOptionSuggestion}
                   currentLang={currentLang}
                   brands={tractorbrands}
                   showCheckPrice={showCheckPrice}
@@ -477,11 +572,10 @@ const CompareTractorsSection = ({
                   onTractorSelect={handleTractorSelect}
                   selectedTractor={selectedTractors[0]}
                   onPlaceholderClick={handlePlaceholderClick}
+                  onSecondOptionSuggestion={handleSecondOptionSuggestion}
                   currentLang={currentLang}
                   brands={tractorbrands}
                   showCheckPrice={showCheckPrice}
-
-
                 />
               </div>
               <VsIndicator viewMode={viewMode} />
