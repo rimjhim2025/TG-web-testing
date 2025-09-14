@@ -31,53 +31,65 @@ export default async function TractorReelShortsDetailPage({ params }) {
   let seoError = false;
   let youtubeError = false;
 
-  // 1. Fetch reel detail
+  // Use Promise.allSettled to fetch data in parallel
   try {
-    const payload = {
-      video_url: param,
-      video_type: 'reels',
-    };
+    const [reelDetailsResult, seoDataResult, youtubeCountResult] = await Promise.allSettled([
+      // 1. Fetch reel detail
+      postVideoReelDetails({
+        video_url: param,
+        video_type: 'reels',
+      }),
 
-    const reelDetails = await postVideoReelDetails(payload);
+      // 2. Fetch SEO data
+      getDetailPageHeaderSEO({
+        video_url: param,
+        page_type: 'reel_detail',
+        video_type: 'reels',
+      }),
 
-    if (reelDetails) {
-      reelDetailData = reelDetails;
+      // 3. Fetch YouTube subscriber count
+      getSocialMediaSubsCount()
+    ]);
+
+    // Process reel details result
+    if (reelDetailsResult.status === 'fulfilled') {
+      reelDetailData = reelDetailsResult.value;
     } else {
+      console.error('❌ Failed to fetch reel detail:', reelDetailsResult.reason);
       reelDetailError = true;
     }
+
+    // Process SEO data result
+    if (seoDataResult.status === 'fulfilled') {
+      seoDescription = seoDataResult.value?.data || null;
+    } else {
+      console.error('⚠️ SEO fetch failed:', seoDataResult.reason);
+      seoError = true;
+    }
+
+    // Process YouTube count result
+    if (youtubeCountResult.status === 'fulfilled') {
+      youtubeCount = youtubeCountResult.value?.youtube_count ?? null;
+      if (!youtubeCount) youtubeError = true;
+    } else {
+      console.error('⚠️ YouTube count fetch failed:', youtubeCountResult.reason);
+      youtubeError = true;
+    }
   } catch (err) {
-    console.error('❌ Failed to fetch reel detail:', err);
+    console.error('Error in parallel data fetching:', err);
     reelDetailError = true;
-  }
-
-  // 2. Fetch SEO (always runs)
-  try {
-    const seoPayload = {
-      video_url: param,
-      page_type: 'reel_detail',
-      video_type: 'reels',
-    };
-
-    const seoData = await getDetailPageHeaderSEO(seoPayload);
-    seoDescription = seoData?.data || null;
-  } catch (err) {
-    console.error('⚠️ SEO fetch failed:', err);
     seoError = true;
-  }
-
-  // 3. Fetch YouTube subscriber count
-  try {
-    const response = await getSocialMediaSubsCount();
-    youtubeCount = response?.youtube_count ?? null;
-    if (!youtubeCount) youtubeError = true;
-  } catch (err) {
-    console.error('⚠️ YouTube count fetch failed:', err);
     youtubeError = true;
   }
 
   return (
     <>
-      <SeoHead seo={{}} staticMetadata={{}} preloadUrls={[]} seoHTMLDescription={seoDescription} />
+      <SeoHead
+        seo={{}}
+        staticMetadata={{}}
+        preloadUrls={[]}
+        seoHTMLDescription={seoDescription}
+      />
       <DesktopHeader
         showLanguageSelector={false}
         isMobile={isMobile}

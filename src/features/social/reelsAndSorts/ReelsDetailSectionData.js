@@ -9,8 +9,17 @@ import ReelsDetailSection from './ReelsDetailSection';
 import { getSocialMediaSubsCount } from '@/src/services/social/SubscriberCounts';
 
 export default async function ReelsDetailSectionData({ ...props }) {
-  const { param, reelDetailData, isMobile, youtubeCount, reelDetailError, youtubeError, seoError } =
-    props;
+  const {
+    param,
+    reelDetailData,
+    isMobile,
+    youtubeCount,
+    reelDetailError,
+    youtubeError,
+    seoError,
+    translation // Added missing translation prop
+  } = props;
+
   // 4. Return JSX with SEOHead always
   return (
     <>
