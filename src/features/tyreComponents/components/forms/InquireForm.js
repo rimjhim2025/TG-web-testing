@@ -33,8 +33,14 @@ const TyrePriceInquireForm = ({
   preFilledModelId,
   imgUrl,
   mobileImgUrl,
-  isMobile
+  isMobile,
+  pageName,
+  pageSource,
+  implementType
 }) => {
+  useEffect(() => {
+    console.log("TyrePriceInquireForm props:", { pageName, pageSource });
+  }, [pageName, pageSource]);
   let headingTitle = brandName ? tg_getTittleFromNestedKey(translation, heading) : heading;
   if (brandName || brandName == '') headingTitle = headingTitle.replace('{brand}', brandName);
   const [tyreModels, setTyreModels] = useState([]);
@@ -102,9 +108,9 @@ const TyrePriceInquireForm = ({
         if (preFilledModel) {
 
           data.forEach(modelItem => {
-            if (+modelItem.product_id == +preFilledModelId) {
+            if ((+modelItem?.product_id == +preFilledModelId) || (+modelItem.id == +preFilledModelId)) {
 
-              setSelectedModel(modelItem.model_en);
+              setSelectedModel(modelItem.model_en || modelItem.model);
             }
           })
         }
@@ -243,6 +249,25 @@ const TyrePriceInquireForm = ({
         type_id: isMobile ? 6 : 5,
       };
       apiEndpoint = '/api/enquiry_data_otp_send';
+    } if (type === 'IMPLEMENT') {
+      // Payload for implement
+      payload = {
+        // 'user-message': 'Enquiry',
+        // Enquiry: '',
+        // otp_type: 'form_submit_otp_send',
+        name: name,
+        mobile: mobile,
+        model: selectedModel,
+        brand: selectedBrand,
+        implement_type: implementType,
+        state: selectedState,
+        district: selectedDistrict,
+        tehsil: selectedTehsil,
+        type_id: 34, // TODO:: Confirm and Update the type ID for mobile
+        page_name: pageName,
+        page_source: pageSource
+      };
+      apiEndpoint = '/api/all_implement_enquiry';
     } else {
       // Original API and payload for tyre
       payload = {
@@ -453,9 +478,9 @@ const TyrePriceInquireForm = ({
                           tyreModels.map((modelItem, index) => (
                             <option
                               key={index}
-                              value={type === 'TRACTOR' ? modelItem.model_en : type === 'IMPLEMENT' ? modelItem.model : modelItem.modal_name}
+                              value={type === 'TRACTOR' ? modelItem.model : type === 'IMPLEMENT' ? modelItem.model : modelItem.modal_name}
                             >
-                              {type === 'TRACTOR' ? modelItem.model_en : type === 'IMPLEMENT' ? modelItem.model : modelItem.modal_name}
+                              {type === 'TRACTOR' ? modelItem.model : type === 'IMPLEMENT' ? modelItem.model : modelItem.modal_name}
                             </option>
                           ))
                         ) : (

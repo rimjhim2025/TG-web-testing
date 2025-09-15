@@ -82,8 +82,6 @@ const ReelsDetailSection = ({ param, reelDetailData, isMobile, youtubeCount }) =
 
     const url = new URL(reelData.url_of_video);
     url.searchParams.set('autoplay', '1');
-    url.searchParams.set('mute', '1');
-    url.searchParams.set('playsinline', '1');
 
     return url.toString();
   }, [reelData?.url_of_video]);
@@ -114,8 +112,8 @@ const ReelsDetailSection = ({ param, reelDetailData, isMobile, youtubeCount }) =
               onClick={() => handleNavigation('prev')}
               disabled={isLoading || isFirst}
               className={`flex justify-center items-center md:gap-2 shadow-main font-medium md:text-lg rounded-xl bg-white p-3 md:px-3 md:py-2 text-gray-dark ${isLoading || isFirst
-                  ? ' cursor-not-allowed opacity-60'
-                  : ' hover:scale-105'
+                ? ' cursor-not-allowed opacity-60'
+                : ' hover:scale-105'
                 }`}
               aria-label="Previous video"
             >
@@ -158,8 +156,8 @@ const ReelsDetailSection = ({ param, reelDetailData, isMobile, youtubeCount }) =
               onClick={() => handleNavigation('next')}
               disabled={isLoading || isLast}
               className={`flex justify-center items-center md:gap-2 shadow-main font-medium md:text-lg rounded-xl bg-white p-3 md:px-3 md:py-2 text-gray-dark ${isLoading || isLast
-                  ? ' cursor-not-allowed opacity-60'
-                  : ' hover:scale-105'
+                ? ' cursor-not-allowed opacity-60'
+                : ' hover:scale-105'
                 }`}
               aria-label="Next video"
             >

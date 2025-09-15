@@ -41,6 +41,76 @@ export default async function DealerFilterSection({
   const totalCount = dealerResult?.count || 0;
   const totalPages = Math.ceil(totalCount / PAGE_SIZE);
 
+  // Function to generate dynamic title based on page context (similar to FAQ heading logic)
+  const getDynamicTitle = () => {
+    const hasBrand = selectedBrand;
+    const hasState = selectedState;
+    const hasCity = selectedCity;
+
+    // Determine if we're in Hindi mode
+    const isHindi = currentLang === 'hi';
+
+    // Get dealer type text based on language
+    let dealerTypeTextPlural;
+    if (page === 'implement') {
+      dealerTypeTextPlural = translation?.dealer?.implementDealers || 'Implement Dealers';
+    } else if (dealerType === 'tractor') {
+      dealerTypeTextPlural = translation?.dealer?.tractorDealers || 'Tractor Dealers';
+    } else {
+      dealerTypeTextPlural = translation?.dealer?.tyreDealers || 'Tyre Dealers';
+    }
+
+    // Generate titles with proper grammar for each language
+    if (isHindi) {
+      // Hindi grammar patterns
+      if (hasBrand && hasState && hasCity) {
+        return `${selectedCity}, ${selectedState} में ${selectedBrand} ${dealerTypeTextPlural} खोजें`;
+      }
+      if (hasBrand && hasState) {
+        return `${selectedState} में ${selectedBrand} ${dealerTypeTextPlural} खोजें`;
+      }
+      if (hasState && hasCity) {
+        return `${selectedCity}, ${selectedState} में ${dealerTypeTextPlural} खोजें`;
+      }
+      if (hasBrand) {
+        return `${selectedBrand} ${dealerTypeTextPlural} खोजें`;
+      }
+      if (hasState) {
+        return `${selectedState} में ${dealerTypeTextPlural} खोजें`;
+      }
+      if (hasCity) {
+        return `${selectedCity} में ${dealerTypeTextPlural} खोजें`;
+      }
+    } else {
+      // English grammar patterns
+      if (hasBrand && hasState && hasCity) {
+        return `Find ${selectedBrand} ${dealerTypeTextPlural} in ${selectedCity}, ${selectedState}`;
+      }
+      if (hasBrand && hasState) {
+        return `Find ${selectedBrand} ${dealerTypeTextPlural} in ${selectedState}`;
+      }
+      if (hasState && hasCity) {
+        return `Find ${dealerTypeTextPlural} in ${selectedCity}, ${selectedState}`;
+      }
+      if (hasBrand) {
+        return `Find ${selectedBrand} ${dealerTypeTextPlural}`;
+      }
+      if (hasState) {
+        return `Find ${dealerTypeTextPlural} in ${selectedState}`;
+      }
+      if (hasCity) {
+        return `Find ${dealerTypeTextPlural} in ${selectedCity}`;
+      }
+    }
+
+    // Default fallback using existing translations
+    return page === 'implement'
+      ? translation?.headings?.findImplementDealerNearYou || 'Find Implement Dealer Near You'
+      : dealerType === 'tractor'
+        ? translation?.tractorDealers?.findDealers || 'Find Tractor Dealers'
+        : translation?.headings?.findTyreDealerNearYou || 'Find Tyre Dealer Near You';
+  };
+
   // Banner images
   const bannerImageDesktop =
     page === 'implement'
@@ -56,19 +126,12 @@ export default async function DealerFilterSection({
         : 'https://images.tractorgyan.com/uploads/117674/67988ae896d7f-tyre-dealer-banner-mobile.webp';
 
   return (
-    <section className="lg:mt-[144px]">
-      <div className="container relative">
+    <section className="container lg:mt-[142px]">
+      <div className=" relative">
         {/* <div className={isMobile ? `w-[90%] m-auto` : ``}>
         </div> */}
         <TittleAndCrumbs
-          title={
-            page === 'implement'
-              ? translation?.headings?.findImplementDealerNearYou ||
-              'Find Implement Dealer Near You'
-              : dealerType === 'tractor'
-                ? translation?.tractorDealers?.findDealers || 'Find Tractor Dealers'
-                : `${translation?.headings?.findTyreDealerNearYou || 'Find Tyre Dealer Near You'}`
-          }
+          title={getDynamicTitle()}
           breadcrumbs={(() => {
             const breadcrumbs = [
               {

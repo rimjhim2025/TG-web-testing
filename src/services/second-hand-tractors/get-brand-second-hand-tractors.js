@@ -17,6 +17,8 @@ export async function getMiniTractorBrandSecondHandTractors(payload) {
     console.log('Payload for mini tractor brand second hand tractors:', payload);
 
     const result = await postData('/api/brand_wise_mini_second_hand', payload);
+    console.log("Result for mini tractor brand second hand tractors:", result);
+
     return result;
   } catch (error) {
     console.error('Error fetching brand second hand tractors:', error);
