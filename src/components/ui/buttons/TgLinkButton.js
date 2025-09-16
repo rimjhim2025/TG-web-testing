@@ -20,8 +20,6 @@ const TG_LinkButton = ({
   iconClass = "",
   title = "Read More",
   target,
-  iconPosition, // Extract this to prevent it from going to DOM
-  icon, // Extract this to prevent it from going to DOM
   ...props
 }) => {
   const isValidVariant = typeof linkVariants[variant] !== "undefined";
@@ -30,10 +28,6 @@ const TG_LinkButton = ({
     : linkVariants.outline;
 
   const isExternal = target === "_blank";
-
-  // Filter out DOM-invalid props
-  const { iconPosition: _, icon: __, ...domProps } = props;
-
   //noopener: Prevents the new page from accessing window.opener
   // noreferrer: Also removes the Referer header for additional privacy
   return (
@@ -44,7 +38,7 @@ const TG_LinkButton = ({
       target={target}
       rel={isExternal ? "noopener noreferrer" : undefined}
       className={`${baseStyle} ${variantStyle} ${className}`}
-      {...domProps}
+      {...props}
     >
       <span className="text-sm lg:text-base">{children}</span>
       {iconSrc && (

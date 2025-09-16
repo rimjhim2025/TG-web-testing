@@ -36,8 +36,7 @@ export default async function WebStoryInIndiaPage({ searchParams, porpsCurrentLa
         <WhatsAppTopButton
           translation={translation}
           currentLang={prefLang}
-          isMobile={isMobile}
-        // tyreBrands={tyreBrands}
+          // tyreBrands={tyreBrands}
         />
         <JoinOurCommunityServer translation={translation} currentLang={prefLang} />
         <TractorGyanOfferings translation={translation} />

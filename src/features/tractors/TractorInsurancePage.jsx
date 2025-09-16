@@ -19,20 +19,19 @@ import TractorInsuranceForm from '@/src/components/tractor/TractorInsuranceForm'
 import InsuranceBrands from '@/src/components/shared/insurance-brands/InsuranceBrands';
 import TyreFAQs from '../tyre/tyreFAQs/TyreFAQs';
 import { getTyreFAQs } from '@/src/services/tyre/tyre-faq';
-import apiUrl from '@/src/services/apiUrl';
 
 const TractorInsurancePage = async () => {
   const currentLang = await getSelectedLanguage();
   const translation = await getDictionary(currentLang);
   const isMobile = await isMobileView();
-  const seoData = await getSEOByPage((currentLang == "hi" ? "hi/" : "") + 'tractor-insurance');
+  const seoData = await getSEOByPage('tyre-price');
 
   const popularData = await getTractorPopularDetails(currentLang);
   const popularTractorsError = false;
 
   const faqs = await getTyreFAQs({
     langPrefix: currentLang,
-    slug: 'tractor-insurance',
+    slug: 'tractors', // TODO : For UI Testing Purpose Only
     // slug: pageSlug,
   });
 
@@ -97,24 +96,21 @@ const TractorInsurancePage = async () => {
 
   return (
     <>
-      <SeoHead seo={seoData} staticMetadata={{}} preloadUrls={[]}
-        paginationLinks={{
-          canonical: `${apiUrl}/${currentLang === 'hi' ? 'hi/' : ''}tractor-insurance`,
-        }} />
+      <SeoHead seo={seoData} staticMetadata={{}} preloadUrls={[]} />
       <DesktopHeader isMobile={isMobile} translation={translation} currentLang={currentLang} />{' '}
       <div className="pt-4 md:mt-[164px]">
         <div className="container">
           <TittleAndCrumbs
-            title={translation.headerNavbar.tractorInsurance}
+            title="Tractor Insurance"
             breadcrumbs={[
               {
-                label: translation?.breadcrubm.tractorGyanHome || 'Home',
-                href: currentLang ? '/hi' : '/',
-                title: translation?.breadcrubm.tractorGyanHome || 'Home',
+                label: translation?.breadcrubm.home || 'Home',
+                href: '/',
+                title: translation?.breadcrubm.home || 'Home',
               },
               {
-                label: translation.headerNavbar.tractorInsurance,
-                title: translation.headerNavbar.tractorInsurance,
+                label: 'Tractor Insurance',
+                title: 'Tractor Insurance',
                 isCurrent: true,
               },
             ]}
@@ -122,10 +118,10 @@ const TractorInsurancePage = async () => {
           {/* TODO:: Upload and Update Banner */}
           <TG_Banner
             imgUrl={
-              'https://images.tractorgyan.com/uploads/120704/68a98a90afba3-tractor-insurance-desktop-(1).webp'
+              'https://images.tractorgyan.com/uploads/120363/1754067655Tractor-On-Road-Price.webp'
             }
             mobileImgUrl={
-              'https://images.tractorgyan.com/uploads/120703/68a98a8490b2d-tractor-insurance-mobile-(1).webp'
+              'https://images.tractorgyan.com/uploads/120364/1754067673Tractor-On-Road-Price-Mobile.webp'
             }
             title={'Tractor On Road Price'}
             pageUrl={'/'}
@@ -138,15 +134,13 @@ const TractorInsurancePage = async () => {
           currentLang={currentLang}
         />
 
-        {/* TODO product commentted this component for now */}
-
-        {/* <InsuranceBrands
+        <InsuranceBrands
           brands={insuranceBrands}
           langPrefix={currentLang}
           isMobile={isMobile}
           translation={translation}
           sectionClasses={'pb-12 md:pb-6'}
-        /> */}
+        />
 
         <PopularSection
           popularData={popularData}
@@ -154,7 +148,6 @@ const TractorInsurancePage = async () => {
           translation={translation}
           langPrefix={currentLang}
           isMobile={isMobile}
-          redirectRoute={`${currentLang == 'hi' ? '/hi' : ''}/tractors`}
         />
 
         <TyreFAQs
@@ -166,11 +159,11 @@ const TractorInsurancePage = async () => {
 
         <JoinOurCommunityServer translation={translation} currentLang={currentLang} />
         <TractorGyanOfferings translation={translation} />
-        <AboutTractorGyanServer slug={(currentLang == 'hi' ? 'hi/' : '') + 'tractor-insurance'} translation={translation} />
+        <AboutTractorGyanServer slug={'tyre-price'} translation={translation} />
         <WhatsAppTopButton
           translation={translation}
           currentLang={currentLang}
-          defaultEnquiryType={'Tractor'} isMobile={isMobile}
+          defaultEnquiryType={'Insurance'}
         />
       </div>
       <FooterServer translation={translation} />

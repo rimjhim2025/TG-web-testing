@@ -40,7 +40,6 @@ const PopularTyres = ({ bgColor, translation, isMobile, popularTyres, langPrefix
                   imageAlt={item.title}
                   type="tyre"
                   specs={{ Type: item.tyre_type, Size: item.size, Brand: item.brand_name }}
-                  translation={translation}
                 />
                 // <PopularTyreCard
                 //   key={index}

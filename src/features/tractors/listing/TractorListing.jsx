@@ -2,7 +2,6 @@ import Link from 'next/link';
 import React from 'react';
 import TG_HorizontalCard from '@/src/components/ui/cards/ListingCard';
 import SecondHandTractorCard from '@/src/components/ui/cards/secondHandTractorCards/SecondHandTractorCard';
-import { TG_ReelsCard } from '@/src/components/ui/cards/reels/ReelsCards';
 
 const TractorListing = ({
   pageType,
@@ -16,12 +15,9 @@ const TractorListing = ({
   currentDate, // Prop for "Data Last Updated On"
   basePath, // Add basePath prop for correct URL building
   pageOrigin, // Add pageOrigin to determine URL structure
-  isMobile,
-  reel // <-- Accept reel prop
 }) => {
   const noDataFound = !initialTyres || initialTyres.length === 0;
   const totalPages = Math.ceil(totalTyresCount / itemsPerPage);
-  const showReelAfter = isMobile ? 1 : 3;
 
   const buildPageLink = pageNumber => {
     const queryParams = new URLSearchParams();
@@ -67,100 +63,29 @@ const TractorListing = ({
       ) : (
         <>
           {pageType === 'tractors' && (
-            <>
-              {/* BEGINS::Handling Reels Section */}
-              {reel ? (
-                <div
-                  className="flex flex-col md:flex-row flex-wrap items-stretch gap-4 lg:gap-4 mb-4"
-                  itemScope
-                  itemType="https://schema.org/ItemList"
-                >
-                  {/* Width to be kept in sync with TG_HorizontalCard */}
-                  <div className='flex flex-1 flex-col gap-4 lg:gap-4 w-full max-w-[420px]'>
-                    {initialTyres.slice(0, showReelAfter).map((tractor, index) => (
-                      <TG_HorizontalCard
-                        key={tractor.id}
-                        title={`${tractor.brand} ${tractor.model}`}
-                        total_reviews={tractor.total_reviews || tractor.total_review || 0}
-                        avg_review={tractor.avg_review || 0}
-                        imageSrc={`https://images.tractorgyan.com/uploads${tractor.image}`}
-                        detailUrl={(currentLang == 'hi' ? '/hi' : '') + tractor.page_url}
-                        specs={{
-                          [translation?.tractorSpecs?.hp || 'HP']: tractor.hp,
-                          [translation?.tractorSpecs?.cylinders || 'Cylinder']: tractor.cylinder,
-                          [translation?.headerNavbar?.liftingCapacity || 'Lifting Capacity']: tractor.lifting_capacity,
-                        }}
-                        buttonText={translation?.headerNavbar?.checkPrice || "Check Price"}
-                        buttonPrefix="₹ "
-                        isPopular={tractor.popular_tractor === '1'}
-                        showRatingOnTop={pageType === 'tractors'}
-                        translation={translation}
-                        position={index + 1 + (currentPage - 1) * itemsPerPage}
-                        tractorId={tractor.id}
-                      />
-                    ))}
-                  </div>
-                  <div className='flex flex-1 w-full max-w-[420px] items-stretch'>
-                    {reel && (
-                      reel.url_of_video && reel.featured_image && !reel.image ? (
-                        <div className="relative rounded-2xl border border-gray-light p-4 w-full h-full flex flex-col justify-between bg-white min-h-[360px] md:min-h-[540px]">
-                          <div className="bg-gray-lighter w-full h-full flex-1 rounded-xl overflow-hidden relative min-h-[200px] md:min-h-[360px]">
-                            <iframe
-                              src={
-                                reel.url_of_video.includes('autoplay=1')
-                                  ? reel.url_of_video
-                                  : `${reel.url_of_video}${reel.url_of_video.includes('?') ? '&' : '?'}autoplay=1&mute=1`
-                              }
-                              title={reel.title}
-                              allow="autoplay; encrypted-media"
-                              allowFullScreen
-                              className="absolute top-0 left-0 w-full h-full min-h-[200px] md:min-h-[360px] aspect-video rounded-xl border-none"
-                              style={{ minHeight: 0 }}
-                            />
-                          </div>
-                        </div>
-                      ) : (
-                        <TG_ReelsCard data={reel} />
-                      )
-                    )}
-                  </div>
-                </div>
-              ) : null}
-              {/* ENDS::Handling Reels Section */}
-              <div
-                className="flex flex-wrap gap-4 lg:gap-4 xl:gap-4"
-                itemScope
-                itemType="https://schema.org/ItemList"
-              >
-                {/* Hidden ItemList metadata */}
-                <meta itemProp="numberOfItems" content={totalTyresCount} />
-                <meta itemProp="itemListOrder" content="https://schema.org/ItemListOrderAscending" />
-
-                {(reel ? initialTyres.slice(showReelAfter) : initialTyres).map((tractor, index) => (
-                  // {initialTyres.map((tractor, index) => (
-                  <TG_HorizontalCard
-                    key={tractor.id}
-                    title={`${tractor.brand} ${tractor.model}`}
-                    total_reviews={tractor.total_reviews || tractor.total_review || 0}
-                    avg_review={tractor.avg_review || 0}
-                    imageSrc={`https://images.tractorgyan.com/uploads${tractor.image}`}
-                    detailUrl={(currentLang == 'hi' ? '/hi' : '') + tractor.page_url}
-                    specs={{
-                      [translation?.tractorSpecs?.hp || 'HP']: tractor.hp,
-                      [translation?.tractorSpecs?.cylinders || 'Cylinder']: tractor.cylinder,
-                      [translation?.headerNavbar?.liftingCapacity || 'Lifting Capacity']: tractor.lifting_capacity,
-                    }}
-                    buttonText={translation?.headerNavbar?.checkPrice || "Check Price"}
-                    buttonPrefix="₹ "
-                    isPopular={tractor.popular_tractor === '1'}
-                    showRatingOnTop={pageType === 'tractors'}
-                    translation={translation} // Pass translation
-                    position={index + 1 + (currentPage - 1) * itemsPerPage} // Calculate position for SEO
-                    tractorId={tractor.id} // Pass tractor ID for SEO
-                  />
-                ))}
-              </div>
-            </>
+            <div className="flex flex-wrap gap-4 lg:gap-4 xl:gap-4">
+              {initialTyres.map((tractor, index) => (
+                <TG_HorizontalCard
+                  key={tractor.id}
+                  title={`${tractor.brand} ${tractor.model}`}
+                  total_reviews={tractor.total_reviews || tractor.total_review || 0}
+                  avg_review={tractor.avg_review || 0}
+                  imageSrc={`https://images.tractorgyan.com/uploads${tractor.image}`}
+                  detailUrl={(currentLang == 'hi' ? '/hi' : '') + tractor.page_url}
+                  specs={{
+                    HP: tractor.hp,
+                    Cylinder: tractor.cylinder,
+                    'Lifting Capacity': tractor.lifting_capacity,
+                  }}
+                  buttonText="Check Price"
+                  buttonPrefix="₹ "
+                  isPopular={tractor.popular_tractor === '1'}
+                  showRatingOnTop={pageType === 'tractors'}
+                  position={index + 1 + (currentPage - 1) * itemsPerPage} // Calculate position for SEO
+                  tractorId={tractor.id} // Pass tractor ID for SEO
+                />
+              ))}
+            </div>
           )}
 
           {pageType === 'used_tractors' && (
@@ -173,16 +98,15 @@ const TractorListing = ({
 
           {pageType === 'implements' && (
             <div className="flex flex-wrap gap-4 lg:gap-4 xl:gap-4">
-              {initialTyres?.map((implement, index) => (
+              {initialTyres.map((implement, index) => (
                 <TG_HorizontalCard
-                  title={`${implement.brand_name} ${implement.model}`}
-                  imageSrc={`https://images.tractorgyan.com/uploads${implement.image}`}
-                  detailUrl={implement?.page_url}
-                  specs={{ HP: implement?.implement_power }}
-                  buttonText={translation.headerNavbar.ViewPrice}
+                  title="John Deere Single Bottom MB Plough (MB3001M)"
+                  imageSrc="https://images.tractorgyan.com/uploads/113635/66823ed511fcb-john-deere-single-bottom-mb-plough1.webp"
+                  detailUrl="/tractor-implements/plough/john-deere-single-bottom-mb-plough/69"
+                  specs={{ HP: '42' }}
+                  buttonText="View Price"
                   buttonPrefix="₹ "
-                  isPopular={implement?.popular_implement === "Yes" ? true : false}
-                  translation={translation} // Pass translation
+                  isPopular={!index}
                 />
               ))}
             </div>

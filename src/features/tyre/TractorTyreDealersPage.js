@@ -86,7 +86,6 @@ export default async function TractorTyreDealersPage({ params, searchParams }) {
         currentLang={currentLang}
         tyreBrands={tyreBrands}
         defaultEnquiryType={'Tyre'}
-        isMobile={isMobile}
       />
       <JoinOurCommunityServer translation={translation} currentLang={currentLang} />
       <TractorGyanOfferings translation={translation} />

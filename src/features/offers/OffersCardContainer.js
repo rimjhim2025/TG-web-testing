@@ -22,8 +22,8 @@ const OfferCardContainer = () => {
             >
               <Image
                 src="https://images.tractorgyan.com/uploads/120279/6888589e19598-best-swaraj-xt-series-tractor-models.webp"
-                alt="Best Swaraj XT Series Tractor Models"
-                title="Best Swaraj XT Series Tractor Models"
+                alt={`imageAlt` || `title`}
+                title={`title`}
                 width={452}
                 height={240}
                 className="h-full w-full rounded-[10px] object-fill"
@@ -68,8 +68,8 @@ const OfferCardContainer = () => {
               <Link href={`blogUrl`} title={`title`} aria-label={`title`}>
                 <Image
                   src="https://images.tractorgyan.com/uploads/120279/6888589e19598-best-swaraj-xt-series-tractor-models.webp"
-                  alt="Best Swaraj XT Series Tractor Models"
-                  title="Best Swaraj XT Series Tractor Models"
+                  alt={`imageAlt` || `title`}
+                  title={`title`}
                   width={452}
                   height={240}
                   className="h-full w-full rounded-[10px] object-fill"
@@ -119,8 +119,8 @@ const OfferCardContainer = () => {
             >
               <Image
                 src="https://images.tractorgyan.com/uploads/120279/6888589e19598-best-swaraj-xt-series-tractor-models.webp"
-                alt="Best Swaraj XT Series Tractor Models"
-                title="Best Swaraj XT Series Tractor Models"
+                alt={`imageAlt` || `title`}
+                title={`title`}
                 width={452}
                 height={240}
                 className="h-full w-full rounded-[10px] object-fill"
@@ -165,8 +165,8 @@ const OfferCardContainer = () => {
               <Link href={`blogUrl`} title={`title`} aria-label={`title`}>
                 <Image
                   src="https://images.tractorgyan.com/uploads/120279/6888589e19598-best-swaraj-xt-series-tractor-models.webp"
-                  alt="Best Swaraj XT Series Tractor Models"
-                  title="Best Swaraj XT Series Tractor Models"
+                  alt={`imageAlt` || `title`}
+                  title={`title`}
                   width={452}
                   height={240}
                   className="h-full w-full rounded-[10px] object-fill"
@@ -216,8 +216,8 @@ const OfferCardContainer = () => {
                   <Link href={`blogUrl`} title={`title`} aria-label={`title`}>
                     <Image
                       src="https://images.tractorgyan.com/uploads/120405/689080ff1c5dd-ride-it-off-banner.webp"
-                      alt="Ride It Off Banner"
-                      title="Ride It Off Banner"
+                      alt={`imageAlt` || `title`}
+                      title={`title`}
                       width={452}
                       height={240}
                       className="h-full w-full rounded-[10px] object-fill"

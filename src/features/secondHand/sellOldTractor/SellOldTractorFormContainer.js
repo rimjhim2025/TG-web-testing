@@ -139,8 +139,6 @@ const SellOldTractorFormContainer = ({ currentLang, translation }) => {
       {/* Success Popup */}
       {showSuccessPopup && (
         <SuccessPopup
-          translation={translation}
-
           message={
             translation?.secondHandTractors?.sellOldTractor?.formSuccessMessage ||
             (currentLang === 'hi'

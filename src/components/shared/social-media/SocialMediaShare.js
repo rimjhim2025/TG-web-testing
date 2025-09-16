@@ -31,7 +31,7 @@ const SOCIAL_ICONS = [
     name: 'Email',
     icon: 'https://images.tractorgyan.com/uploads/119751/685cd8730ec2a-email-icon.webp',
     getUrl: (url, title) =>
-      `mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(`${title}:\n${url}`)}`,
+      `mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(`I found this blog interesting:\n${url}`)}`,
   },
 ];
 

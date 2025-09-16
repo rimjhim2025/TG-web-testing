@@ -7,11 +7,6 @@ export async function getTractorSuggestedDealerList(payload) {
         console.log('Tractor suggested dealer list API response:', payload, result);
 
         if (result && result.success) {
-            result.data = result.data.map(dealer => ({
-                ...dealer,
-                images: 'https://images.tractorgyan.com/uploads' + dealer.images,
-            }));
-
             return {
                 data: result.data || [],
                 count: result.data?.length || 0,

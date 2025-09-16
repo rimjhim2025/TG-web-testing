@@ -50,7 +50,7 @@ export default async function TractorVideosDetailPage({ params }) {
 
       <main className="lg:mt-[0px]">
         <VideosDetailsSectionData params={params} />
-        <WhatsAppTopButton translation={translation} currentLang={prefLang} isMobile={isMobile} />
+        <WhatsAppTopButton translation={translation} currentLang={prefLang} />
         <JoinOurCommunityServer translation={translation} currentLang={prefLang} />
         <TractorGyanOfferings translation={translation} currentLang={prefLang} />
       </main>

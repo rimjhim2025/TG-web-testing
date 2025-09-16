@@ -1,4 +1,4 @@
-import { getAboutContent, getTractorDealerContent } from "@/src/services/about/about-service";
+import { getAboutContent } from "@/src/services/about/about-service";
 import { processContent } from "@/src/lib/processContent";
 import ReadMoreButton from "./ReadMoreButton";
 
@@ -7,15 +7,9 @@ export default async function AboutPage({
   translation,
   isStatic = "",
   staticData = "",
-  isTractorDealer = false,
-  tractorDealerPayload = {}
 }) {
   let rawHtml;
   if (isStatic) rawHtml = staticData;
-  else if (isTractorDealer) {
-    rawHtml = await getTractorDealerContent(tractorDealerPayload);
-  }
-
   else rawHtml = await getAboutContent(slug);
   const { title, strippedContent } = processContent(rawHtml);
 

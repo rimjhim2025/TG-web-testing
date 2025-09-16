@@ -21,6 +21,7 @@ import DealershipRegistrationForm from '../tyreComponents/components/dealer/deal
 import TyreDealersByStates from '../tyre/TyreDealersByStates/TyreDealersByStates';
 import TyreFaqsData from '../tyre/tyreFAQs/TyreFaqsData';
 import TractorImplementBrands from '@/src/components/shared/tractor-implement-brands/TractorImplementBrands';
+import { tgi_implement_types } from '@/src/utils/assets/icons';
 
 export default async function TractorImplementDealersPage({ params, searchParams }) {
   const currentLang = await getSelectedLanguage();
@@ -42,53 +43,43 @@ export default async function TractorImplementDealersPage({ params, searchParams
   const suggestedDealers = await getAllSuggestedDealerListing({ dealer_type: 'tyre' });
   const states = await getAllStates();
   const allImplementBrands = [
-    {
-      title: 'Agristar',
+    { title: 'Agristar',
       imgSrc: 'https://images.tractorgyan.com/uploads/115006/66e14394f37e9-john-deere-implement-logo.webp',
       url: '/tractor-implements/agristar'
     },
-    {
-      title: 'Escorts',
+    { title: 'Escorts',
       imgSrc: 'https://images.tractorgyan.com/uploads/115006/66e14394f37e9-john-deere-implement-logo.webp',
       url: '/tractor-implements/agristar'
     },
-    {
-      title: 'John Deere',
+    { title: 'John Deere',
       imgSrc: 'https://images.tractorgyan.com/uploads/115006/66e14394f37e9-john-deere-implement-logo.webp',
       url: '/tractor-implements/agristar'
     },
-    {
-      title: 'Agristar',
+    { title: 'Agristar',
       imgSrc: 'https://images.tractorgyan.com/uploads/115006/66e14394f37e9-john-deere-implement-logo.webp',
       url: '/tractor-implements/agristar'
     },
-    {
-      title: 'Escorts',
+    { title: 'Escorts',
       imgSrc: 'https://images.tractorgyan.com/uploads/115006/66e14394f37e9-john-deere-implement-logo.webp',
       url: '/tractor-implements/agristar'
     },
-    {
-      title: 'John Deere',
+    { title: 'John Deere',
       imgSrc: 'https://images.tractorgyan.com/uploads/115006/66e14394f37e9-john-deere-implement-logo.webp',
       url: '/tractor-implements/agristar'
     },
-    {
-      title: 'Agristar',
+    { title: 'Agristar',
       imgSrc: 'https://images.tractorgyan.com/uploads/115006/66e14394f37e9-john-deere-implement-logo.webp',
       url: '/tractor-implements/agristar'
     },
-    {
-      title: 'Escorts',
+    { title: 'Escorts',
       imgSrc: 'https://images.tractorgyan.com/uploads/115006/66e14394f37e9-john-deere-implement-logo.webp',
       url: '/tractor-implements/agristar'
     },
-    {
-      title: 'John Deere',
+    { title: 'John Deere',
       imgSrc: 'https://images.tractorgyan.com/uploads/115006/66e14394f37e9-john-deere-implement-logo.webp',
       url: '/tractor-implements/agristar'
     },
-    {
-      title: 'John Deere',
+    { title: 'John Deere',
       imgSrc: 'https://images.tractorgyan.com/uploads/115006/66e14394f37e9-john-deere-implement-logo.webp',
       url: '/tractor-implements/agristar'
     },
@@ -116,7 +107,6 @@ export default async function TractorImplementDealersPage({ params, searchParams
         heading='Implements By Brands'
         allImplementBrands={allImplementBrands}
         itemsShown={isMobile ? 9 : 12}
-        translation={translation}
       />
       <TyreDealersByStates
         heading="Implement Dealers By State"
@@ -135,8 +125,7 @@ export default async function TractorImplementDealersPage({ params, searchParams
         translation={translation}
         currentLang={currentLang}
         tyreBrands={tyreBrands}
-        defaultEnquiryType={'Tractor'}
-        isMobile={isMobile}
+        defaultEnquiryType={'Tyre'}
       />
       <JoinOurCommunityServer translation={translation} currentLang={currentLang} />
       <TractorGyanOfferings translation={translation} />

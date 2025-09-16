@@ -10,14 +10,58 @@ import AboutTractorGyanServer from '@/src/components/shared/about/AboutTractorGy
 import Image from 'next/image';
 import TractorSeriesCard from '@/src/components/ui/cards/TractorSeriesCard';
 import { getAllBrandSeries } from '@/src/services/tractor/get-tractor-series';
-// Removed menuItems import, using API-provided logos
+import menuItems from '@/src/data/menuItems.json';
 import { getSEOByPage } from '@/src/services/seo/get-page-seo';
 import SeoHead from '@/src/components/shared/header/SeoHead';
-import WhatsAppTopButton from '../../tyreComponents/commonComponents/WhatsAppTopButton';
 
 export const dynamic = 'force-dynamic';
 
-// Removed static/menu-based logo helper, will use API-provided logos
+// Helper function to get brand logo from menuItems
+function getBrandLogoFromMenu(brandName) {
+  // Find the tractor brands menu item
+  const tractorBrandsMenu = menuItems.find(item => item.label === 'TtactorBrands');
+  if (!tractorBrandsMenu || !tractorBrandsMenu.submenu1) {
+    return null;
+  }
+
+  // Create a mapping of possible brand name variations to menu items
+  const brandMapping = {
+    'massey ferguson': 'masseyFerguson',
+    farmtrac: 'farmtrac',
+    sonalika: 'sonalika',
+    swaraj: 'swaraj',
+    'john deere': 'johnDeere',
+    'john-deere': 'johnDeere',
+    mahindra: 'mahindra',
+    escorts: 'escortsKubota',
+    'escorts kubota': 'escortsKubota',
+    'new holland': 'newHolland',
+    'new-holland': 'newHolland',
+    powertrac: 'powertrac',
+    solis: 'solisYanmar',
+    'solis yanmar': 'solisYanmar',
+    eicher: 'eicher',
+  };
+
+  // Normalize brand name for matching
+  const normalizedBrandName = brandName.toLowerCase().trim();
+
+  // Try to find matching brand in the mapping
+  const menuLabel = brandMapping[normalizedBrandName];
+  if (menuLabel) {
+    const brandMenuItem = tractorBrandsMenu.submenu1.find(item => item.label === menuLabel);
+    return brandMenuItem?.imgUrl || null;
+  }
+
+  // Fallback: try direct matching with menu item labels
+  const directMatch = tractorBrandsMenu.submenu1.find(
+    item =>
+      item.label.toLowerCase().includes(normalizedBrandName) ||
+      normalizedBrandName.includes(item.label.toLowerCase())
+  );
+
+  return directMatch?.imgUrl || null;
+}
 
 export default async function TractorSeriesPage({ params }) {
   const currentLang = await getSelectedLanguage(); // Server-side language detection
@@ -35,14 +79,12 @@ export default async function TractorSeriesPage({ params }) {
   let allBrandSeriesData = null;
   let allBrands = [];
   let allBrandSeries = {};
-  let allBrandLogos = {};
 
   try {
     allBrandSeriesData = await getAllBrandSeries({ lang: currentLang });
     if (allBrandSeriesData && allBrandSeriesData.success) {
       allBrands = allBrandSeriesData.all_brands || [];
       allBrandSeries = allBrandSeriesData.all_brand_series || {};
-      allBrandLogos = allBrandSeriesData.all_brand_logo || {};
     }
   } catch (error) {
     console.error('Error fetching brand series data:', error);
@@ -55,9 +97,7 @@ export default async function TractorSeriesPage({ params }) {
   return (
     <main className="mx-auto pt-4 md:mt-[180px] md:pt-0">
       {/* TODO:: Setup Common Layout Class */}
-      <SeoHead seo={seoData} paginationLinks={{
-        canonical: `${process.env.NEXT_PUBLIC_API_URL || 'https://tractorgyan.com'}${currentLang == 'hi' ? '/hi' : ''}/tractor-series-in-india`,
-      }} />
+      <SeoHead seo={seoData} />
       <NavComponents translation={translation} isMobile={isMobile} prefLang={currentLang} />
       <div className="container">
         <TittleAndCrumbs
@@ -89,15 +129,11 @@ export default async function TractorSeriesPage({ params }) {
               const brandDisplayName =
                 currentLang === 'hi' && brandInfo?.name_hi ? brandInfo.name_hi : brandName;
 
-              // Get brand logo from API all_brand_logo, fallback to pattern-based URL
-              let brandLogo = allBrandLogos[brandName];
-              if (brandLogo && !brandLogo.startsWith('http')) {
-                // If API returns a relative path, prepend the domain
-                brandLogo = `https://images.tractorgyan.com/uploads${brandLogo}`;
-              }
-              if (!brandLogo) {
-                brandLogo = `https://images.tractorgyan.com/uploads/brands/${brandName.toLowerCase().replace(/\s+/g, '-')}-logo.webp`;
-              }
+              // Get brand logo from menuItems first, fallback to pattern-based URL
+              const brandLogoFromMenu = getBrandLogoFromMenu(brandName);
+              const brandLogo =
+                brandLogoFromMenu ||
+                `https://images.tractorgyan.com/uploads/brands/${brandName.toLowerCase().replace(/\s+/g, '-')}-logo.webp`;
 
               return (
                 <div
@@ -124,7 +160,6 @@ export default async function TractorSeriesPage({ params }) {
                         title={currentLang === 'hi' ? series.series : series.series_en}
                         imgSrc={series.image}
                         href={(currentLang === 'hi' ? ' /hi' : '') + series.page_url}
-                        className="border-[2px] border-transparent bg-white shadow-[1px_5px_16px_0px_rgba(88,98,89,0.21)] hover:border-secondary hover:bg-green-lighter transition-colors duration-200"
                       />
                     ))}
                   </div>
@@ -147,11 +182,6 @@ export default async function TractorSeriesPage({ params }) {
       <AboutTractorGyanServer
         slug={(currentLang == 'hi' ? 'hi/' : '') + 'tractor-series-in-india'}
         translation={translation}
-      />
-      <WhatsAppTopButton
-        translation={translation}
-        currentLang={currentLang}
-        isMobile={isMobile}
       />
       <FooterComponents translation={translation} />
     </main>

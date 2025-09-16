@@ -24,6 +24,7 @@ import { getPopularImplements } from '@/src/services/implement/popular-implement
 import { getAllImplementTypes } from '@/src/services/implement/all-implement-types';
 import { getAllImplementCategories } from '@/src/services/implement/all-implement-categories';
 import { getImplementNews } from '@/src/services/implement/implement-news';
+import { getAllImplementBrands } from '@/src/services/implement/all-implement-brands';
 import { getImplementHomeBanner } from '@/src/services/implement/get-implement-home-banner';
 import { getAllImplementBrandsDetail } from '@/src/services/implement/get-all-implement-brands';
 import { getLatestImplements } from '@/src/services/implement/get-latest-implements';
@@ -50,18 +51,12 @@ export default async function TractorImplementsPage({ params }) {
   const staticMetadata = {
     title: `${seoSlug}`,
     description:
-      currentLang === 'hi'
-        ? 'भारत में नवीनतम ट्रैक्टर समाचार, कृषि समाचार, लेख | ट्रैक्टर समाचार, समीक्षा, नया ट्रैक्टर लॉन्च, कृषि समाचार, ट्रैक्टर फार्मिंग और बहुत कुछ के बारे में जानें | ट्रैक्टर ब्लॉग | ट्रैक्टरज्ञान'
-        : 'Latest Tractor News,Agriculture News, Article  in India | Know more about Tractor News, Reviews, New Tractor Launch, Agriculture News, Tractor Farming & Many More | Tractor Blog | Tractorgyan',
+      'Latest Tractor News,Agriculture News, Article  in India | Know more about Tractor News, Reviews, New Tractor Launch, Agriculture News, Tractor Farming & Many More | Tractor Blog | Tractorgyan',
     openGraph: {
       title:
-        currentLang === 'hi'
-          ? 'भारत में नवीनतम ट्रैक्टर समाचार, कृषि समाचार, लेख | ट्रैक्टर ब्लॉग | ट्रैक्टरज्ञान'
-          : 'Latest Tractor News, Agriculture News, Article  in India | Tractor Blog | Tractorgyan',
+        'Latest Tractor News, Agriculture News, Article  in India | Tractor Blog | Tractorgyan',
       description:
-        currentLang === 'hi'
-          ? 'भारत में नवीनतम ट्रैक्टर समाचार, कृषि समाचार, लेख | ट्रैक्टर समाचार, समीक्षा, नया ट्रैक्टर लॉन्च, कृषि समाचार, ट्रैक्टर फार्मिंग और बहुत कुछ के बारे में जानें | ट्रैक्टर ब्लॉग | ट्रैक्टरज्ञान'
-          : 'Latest Tractor News,Agriculture News, Article  in India | Know more about Tractor News, Reviews, New Tractor Launch, Agriculture News, Tractor Farming & Many More | Tractor Blog | Tractorgyan',
+        'Latest Tractor News,Agriculture News, Article  in India | Know more about Tractor News, Reviews, New Tractor Launch, Agriculture News, Tractor Farming & Many More | Tractor Blog | Tractorgyan',
       url: `https://tractorgyan.com/tractor-industry-news-blogs/category/${seoSlug}`,
       type: 'website',
       images: [
@@ -69,7 +64,7 @@ export default async function TractorImplementsPage({ params }) {
           url: 'https://tractorgyan.com/images/tractor-tyres-og.jpg',
           width: 1200,
           height: 630,
-          alt: currentLang === 'hi' ? 'ट्रैक्टर ज्ञान ब्लॉग्स' : 'Tractor Gyan Blogs',
+          alt: 'Tractor Gyan Blogs',
         },
       ],
     },
@@ -112,6 +107,14 @@ export default async function TractorImplementsPage({ params }) {
     implementCategories = [];
   }
 
+  let allImplementBrands;
+  try {
+    allImplementBrands = await getAllImplementBrands();
+  } catch (error) {
+    console.error('Failed to fetch implement brands data:', error);
+    allImplementBrands = [];
+  }
+
   let allImplementBrandsWithDetails;
   try {
     allImplementBrandsWithDetails = await getAllImplementBrandsDetail();
@@ -146,40 +149,35 @@ export default async function TractorImplementsPage({ params }) {
       <ImplementHomePageBanner banner={banner} isMobile={isMobile} currentLang={currentLang} />
 
       <TractorImplementTypes
-        heading={translation.headerNavbar.implementsByTypes}
+        heading="Implements By Types"
         allImplementTypes={allImplementTypes}
         floatingBg={true}
         slider={true}
         isMobile={isMobile}
-        currentLang={currentLang}
       />
 
       <TractorImplementBrands
         bgColor={'bg-section-gray'}
-        heading={translation.headerNavbar.implementsByBrands}
+        heading="Implements By Brands"
         allImplementBrands={allImplementBrandsWithDetails}
-        itemsShown={isMobile ? 12 : 10}
-        translation={translation}
-        prefLang={currentLang}
+        itemsShown={isMobile ? 9 : 10}
       />
 
       <ImplementsCategorySlider
         isMobile={isMobile}
-        heading={translation.headerNavbar.implementByCategory}
+        heading="Implement By Category"
         categories={implementCategories}
-        currentLang={currentLang}
       />
 
       <PopularSection
         type={'implement'}
-        heading={translation.headerNavbar.popularImplements}
+        heading="Popular Implements"
         langPrefix={currentLang}
         popularData={popularData}
         isMobile={isMobile}
         translation={translation}
         redirectRoute="/tractors"
-        cta={translation.headerNavbar.viewAllPopularImplements}
-        showViewAll={false}
+        cta="View All Popular Implements"
       />
 
       <LatestTractorSection
@@ -189,10 +187,9 @@ export default async function TractorImplementsPage({ params }) {
         translation={translation}
         bgColor={'bg-section-gray'}
         redirectRoute="/tractors"
-        heading={translation.headerNavbar.latestImplements}
-        cta={translation.headerNavbar.viewAllLatestImplements}
+        heading="Latest Implements"
+        cta={'View All Latest Implements'}
         type='implement'
-        showViewAll={false}
       />
 
       {/* TODO:: Upload and Replace Banner Image */}
@@ -204,14 +201,14 @@ export default async function TractorImplementsPage({ params }) {
           mobileImgUrl={
             'https://images.tractorgyan.com/uploads/120752/1756192422tractor-finance.webp'
           }
-          title={translation.headerNavbar.tractorLoanBanner}
+          title={'Tractor Loan Banner'}
           additionalClasses={'my-6 md:my-10'}
         />
       </section>
 
       <div className="mt-4">
         <LoanCalculator
-          title={translation.emiCalcytranslate.CalculateEMI}
+          title={'Calculate EMI'}
           allSectionUse={true}
           bgColor={'bg-section-gray'}
           translation={translation}
@@ -239,7 +236,7 @@ export default async function TractorImplementsPage({ params }) {
         translation={translation}
         langPrefix={currentLang}
         news={news}
-        title={translation.headerNavbar.news}
+        title={'News'}
         bgColor={'bg-section-gray'}
         showFilter={false}
       />
@@ -248,15 +245,14 @@ export default async function TractorImplementsPage({ params }) {
 
       <TractorGyanOfferings translation={translation} />
 
-      <AboutTractorGyanServer slug={(currentLang == 'hi' ? 'hi/' : '') + 'tractor-implements-in-india'} translation={translation} />
+      <AboutTractorGyanServer slug={'tractor-implements-in-india'} translation={translation} />
 
       <FooterComponents translation={translation} />
 
       <WhatsAppTopButton
         translation={translation}
         currentLang={currentLang}
-        defaultEnquiryType={translation.headerNavbar.implement}
-        isMobile={isMobile}
+        defaultEnquiryType={'Implements'}
       />
     </main>
   );

@@ -3,16 +3,7 @@ import React from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
-const FilterTagsClient = ({ activeFilters, basePath, currentLang, tractorHPs }) => {
-  // Function to get HP range display label from value
-  const getHPRangeLabel = (hpValue) => {
-    if (!tractorHPs || !Array.isArray(tractorHPs)) {
-      return hpValue; // Fallback to original value
-    }
-
-    const hpOption = tractorHPs.find(hp => hp.page_url === hpValue);
-    return hpOption ? hpOption.title : hpValue;
-  };
+const FilterTagsClient = ({ activeFilters, basePath, currentLang }) => {
   const router = useRouter();
 
   const removeFilter = filterType => {
@@ -54,7 +45,7 @@ const FilterTagsClient = ({ activeFilters, basePath, currentLang, tractorHPs }) 
   if (activeFilters?.hpRange) {
     visibleFilters.push({
       type: 'hpRange',
-      label: getHPRangeLabel(activeFilters.hpRange), // For UI Purpose Only - shows proper label
+      label: activeFilters.hpRange, // For UI Purpose Only
     });
   }
 
@@ -69,7 +60,7 @@ const FilterTagsClient = ({ activeFilters, basePath, currentLang, tractorHPs }) 
         >
           <span className="text-xs">{filter.label}</span>
           <button
-            className="h-4 w-4 transition-all duration-150 hover:scale-110 hover:opacity-70 active:scale-95 active:opacity-50"
+            className="h-4 w-4"
             onClick={() => removeFilter(filter.type)}
             aria-label={`Remove ${filter.type} filter`}
           >

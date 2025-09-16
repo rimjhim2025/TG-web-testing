@@ -1,8 +1,8 @@
 import { fetchData, postData } from "../apiMethods";
 
-export async function getAllTractorModels(brand_name) {
+export async function getAllTractorModels(brand) {
   try {
-    const result = await postData("/api/all_tractor_models", { brand_name });
+    const result = await postData("/api/all_tractor_models", { brand });
     console.log("Fetched all tractor models...", result);
 
     return result.data;

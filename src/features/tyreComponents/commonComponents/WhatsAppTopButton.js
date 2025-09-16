@@ -13,7 +13,6 @@ import { getAllTractorBrands } from '@/src/services/tractor/all-tractor-brands';
 import { getTractorModelsByBrand } from '@/src/services/tractor/get-tractor-models-by-brand';
 import { usePathname } from 'next/navigation';
 import { tgi_arrow_right } from '@/src/utils/assets/icons';
-import { getAllImplementBrandsDetail } from '@/src/services/implement/get-all-implement-brands';
 
 const WhatsAppTopButton = ({
   translation,
@@ -77,20 +76,6 @@ const WhatsAppTopButton = ({
       productNameSingular: 'Dealer', // Or perhaps not applicable for product context
       productNamePlural: 'Dealers',
       getSubmitButtonText: () => translation?.buttons?.submit || 'Submit',
-    },
-    // TODO::WIP
-    Implement: {
-      formTitle: translation?.enquiryForm?.implementEnquiryForm || 'Implement Enquiry Form',
-      brandLabel: translation?.enquiryForm?.implementBrand || 'Implement Brand',
-      modelLabel: translation?.enquiryForm?.implementModel || 'Implement Model',
-      fetchBrandsFn: getAllImplementBrandsDetail,
-      fetchModelsFn: getTyreModal,
-      typeId: isMobile ? 104 : 103,
-      payloadType: 'Implement',
-      showBrandModelFields: true,
-      productNameSingular: 'Implement',
-      productNamePlural: 'Implements',
-      getSubmitButtonText: () => `₹ ${translation?.enquiryForm.getImplementPrice || 'Get Price'}`,
     },
   };
 
@@ -208,7 +193,7 @@ const WhatsAppTopButton = ({
   }, [form.brand, defaultEnquiryType, isMobile, showEnquiry]); // Added isMobile because typeId for Tyre depends on it for config
 
   // Set model and product_id when models are loaded and we have a prefilled model
-  useEffect(() => { }, [models, preFilledTractorModelId, openEnquiryForm, defaultEnquiryType]);
+  useEffect(() => {}, [models, preFilledTractorModelId, openEnquiryForm, defaultEnquiryType]);
 
   // Reset form fields when enquiryType changes (brand/model/product_id handled by above useEffects)
   // This one can be simplified or merged if only name, mobile etc need to be preserved.
@@ -228,28 +213,22 @@ const WhatsAppTopButton = ({
 
   const fetchTractorModels = async brandName => {
     const models = await enquiryConfigs[defaultEnquiryType].fetchModelsFn(brandName);
-    console.log('fetchTractorModels - models:', models);
-    console.log('fetchTractorModels - preFilledTractorModelId:', preFilledTractorModelId);
     setModels(models);
-    if (models.length > 0 && preFilledTractorModelId) {
+    if (models.length > 0 && preFilledTractorModelId && openEnquiryForm) {
       const matchingModel = models.find(modelItem => {
         if (defaultEnquiryType === 'Tractor') {
-          const match = String(modelItem.id) === String(preFilledTractorModelId);
-          console.log(`Checking tractor model ${modelItem.model} (product_id: ${modelItem.id}) against ${preFilledTractorModelId}:`, match);
-          return match;
+          return modelItem.id === preFilledTractorModelId;
         } else {
-          return String(modelItem.id) === String(preFilledTractorModelId);
+          return modelItem.id === preFilledTractorModelId;
         }
       });
-
-      console.log('fetchTractorModels - matchingModel:', matchingModel);
 
       if (matchingModel) {
         if (defaultEnquiryType === 'Tractor') {
           setForm(f => ({
             ...f,
             model: matchingModel.model,
-            product_id: matchingModel.product_id,
+            product_id: matchingModel.id,
           }));
         } else {
           setForm(f => ({
@@ -261,11 +240,8 @@ const WhatsAppTopButton = ({
       }
     }
   };
-  // Set prefilled brand and model when enquiry form is shown
   useEffect(() => {
-    console.log('Prefill effect triggered:', { showEnquiry, preFilledTractorBrand, defaultEnquiryType });
-    if (showEnquiry && preFilledTractorBrand && defaultEnquiryType === 'Tractor') {
-      console.log('Setting prefilled brand:', preFilledTractorBrand);
+    if (openEnquiryForm && preFilledTractorBrand) {
       setForm(f => ({
         ...f,
         brand: preFilledTractorBrand,
@@ -274,7 +250,7 @@ const WhatsAppTopButton = ({
       }));
       fetchTractorModels(preFilledTractorBrand);
     }
-  }, [showEnquiry, preFilledTractorBrand, defaultEnquiryType]);
+  }, [openEnquiryForm, preFilledTractorBrand]);
 
   // Fetch districts when state changes
   useEffect(() => {

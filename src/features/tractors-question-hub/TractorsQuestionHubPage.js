@@ -84,7 +84,6 @@ const TractorsQuestionHubPage = async () => {
           currentLang={prefLang}
           tyreBrands={[]}
           defaultEnquiryType={'Tractor'}
-          isMobile={isMobile}
         />
         <TractorGyanOfferings translation={translation} />
       </main>

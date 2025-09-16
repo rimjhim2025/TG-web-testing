@@ -11,13 +11,11 @@ const TyrePageHeader = ({
   tyresListingClientProps,
   isMobile,
   heading,
-  searchPlaceholder,
-  searchParam
+  searchPlaceholder
 }) => {
   const headingTitle = heading
     ? heading.replace('{brand}', brandName)
     : (translation?.headings?.topTractorTyresinIndia).replace('{brand}', brandName);
-
   return (
     <>
       <div className="mb-4 flex flex-col items-start justify-between md:mb-6 md:flex-row md:items-center">
@@ -27,7 +25,7 @@ const TyrePageHeader = ({
             <SearchBarClient
               initialSearchQuery={activeFilters?.search || activeFilters?.searchQuery || ''}
               translation={translation}
-              basePath={searchParam ? searchParam : tyresListingClientProps.basePath}
+              basePath={tyresListingClientProps.basePath}
               searchPlaceholder={searchPlaceholder}
             />
           </div>
@@ -41,7 +39,6 @@ const TyrePageHeader = ({
             activeFilters={activeFilters}
             basePath={tyresListingClientProps.basePath}
             currentLang={tyresListingClientProps.currentLang}
-            tractorHPs={tyresListingClientProps.tractorHPs}
           />
         )}
       </div>

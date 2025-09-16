@@ -4,7 +4,6 @@ import { getHpWiseTractorListing } from '../services/tractor/hp-wise-tractor-lis
 import { getBrandSeriesListing } from '../services/tractor/brand-series-listing';
 import { getAllTractorsListing } from '../services/tractor/get-all-tractors-listing';
 import { getTractorHPs } from '../services/tractor/get-tractor-hps';
-import { getAllImplementTypeListing } from '../services/implement/get-all-implement-type-listing';
 
 const { headers } = require('next/headers');
 
@@ -72,7 +71,6 @@ export const prepareTractorListingComponent = async ({
   isSeriesListing = false, // New parameter to determine if this is series listing
   seriesName = null, // Series name for series listing
   hpRange = null, // HP range parameter for HP-wise listing
-  page_url = null
 }) => {
   const currentPage = parseInt(searchParamsObj?.page) || 1;
 
@@ -126,24 +124,11 @@ export const prepareTractorListingComponent = async ({
       activeFilters.sortBy === translation?.headings?.popularity ? 'yes' : null,
       activeFilters.sortBy === translation?.headings?.latestLaunches ? 'yes' : null,
       activeFilters.hpRange,
-      prefLang,
-      page_url
+      prefLang
     );
   }
 
-  // Extract tractors and reel from API response
-  let tractorsArr = [];
-  let reel = null;
-  if (Array.isArray(tractorListingResult?.items)) {
-    tractorsArr = tractorListingResult.items.filter(item => !item.url_of_video);
-    reel = tractorListingResult.items.find(item => item.url_of_video);
-    console.log("reel : ", reel);
-
-  } else {
-    // fallback to items property if present
-    tractorsArr = tractorListingResult.items || [];
-  }
-  const totalTractorsCount = tractorListingResult?.count || tractorListingResult?.totalCount || tractorsArr.length;
+  const { items: initialTractors, totalCount: totalTractorsCount } = tractorListingResult;
 
   const tractorListingClientProps = {
     initialActiveFilters: activeFilters,
@@ -182,7 +167,7 @@ export const prepareTractorListingComponent = async ({
     .replace(/,/g, '');
 
   const tractorListingProps = {
-    initialTyres: tractorsArr, // Keep naming for backward compatibility with TractorListing component
+    initialTyres: initialTractors, // Keep naming for backward compatibility with TractorListing component
     totalTyresCount: totalTractorsCount,
     currentPage,
     itemsPerPage: ITEMS_PER_PAGE,
@@ -199,7 +184,6 @@ export const prepareTractorListingComponent = async ({
     hasNextPage: currentPage < Math.ceil(totalTractorsCount / ITEMS_PER_PAGE),
     totalPages: Math.ceil(totalTractorsCount / ITEMS_PER_PAGE),
     totalItems: totalTractorsCount,
-    reel, // Pass the reel object if present
   };
 
   return { tractorListingClientProps, tractorListingProps };
@@ -326,7 +310,6 @@ export const prepareTyreListingComponent = async ({
   tyreBrands,
   brandPageUrl,
   basePathFromUrl,
-  basePath,
 }) => {
   const currentPage = parseInt(searchParamsObj?.page) || 1;
 
@@ -338,72 +321,19 @@ export const prepareTyreListingComponent = async ({
     lang: prefLang,
   };
 
-  let initialTyres = [];
-  let totalTyresCount = 0;
-
-  // Handle different pageTypes with unified data fetching
-  if (pageType === 'implements') {
-    // Use implement listing API with proper server-side pagination
-    const startLimit = (currentPage - 1) * ITEMS_PER_PAGE;
-    const endLimit = startLimit + ITEMS_PER_PAGE;
-
-    let latestImplement = 'no';
-    let popularImplement = 'no';
-
-    // More robust sorting detection
-    const sortByLower = activeFilters.sortBy?.toLowerCase() || '';
-    if (sortByLower.includes('popularity') || sortByLower.includes('popular')) {
-      popularImplement = 'yes';
-    }
-    if (sortByLower.includes('latest') || sortByLower.includes('launch')) {
-      latestImplement = 'yes';
-    }
-
-    console.log(`Implements API call - Page ${currentPage}: start_limit=${startLimit}, end_limit=${endLimit}`);
-
-    // Get the page data with proper pagination
-    const implementListingData = await getAllImplementTypeListing({
-      implement_type: basePath || param?.slug,
-      search_keyword: activeFilters.search || '',
-      start_limit: startLimit,
-      end_limit: endLimit,
-      latest_implement: latestImplement,
-      popular_implement: popularImplement,
-      brand_name: activeFilters.brand,
-      lang: prefLang,
-    });
-
-    initialTyres = implementListingData.items || [];
-
-    // Use totalCount from API response if available
-    totalTyresCount = implementListingData.totalCount || 0;
-
-    console.log(`Implements API response - Items: ${initialTyres.length}, Total Count: ${totalTyresCount}`);
-  } else {
-    // Use tyre listing API with proper server-side pagination
-    const startLimit = (currentPage - 1) * ITEMS_PER_PAGE;
-    const endLimit = startLimit + ITEMS_PER_PAGE;
-
-    console.log(`Tyres API call - Page ${currentPage}: start_limit=${startLimit}, end_limit=${endLimit}`);
-
-    const { items, totalCount } = await getAllTyreListing(
-      ITEMS_PER_PAGE,
-      currentPage,
-      param?.pageType || pageType,
-      param?.pageName || pageSlug,
-      activeFilters.brand || param?.brand || searchParamsObj?.brand,
-      activeFilters.size,
-      activeFilters.sortBy === translation?.headings?.popularity ? 'yes' : null,
-      activeFilters.sortBy === translation?.headings?.latestLaunches ? 'yes' : null,
-      activeFilters.search,
-      prefLang
-    );
-
-    initialTyres = items || [];
-    totalTyresCount = totalCount || 0;
-
-    console.log(`Tyres API response - Items: ${initialTyres.length}, Total Count: ${totalTyresCount}`);
-  }
+  // Use tyre listing API
+  const { items: initialTyres, totalCount: totalTyresCount } = await getAllTyreListing(
+    ITEMS_PER_PAGE,
+    currentPage,
+    param?.pageType || pageType,
+    param?.pageName || pageSlug,
+    activeFilters.brand || param?.brand || searchParamsObj?.brand,
+    activeFilters.size,
+    activeFilters.sortBy === translation?.headings?.popularity ? 'yes' : null,
+    activeFilters.sortBy === translation?.headings?.latestLaunches ? 'yes' : null,
+    activeFilters.search,
+    prefLang
+  );
 
   const tyresListingClientProps = {
     initialActiveFilters: activeFilters,
@@ -423,8 +353,8 @@ export const prepareTyreListingComponent = async ({
     filterBySize,
     isMobileViewProp: isMobile,
     brandName: activeFilters.brand,
-    basePath: basePathFromUrl || basePath,
-    pageOrigin: pageType === 'implements' ? 'implement' : 'tyre',
+    basePath: basePathFromUrl,
+    pageOrigin: 'tyre',
   };
 
   const currentDate = new Date()
@@ -447,9 +377,111 @@ export const prepareTyreListingComponent = async ({
     currentDate,
     brandName: activeFilters.brand,
     tyreSize: activeFilters.size,
-    basePath: basePathFromUrl || basePath,
+    basePath: basePathFromUrl,
     pageType,
-    pageOrigin: pageType === 'implements' ? 'implement' : 'tyre',
+    pageOrigin: 'tyre',
+    // Add pagination info
+    hasNextPage: currentPage < Math.ceil(totalTyresCount / ITEMS_PER_PAGE),
+    totalPages: Math.ceil(totalTyresCount / ITEMS_PER_PAGE),
+    totalItems: totalTyresCount,
+  };
+
+  return { tyresListingClientProps, tyresListingProps };
+};
+export const prepareDroneListingComponent = async ({
+  param,
+  searchParamsObj,
+  pageType,
+  pageSlug,
+  prefLang,
+  translation,
+  allImplementTypes,
+  showBrandFilter,
+  showSizeFilter,
+  showTyreBrandsSection,
+  showDroneBrandsSection,
+  showImplementBrandsSection,
+  showImplementTypesSection,
+  showLocationFilter,
+  subcategories,
+  showTractorHPFilter,
+  filterBySize,
+  isMobile,
+  ITEMS_PER_PAGE = 14,
+  tyreBrands,
+  brandPageUrl,
+  basePathFromUrl,
+}) => {
+  const currentPage = parseInt(searchParamsObj?.page) || 1;
+
+  const activeFilters = {
+    brand: showBrandFilter ? param?.brand || searchParamsObj?.brand || null : null,
+    size: showSizeFilter ? searchParamsObj?.size || null : null,
+    sortBy: searchParamsObj?.sortBy || null,
+    search: searchParamsObj?.search || null,
+    lang: prefLang,
+  };
+
+  // Use tyre listing API
+  const { items: initialTyres, totalCount: totalTyresCount } = await getAllTyreListing(
+    ITEMS_PER_PAGE,
+    currentPage,
+    param?.pageType || pageType,
+    param?.pageName || pageSlug,
+    activeFilters.brand || param?.brand || searchParamsObj?.brand,
+    activeFilters.size,
+    activeFilters.sortBy === translation?.headings?.popularity ? 'yes' : null,
+    activeFilters.sortBy === translation?.headings?.latestLaunches ? 'yes' : null,
+    activeFilters.search,
+    prefLang
+  );
+
+  const tyresListingClientProps = {
+    initialActiveFilters: activeFilters,
+    tyreBrands: tyreBrands,
+    allSize: tg_getAlltyreSizes(translation),
+    allImplementTypes: allImplementTypes,
+    currentLang: prefLang,
+    translation,
+    showBrandFilter,
+    showSizeFilter,
+    showTyreBrandsSection,
+    showDroneBrandsSection,
+    showImplementBrandsSection,
+    showImplementTypesSection,
+    showLocationFilter,
+    subcategories,
+    showTractorHPFilter,
+    filterBySize,
+    isMobileViewProp: isMobile,
+    brandName: activeFilters.brand,
+    basePath: basePathFromUrl,
+    pageOrigin: 'tyre',
+  };
+
+  const currentDate = new Date()
+    .toLocaleDateString(prefLang === 'hi' ? 'hi-IN' : 'en-GB', {
+      month: 'short',
+      year: 'numeric',
+      day: 'numeric',
+    })
+    .replace(/,/g, '');
+
+  const tyresListingProps = {
+    initialTyres: initialTyres,
+    totalTyresCount: totalTyresCount,
+    currentPage,
+    itemsPerPage: ITEMS_PER_PAGE,
+    activeFilters,
+    tyreBrands: tyreBrands,
+    translation,
+    currentLang: prefLang,
+    currentDate,
+    brandName: activeFilters.brand,
+    tyreSize: activeFilters.size,
+    basePath: basePathFromUrl,
+    pageType,
+    pageOrigin: 'tyre',
     // Add pagination info
     hasNextPage: currentPage < Math.ceil(totalTyresCount / ITEMS_PER_PAGE),
     totalPages: Math.ceil(totalTyresCount / ITEMS_PER_PAGE),

@@ -84,7 +84,7 @@ export default async function TractorVideosPage({ searchParams, porpsCurrentLang
           prefLang={prefLang}
           storyError={storyError}
         />
-        <WhatsAppTopButton translation={translation} currentLang={prefLang} isMobile={isMobile} />
+        <WhatsAppTopButton translation={translation} currentLang={prefLang} />
         <JoinOurCommunityServer translation={translation} currentLang={prefLang} />
         <TractorGyanOfferings translation={translation} currentLang={prefLang} />
         <AboutTractorGyanServer slug={'tractor-videos'} translation={translation} />

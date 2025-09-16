@@ -215,7 +215,7 @@ const BlogsCategoriesPage = async ({ placeholder, params, searchParams, prefLang
             translation={translation}
             prefLang={prefLang}
           /> */}
-          <WhatsAppTopButton isMobile={isMobile} translation={translation} currentLang={prefLang} />
+          <WhatsAppTopButton translation={translation} currentLang={prefLang} />
           <JoinOurCommunityServer translation={translation} currentLang={prefLang} />
           <TractorGyanOfferings translation={translation} />
           <AboutTractorGyanServer

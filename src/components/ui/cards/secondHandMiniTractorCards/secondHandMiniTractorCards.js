@@ -58,21 +58,33 @@ const SecondHandMiniTractorCards = ({
       return () => window.removeEventListener('resize', handleResize);
     }
   }, []);
-
   const settings = {
     dots: totalDots > 0 ? true : false,
+    // dots: false,
     centerMode: true,
     className: "center",
     speed: 500,
     slidesToShow: 1,
+    // slidesToShow: 1.2,
     slidesToScroll: 1,
     arrows: totalDots > 0 ? true : false,
+    // centerPadding: '0px',
     centerPadding: "32px",
     infinite: false,
+    // afterChange: index => setCurrentSlide(index),
     afterChange: index => {
       console.log('index=>', index);
       console.log('index=>', Math.ceil(index));
+      // setCurrentSlide(middleIndex);
+      // setCurrentSlide(Math.ceil(index));
+      // setCurrentSlide(index);
     },
+    // appendDots: (dots) => (
+    //   <ul className="custom-dots mb-4">{dots}</ul>
+    // ),
+    // customPaging: (i) => (
+    //   <button className={i === currentSlide ? 'dot active' : 'dot'} />
+    // ),
   };
 
   // Use dynamic data or fallback to empty array
@@ -90,11 +102,13 @@ const SecondHandMiniTractorCards = ({
       ? `₹ ${parseInt(tractor.price).toLocaleString('en-IN')}`
       : translation?.secondHandTractors?.priceOnRequest || 'Price on request';
 
-    const tractorUrl = (currentLang == 'hi' ? '/hi/' : '') + tractor.page_url;
-
     return (
-      <Link href={tractorUrl} className="block h-full">
-        <div className="boxShadow-main hover:shadow-xl hover:bg-green-lighter relative flex h-full cursor-pointer flex-col overflow-hidden rounded-2xl bg-white shadow-bottom transition-shadow transition-transform hover:scale-[1.02]">
+      <Link
+        href={(currentLang == 'hi' ? '/hi' : '') + tractor.page_url || '#'}
+        className="block h-full transition-transform hover:scale-[1.02]"
+        title={`${tractorName} - ${translation?.secondHandTractors?.viewDetails || 'View Details'}`}
+      >
+        <div className="boxShadow-main hover:shadow-xl hover:bg-green-lighter relative flex h-full cursor-pointer flex-col overflow-hidden rounded-2xl bg-white shadow-bottom transition-shadow">
           <div className="absolute left-0 top-5 w-[200px]">
             <div className="shadow-md absolute -left-12 -top-1 z-10 h-[43px] w-[180px] rotate-[-45deg] bg-gradient-to-r from-[#015401] via-[#46AA48] to-[#015401] py-3 text-center text-sm font-bold text-white">
               {translation?.secondHandTractors?.forSell || 'For Sell'}
@@ -120,11 +134,12 @@ const SecondHandMiniTractorCards = ({
                 <span className="text-gray-dark">{location}</span>
               </div>
             </div>
-            <span className="font-roboto mb-1 line-clamp-2 min-h-[50px] px-3 pt-2 text-[18px] font-bold text-black">
+            <h3 className="font-roboto mb-1 line-clamp-2 min-h-[50px] px-3 pt-2 text-[18px] font-bold text-black">
               {tractorName}
-            </span>
+            </h3>
 
             <div className="mx-auto flex w-full justify-between pb-2 text-center text-[#182C3D] md:py-2">
+
               <div className="flex w-[50%] flex-col items-center gap-[2px] px-4">
                 <div className="text-xs text-[#595959]">
                   {translation?.secondHandTractors?.year || 'Year'}
@@ -140,34 +155,26 @@ const SecondHandMiniTractorCards = ({
                 <div className="text-md font-semibold">{formattedPrice}</div>
               </div>
             </div>
-
             <div className="mt-2 flex w-full justify-end px-3">
               {buttonType === 'FILL' ? (
-                <div
-                  onClick={(e) => e.preventDefault()}
-                  className="w-full"
+                <TG_LinkButton
+                  href={(currentLang == 'hi' ? '/hi' : '') + tractor.page_url}
+                  icon={tgi_arrow_right_white}
+                  iconPosition="right"
+                  className="mt-2 w-full"
                 >
-                  <TG_LinkButton
-                    href={tractorUrl}
-                    icon={tgi_arrow_right_white}
-                    iconPosition="right"
-                    className="mt-2 w-full"
-                  >
-                    {translation?.secondHandTractors?.viewTractorDetails || 'View Tractor Details'}
-                  </TG_LinkButton>
-                </div>
+                  {translation?.secondHandTractors?.viewTractorDetails || 'View Tractor Details'}
+                </TG_LinkButton>
               ) : (
-                <div onClick={(e) => e.preventDefault()}>
-                  <TG_LinkButton
-                    iconSrc="https://images.tractorgyan.com/uploads/117424/678657747b293-Arrow-Vector.webp"
-                    iconPosition="right"
-                    className="!mt-0 w-auto !py-1"
-                    iconClass="w-3"
-                    href={tractorUrl}
-                  >
-                    {translation?.secondHandTractors?.viewDetails || 'View Details'}
-                  </TG_LinkButton>
-                </div>
+                <TG_LinkButton
+                  iconSrc="https://images.tractorgyan.com/uploads/117424/678657747b293-Arrow-Vector.webp"
+                  iconPosition="right"
+                  className="!mt-0 w-auto !py-1"
+                  iconClass="w-3"
+                  href={(currentLang == 'hi' ? '/hi' : '') + tractor.page_url}
+                >
+                  {translation?.secondHandTractors?.viewDetails || 'View Details'}
+                </TG_LinkButton>
               )}
             </div>
 
@@ -193,9 +200,23 @@ const SecondHandMiniTractorCards = ({
           </div>
         ))}
       </Slider>
+      {/* {totalDots > 0 && (
+        <div className="dots-wrapper my-4 flex justify-center">
+          {Array.from({ length: totalDots }).map((_, i) => (
+            <>
+              {currentSlide} - {i}
+              <button
+                key={i}
+                className={`mx-1 h-3 w-3 rounded-full ${Math.ceil(currentSlide) === i ? 'bg-primary' : 'border border-gray-light bg-white'
+                  }`}
+                onClick={() => sliderRef.current.slickGoTo(i)}
+              />
+            </>
+          ))}
+        </div>
+      )} */}
     </>
   );
-
   return (
     <>
       <section className={bgColor}>

@@ -2,6 +2,7 @@ import React from 'react';
 import { getSelectedLanguage } from '@/src/services/locale/index.js';
 import { isMobileView } from '@/src/utils';
 import { getDictionary } from '@/src/lib/dictonaries';
+import { getTyreBrands } from '@/src/services/tyre/tyre-brands';
 import FooterServer from '@/src/components/shared/footer/FooterServer';
 import AboutTractorGyanServer from '@/src/components/shared/about/AboutTractorGyanServer';
 import TractorGyanOfferings from '@/src/components/shared/offerings/TractorGyanOfferings';
@@ -13,24 +14,22 @@ import MobileFooter from '@/src/components/shared/footer/MobileFooter';
 import DesktopHeader from '@/src/components/shared/header/DesktopHeader';
 import TittleAndCrumbs from '@/src/components/shared/TittleAndCrumbs/TittleAndCrumbs';
 import TG_Banner from '@/src/components/shared/bannners/Banner';
-
+import TyreRatingForm from '../tyreComponents/components/tyreRatingAndReviews/TyreRatingForm';
+import Link from 'next/link';
+import Image from 'next/image';
 import DealershipEnquiryForm from '@/src/components/shared/dealership-enquiry/DealershipEnquiryForm';
 import { getAllTractorBrands } from '@/src/services/tractor/all-tractor-brands';
-import apiUrl from '@/src/services/apiUrl';
 
 const TractorDealershipEnquiryPage = async () => {
   const currentLang = await getSelectedLanguage();
   const translation = await getDictionary(currentLang);
   const isMobile = await isMobileView();
-  const seoData = await getSEOByPage((currentLang == 'hi' ? 'hi/' : '') + 'tractor-dealership-enquiry');
+  const seoData = await getSEOByPage('tyre-price');
   const tractorBrands = await getAllTractorBrands();
 
   return (
     <>
-      <SeoHead seo={seoData} staticMetadata={{}} preloadUrls={[]}
-        paginationLinks={{
-          canonical: `${apiUrl}/${currentLang === 'hi' ? 'hi/' : ''}tractor-dealership-enquiry`,
-        }} />
+      <SeoHead seo={seoData} staticMetadata={{}} preloadUrls={[]} />
       <DesktopHeader isMobile={isMobile} translation={translation} currentLang={currentLang} />{' '}
       <div className="pt-4 md:mt-[164px]">
         <div className="container">
@@ -80,7 +79,7 @@ const TractorDealershipEnquiryPage = async () => {
         <WhatsAppTopButton
           translation={translation}
           currentLang={currentLang}
-          isMobile={isMobile}
+          defaultEnquiryType={'Dealership'}
         />
       </div>
       <FooterServer translation={translation} />

@@ -20,12 +20,12 @@ export const getAllTractorDealerListing = async ({
       end_limit,
     };
 
+    console.log('Tracto dealer listing response:', payload);
     const response = await postData('/api/tractor_dealer_listing', payload);
-    console.log('Tracto dealer listing response:', payload, response);
 
     response.data = response.data.map(dealer => ({
       ...dealer,
-      images: 'https://tractorgyan.com' + dealer.images,
+      images: 'https://images.tractorgyan.com/uploads' + dealer.images,
     }));
 
     return {

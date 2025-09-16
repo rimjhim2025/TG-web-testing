@@ -31,14 +31,9 @@ export default async function TractorSubsidyData({ searchParams, porpsCurrentLan
     const payload = {
       pageSlug: 'tractor-dealers',
     };
-    const response = await getAllTractorSubsidyStates({ lang: prefLang });
+    const response = await getAllTractorSubsidyStates(payload);
     if (response) {
       dealerStates = response;
-      dealerStates = dealerStates.map((state) => ({
-        ...state,
-        state_name: state.name,
-        images: state.image,
-      }));
     } else {
       storyError = true;
     }
@@ -113,8 +108,6 @@ export default async function TractorSubsidyData({ searchParams, porpsCurrentLan
             dealerStates={dealerStates}
             categoriesError={categoryError}
             porpsCurrentLang={porpsCurrentLang}
-            showHeading={false}
-            toggleMode={false}
           />
           {/* <DealersByStates
             title={translation.headings.searchTractordealersByStates}

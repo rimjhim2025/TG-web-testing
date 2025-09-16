@@ -15,9 +15,9 @@ const TractorSeriesCard = ({ title, imgSrc, className, href }) => {
           className="h-full w-auto max-w-[120px] object-contain"
         />
       </div>
-      <span className="mt-2 line-clamp-2 flex h-8 items-center justify-center text-center text-xs font-semibold md:h-10 md:text-base">
+      <h2 className="mt-2 line-clamp-2 flex h-8 items-center justify-center text-center text-xs font-semibold md:h-10 md:text-base">
         {title}
-      </span>
+      </h2>
     </>
   );
 

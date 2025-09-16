@@ -60,14 +60,11 @@ export const getCompareTractorModels = async (brandName, selectedModelIds = '') 
  * @param {string} url - The comparison URL slug (e.g., "force-orchard-deluxe-vs-farmtrac-60-epi-t20")
  * @returns {Promise<Object>} Comparison data object
  */
-export const getCompareTractorRecord = async (url, lang) => {
+export const getCompareTractorRecord = async url => {
   try {
-
     const response = await postData('api/compare_tractor_record', {
       url: url,
-      lang
     });
-    console.log("Fetching comparison record for URL:", url, response);
 
     if (response.success && response.data) {
       return response.data;

@@ -90,12 +90,13 @@ const TractorReviewPage = async () => {
             <div >
               <div className="flex w-full flex-col gap-8 md:items-center md:justify-between lg:flex-row">
                 <div className="w-full rounded-2xl border-gray-light md:border-[1px] md:p-6 lg:max-w-[calc(100%_-_270px)] xl:max-w-[982px]">
-                  {/* <h2 className="mb-7 inline-block border-b-[3px] border-secondary pb-1 text-lg font-semibold leading-5 md:text-2xl md:leading-7">
+                  <h2 className="mb-7 inline-block border-b-[3px] border-secondary pb-1 text-lg font-semibold leading-5 md:text-2xl md:leading-7">
                     {translation?.tractorReview?.writeTractorReview || 'Write Tractor Review'}
-                  </h2> */}
+                  </h2>
                   <TyreRatingForm
                     translation={translation}
-
+                    brand={'Test'}
+                    model={'Test'}
                     form_page_name={'tractor_review'}
                   />
                 </div>
@@ -163,7 +164,6 @@ const TractorReviewPage = async () => {
           currentLang={currentLang}
           tyreBrands={tyreBrands}
           defaultEnquiryType={translation?.tractorReview?.title || 'Tractor Review'}
-          isMobile={isMobile}
         />
       </div>
       <FooterServer translation={translation} />

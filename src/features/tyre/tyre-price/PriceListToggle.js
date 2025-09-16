@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 
 const PriceListToggle = ({ isMobile, brandName, langPrefix, productType = 'tyre' }) => {
-  // console.log('lang prsdadfa d', langPrefix);
+  console.log('lang prsdadfa d', langPrefix);
 
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -46,19 +46,20 @@ const PriceListToggle = ({ isMobile, brandName, langPrefix, productType = 'tyre'
 
   return (
     <div
-      className={`flex w-full items-center justify-center gap-2 rounded-t-lg bg-green-mid p-2 text-base font-semibold text-secondary shadow-main md:cursor-auto md:text-lg ${isMobile ? 'cursor-pointer' : ''
-        }`}
+      className={`flex w-full items-center justify-center gap-2 rounded-t-lg bg-green-mid p-2 text-base font-semibold text-secondary shadow-main md:cursor-auto md:text-lg ${
+        isMobile ? 'cursor-pointer' : ''
+      }`}
       onClick={isMobile ? handleToggle : undefined}
       role={isMobile ? 'button' : undefined}
       tabIndex={isMobile ? 0 : undefined}
       onKeyDown={
         isMobile
           ? e => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              e.preventDefault();
-              handleToggle();
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                handleToggle();
+              }
             }
-          }
           : undefined
       }
       aria-label={isMobile ? (isExpanded ? 'Hide price list' : 'Show price list') : undefined}
@@ -78,8 +79,9 @@ const PriceListToggle = ({ isMobile, brandName, langPrefix, productType = 'tyre'
             width={20}
             title="Toggle Price List"
             alt={isExpanded ? 'collapse icon' : 'expand icon'}
-            className={`h-3 w-3 transition-transform duration-300 ${isExpanded ? 'rotate-180' : 'rotate-0'
-              }`}
+            className={`h-3 w-3 transition-transform duration-300 ${
+              isExpanded ? 'rotate-180' : 'rotate-0'
+            }`}
           />
         </div>
       )}

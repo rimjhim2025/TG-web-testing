@@ -232,8 +232,6 @@ const BlogDetailsPage = async ({ params, prefLangs, searchParams }) => {
             openEnquiryForm={true}
             preFilledTractorBrand={tractorBrand}
             preFilledTractorModel={tractorModel}
-            preFilledTractorModelId={null}
-            isMobile={isMobile}
           />
         )}
         <WhatsAppTopButton translation={translation} currentLang={prefLang} tyreBrands={[]} />
@@ -245,7 +243,6 @@ const BlogDetailsPage = async ({ params, prefLangs, searchParams }) => {
             translation={translation}
             prefLang={prefLang}
             popularBlogsError={popularBlogsError}
-
           />
         )}
         {faqs.length > 0 && (

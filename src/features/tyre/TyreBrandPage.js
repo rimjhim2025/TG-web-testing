@@ -131,7 +131,6 @@ export default async function TyreBrandPage({ params, searchParams }) {
           }
           tyreBrands={tyreBrands}
           heading={'headings.inquireforTyrePrice'}
-          isMobile={isMobile}
         />
         <UpdatesData
           slug={brand.url}
@@ -157,7 +156,6 @@ export default async function TyreBrandPage({ params, searchParams }) {
           currentLang={prefLang}
           tyreBrands={tyreBrands}
           defaultEnquiryType={'Tyre'}
-          isMobile={isMobile}
         />
         <JoinOurCommunityServer translation={translation} currentLang={prefLang} />
         <TractorGyanOfferings translation={translation} />

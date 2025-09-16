@@ -109,11 +109,9 @@ const NewsAndMediaSection = ({ isMobile }) => {
                                                 <Image
                                                     src={item.logo}
                                                     alt={`Media ${index + 1}`}
-                                                    width={64}
-                                                    height={64}
-                                                    className="object-contain h-16 w-16"
-                                                    quality={90}
-                                                    title={`Media ${index + 1} Logo`}
+                                                    width={30}
+                                                    height={30}
+                                                    className="object-contain h-16"
                                                 />
                                             </div>
                                             <p className="text-xs text-black font-medium leading-relaxed">
@@ -145,7 +143,6 @@ const NewsAndMediaSection = ({ isMobile }) => {
                                                     alt={`Media ${index + 1}`}
                                                     width={60}
                                                     height={60}
-                                                    title={`Media ${index + 1} Logo`}
                                                     className="object-contain h-12"
                                                 />
                                             </div>

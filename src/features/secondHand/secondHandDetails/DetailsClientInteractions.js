@@ -65,88 +65,88 @@ const DetailsClientInteractions = ({
                 </h1>
               </Tooltip>
               <div>
-                <div className="flex items-center gap-1 text-[14px] font-medium text-[#4CAF50]">
-                  <Image
-                    src="/assets/images/address-icon.svg"
-                    height={50}
-                    width={50}
-                    alt="share-icon"
-                    title="share-icon"
-                    className="h-5 w-5"
-                  />
-                  <span className="text-gray-dark">Faridabad, Haryana</span>
+              <div className="flex items-center gap-1 text-[14px] font-medium text-[#4CAF50]">
+                <Image
+                  src="/assets/images/address-icon.svg"
+                  height={50}
+                  width={50}
+                  alt="share-icon"
+                  title="share-icon"
+                  className="h-5 w-5"
+                />
+                <span className="text-gray-dark">Faridabad, Haryana</span>
+              </div>
+              <div className="mb-6 mt-4 flex min-h-[62px] rounded-lg  bg-green-lighter ">
+                <div className="flex w-1/3 flex-col items-center justify-center py-2.5">
+                  <span className="text-xs font-normal text-gray-dark">
+                    HP
+                  </span>
+                  <span className="text-base font-semibold text-black">
+                    45
+                  </span>
                 </div>
-                <div className="mb-6 mt-4 flex min-h-[62px] rounded-lg  bg-green-lighter ">
-                  <div className="flex w-1/3 flex-col items-center justify-center py-2.5">
-                    <span className="text-xs font-normal text-gray-dark">
-                      HP
-                    </span>
-                    <span className="text-base font-semibold text-black">
-                      45
-                    </span>
-                  </div>
-                  <div className="flex w-1/3 flex-col items-center justify-center  py-2.5">
-                    <span className="text-xs font-normal text-gray-dark">
-                      Purchase
-                    </span>
-                    <span className="text-base font-semibold text-black">
-                      2016
-                    </span>
-                  </div>
-                  <div className="flex w-1/3 flex-col items-center justify-center  py-2.5">
-                    <span className="text-xs font-normal text-gray-dark">
-                      Running
-                    </span>
-                    <span className="text-base font-semibold text-black">
-                      0-1000 Hrs
-                    </span>
-                  </div>
-                  <div className="flex w-1/3 flex-col items-center justify-center py-2.5">
-                    <span className="text-xs font-normal text-gray-dark">
-                      Condition
-                    </span>
-                    <span className="text-base font-semibold text-black">
-                      Very Good
-                    </span>
-                  </div>
+                <div className="flex w-1/3 flex-col items-center justify-center  py-2.5">
+                  <span className="text-xs font-normal text-gray-dark">
+                    Purchase
+                  </span>
+                  <span className="text-base font-semibold text-black">
+                    2016
+                  </span>
                 </div>
-                {/* Price and Action */}
-                <div className="mb-2 flex items-center justify-between">
-                  <div className="text-[18px] font-bold text-green-lightest">₹ 8.90 Lakh</div>
-                  <div className="text-[12px] text-green-dark"
-                    onClick={() => scrollToSection('emi-calculator-section')}
-                  >
-                    <span className="text-sm text-gray-dark">EMI Starts:</span>
-                    <span className="text-sm font-semibold text-black">₹ 19,251*, </span>
-                    <span className="text-sm font-semibold text-black">Check EMI</span>
-                  </div>
+                <div className="flex w-1/3 flex-col items-center justify-center  py-2.5">
+                  <span className="text-xs font-normal text-gray-dark">
+                    Running
+                  </span>
+                  <span className="text-base font-semibold text-black">
+                    0-1000 Hrs
+                  </span>
                 </div>
-                <div className="mt-6 w-full flex gap-4">
-                  <TG_Button
-                    className="flex-1"
-                    icon={tgi_arrow_right_white}
-                    iconPosition="right"
-                  >
-                    Contact Seller
-                  </TG_Button>
-                  <TG_Button className="flex-2" variant="outline">
-                    Apply for Loan
-                  </TG_Button>
+                <div className="flex w-1/3 flex-col items-center justify-center py-2.5">
+                  <span className="text-xs font-normal text-gray-dark">
+                    Condition
+                  </span>
+                  <span className="text-base font-semibold text-black">
+                    Very Good
+                  </span>
                 </div>
+              </div>
+              {/* Price and Action */}
+              <div className="mb-2 flex items-center justify-between">
+                <div className="text-[18px] font-bold text-green-lightest">₹ 8.90 Lakh</div>
+                <div className="text-[12px] text-green-dark" 
+                  onClick={() => scrollToSection('emi-calculator-section')}
+                >
+                  <span className="text-sm text-gray-dark">EMI Starts:</span>
+                  <span className="text-sm font-semibold text-black">₹ 19,251*, </span>
+                  <span className="text-sm font-semibold text-black">Check EMI</span>
+                </div>
+              </div>
+              <div className="mt-6 w-full flex gap-4">
+                <TG_Button
+                  className="flex-1"
+                  icon={tgi_arrow_right_white}
+                  iconPosition="right"
+                >
+                  Contact Seller
+                </TG_Button>
+                <TG_Button className="flex-2" variant="outline">
+                  Apply for Loan
+                </TG_Button>
+              </div>
 
-                <div className="w-full my-3 h-[0.125rem] bg-[repeating-linear-gradient(to_right,_theme(colors.gray.light)_0,_theme(colors.gray.light)_0.5rem,_transparent_0.5rem,_transparent_1rem)]"></div>
+              <div className="w-full my-3 h-[0.125rem] bg-[repeating-linear-gradient(to_right,_theme(colors.gray.light)_0,_theme(colors.gray.light)_0.5rem,_transparent_0.5rem,_transparent_1rem)]"></div>
                 <div className="flex items-center justify-center gap-4">
-                  <span className="text-sm font-semibold">Share</span>
+                <span className="text-sm font-semibold">Share</span>
                   <SocialMediaLinksShare />
                 </div>
                 {/* TODO:: Upload and Update Icons */}
                 <div className="flex items-center justify-center gap-4 bg-section-gray mt-3 rounded-xl p-3 shadow">
                   {/* Report as Fraud Button */}
                   <button className="flex items-center gap-2 text-error-report font-semibold hover:font-bold">
-                    <img
-                      src="https://img.icons8.com/emoji/48/000000/warning-emoji.png"
-                      alt="Fraud Icon"
-                      className="w-5 h-5 "
+                    <img 
+                      src="https://img.icons8.com/emoji/48/000000/warning-emoji.png" 
+                      alt="Fraud Icon" 
+                      className="w-5 h-5 " 
                     />
                     Report as Fraud
                   </button>
@@ -155,10 +155,10 @@ const DetailsClientInteractions = ({
                   <span className="h-4 w-0.5 bg-black"></span>
                   {/* Report Sold Out Button */}
                   <button className="flex items-center gap-2 text-green-soldOut font-semibold hover:font-bold">
-                    <img
-                      src="https://img.icons8.com/emoji/48/000000/warning-emoji.png"
-                      alt="Sold Out Icon"
-                      className="w-5 h-5"
+                    <img 
+                      src="https://img.icons8.com/emoji/48/000000/warning-emoji.png" 
+                      alt="Sold Out Icon" 
+                      className="w-5 h-5" 
                     />
                     Report Sold Out
                   </button>
@@ -169,11 +169,11 @@ const DetailsClientInteractions = ({
           {/* Render the passed-in aboutSectionSlot here */}
           {!isMobile && (
             <>
-              {aboutSectionSlot}
+            {aboutSectionSlot}
             </>
           )}
         </div>
-        {/* Rig ht Column (Technical Specifications and Features/Benefits Dropdowns) */}
+        {/* Right Column (Technical Specifications and Features/Benefits Dropdowns) */}
         <div className="relative mt-4 h-full w-full lg:max-w-[Calc(100%_-_700px)] xl:mt-0 xl:max-w-[Calc(100%_-_932px)]">
           <div className="sticky bottom-0 top-0">
             {!isMobile && (
@@ -187,16 +187,18 @@ const DetailsClientInteractions = ({
             )}
             <div className="mb-4">
               <div
-                className={`${!isOpen1 && "rounded-b-lg"
-                  } flex items-center justify-between gap-3 rounded-t-lg bg-primary p-4 text-base font-semibold leading-[18px] text-white shadow-main`}
+                className={`${
+                  !isOpen1 && "rounded-b-lg"
+                } flex items-center justify-between gap-3 rounded-t-lg bg-primary p-4 text-base font-semibold leading-[18px] text-white shadow-main`}
               >
                 <h3>{`Technical Specifications`}</h3>
                 <button onClick={toggleDropdown1}>
                   <Image
-                    src={`${isOpen1
+                    src={`${
+                      isOpen1
                         ? "https://images.tractorgyan.com/uploads/114119/66a8b1e63149d-upArrowFeature.png"
                         : "https://images.tractorgyan.com/uploads/114118/66a8b19bd6d66-featureTableDown.png"
-                      }`}
+                    }`}
                     height={20}
                     width={20}
                     alt="toggle-button-image"

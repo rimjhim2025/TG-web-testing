@@ -37,7 +37,7 @@ export default async function WebStoryCategoryPage({ params, searchParams, porps
           isShowCategory={true}
           parent={'webstory_slug_category'}
         />
-        <WhatsAppTopButton translation={translation} currentLang={prefLang} isMobile={isMobile} />
+        <WhatsAppTopButton translation={translation} currentLang={prefLang} />
         <JoinOurCommunityServer translation={translation} currentLang={prefLang} />
         <TractorGyanOfferings translation={translation} />
         <AboutTractorGyanServer slug={'web-story-in-india'} translation={translation} />

@@ -130,7 +130,6 @@ export default async function TyreFrontDetailPage({ params, searchParams }) {
           translation={translation}
           currentLang={currentLang}
           brandName={`${translation?.tyre?.tractorFront || 'Tractor Front'} ${tyreSize} ${translation?.tyre?.sizeTyre || 'Size Tyre'}`}
-          isMobile={isMobile}
         />
         <UpdatesData
           slug={pageSlug}
@@ -147,7 +146,6 @@ export default async function TyreFrontDetailPage({ params, searchParams }) {
           currentLang={currentLang}
           tyreBrands={tyreBrands}
           defaultEnquiryType={translation?.common?.tyre || 'Tyre'}
-          isMobile={isMobile}
         />
         <JoinOurCommunityServer translation={translation} currentLang={currentLang} />
         <TractorGyanOfferings translation={translation} />

@@ -76,7 +76,6 @@ const PopularCard = ({
                       Width: item.width,
                     }
                 }
-                translation={translation}
               />
             ))}
           </Slider>
@@ -140,7 +139,6 @@ const PopularCard = ({
                   Width: width,
                 }
             }
-            translation={translation}
           />
         </div>
       )}

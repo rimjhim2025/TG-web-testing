@@ -8,25 +8,22 @@ import TG_Button from "@/src/components/ui/buttons/MainButtons";
 import Tooltip from "@/src/features/tyreComponents/commonComponents/Tooltip";
 import SocialMediaLinksShare from "@/src/components/shared/social-media/SocialMediaShare";
 import Image from "next/image";
-import TG_LinkButton from "@/src/components/ui/buttons/TgLinkButton";
 
 const ImplementDetailsCard = ({
   implementId,
   implementDetail,
-  isMobile,
-  currentLang = 'en'
+  isMobile
 }) => {
-
+  
   const tooltipContent = "Mahindra 575 Di Xp Plus Price range is between Rs 685000 to 732000*. Mahindra 575 Di Xp Plus horsepower is 47 hp. Its Fuel tank capacity is NA. Mahindra 575 Di Xp Plus has 4 cylinders, 2979 CC engine with 2000 engine rpm. Other key specifications of this tractor are 42 Pto hp, 1500 Kg lifting capacity, 8 Forward + 2 Reverse gears, Single (std) / Dual clutch with RCRPTO (Optional) clutch with Oil Immersed Brake.";
-
+  
   const productHighlight = [
-    { label: 'Power', value: implementDetail?.implement_power || 'NA' },
-    { label: 'Height', value: implementDetail?.Height || 'NA' },
-    { label: 'Length', value: implementDetail?.Length || 'NA' },
-    // { label: 'Width', value: implementDetail?.width || 'NA' },
-    { label: 'Warranty', value: implementDetail?.warrant || 'NA' },
-    { label: 'Wheel Base', value: implementDetail?.wheel || 'NA' },
-    { label: 'Capacity', value: implementDetail?.capacity || 'NA' },
+    { label: 'Power', value: '45' },
+    { label: 'Width', value: '1830 mm' },
+    { label: 'Warranty', value: '2 Years' },
+    { label: 'Wheel Base', value: '1830 mm' },
+    { label: 'Capacity', value: '1100 kg' },
+    { label: 'Feature', value: 'NA' },
   ];
 
   const scrollToSection = scrollTarget => {
@@ -48,7 +45,7 @@ const ImplementDetailsCard = ({
       </span>
     </div>
   );
-
+  
   return (
     <div className="justify-around rounded-2xl md:flex md:shadow-main md:p-6">
       <Tooltip content={tooltipContent}>
@@ -61,32 +58,20 @@ const ImplementDetailsCard = ({
       </div>
       <div className="relative h-full w-full pt-3 md:max-h-[480px] md:max-w-[350px] lg:max-w-[335px] xl:max-w-[350px]">
         <TractorMainSlider
-          title={` ${implementDetail.brand_name_en}  ${implementDetail.model} image`}
-          imgUrl={`/${implementDetail.image}`} // TODO:: API is not returning array of images
-          // imgUrl={implementDetail.images}
+          title={` ${implementDetail.brand_name}  ${implementDetail.model_name} image`}
+          imgUrl={implementDetail.images}
           brandLogo={implementDetail.brand_logo}
           showThumbnails={false}
-          isPopular={implementDetail?.popular_implement === 'Yes'}
         />
       </div>
       <div className="mt-8 w-full rounded-2xl p-4 md:pl-6 md:pr-0 md:py-0 shadow-main md:mt-2 md:max-w-[370px] md:shadow-none lg:max-w-[335px] xl:max-w-[450px]">
         <Tooltip content={tooltipContent}>
           <h1 className="mb-2 hidden cursor-pointer text-lg font-bold text-black md:text-2xl xl:block">
-            {currentLang === 'en' ?
-              (
-                <>
-                  {`${implementDetail.brand_name_en}  ${implementDetail.model}`}
-                </>
-              ) : (
-                <>
-                  {`${implementDetail.brand_name_hi}  ${implementDetail.model_hi}`}
-                </>
-              )
-            }
+            {` ${implementDetail.brand_name}  ${implementDetail.model_name}`}
           </h1>
         </Tooltip>
         <div className="hidden md:block pb-4 text-sm text-gray-description">
-          Category: {implementDetail?.category_name}
+          Category: Landscaping
         </div>
         <h5 className="mb-4 text-lg font-semibold text-black">
           Highlights
@@ -97,11 +82,11 @@ const ImplementDetailsCard = ({
         <div className="flex justify-between">
           <div className="flex flex-col gap-2">
             <span className="text-sm font-medium">Share</span>
-            <SocialMediaLinksShare />
+            <SocialMediaLinksShare/>
           </div>
           <div className="flex flex-col items-end gap-2">
             <span className="flex text-sm gap-2">
-              2.5
+              2.5 
               <Image
                 src={tgi_star}
                 height={20}
@@ -111,7 +96,7 @@ const ImplementDetailsCard = ({
                 className="w-4 h-4"
               />
               (25)
-            </span>
+              </span>
             <button
               className="flex items-center justify-center gap-1.5 rounded-full border-[1px] border-gray-light px-3 py-1.5 md:px-4"
               onClick={() => scrollToSection('review-section')}
@@ -133,22 +118,13 @@ const ImplementDetailsCard = ({
           </div>
         </div>
         <div className="mt-6 w-full flex md:flex-col gap-2 md:gap-4">
-          {/* <TG_Button
+          <TG_Button
             className='w-full md:flex-1'
             icon={tgi_arrow_right_white}
             iconPosition="right"
           >
             ₹ Get Best Implement Price
-          </TG_Button> */}
-          <TG_LinkButton
-            variant="primary"
-            href={implementDetail?.road_price_url}
-            iconSrc={tgi_arrow_right_white}
-            iconClass="w-3"
-            className="rounded-md w-full md:flex-1"
-          >
-            ₹ Get Best Implement Price
-          </TG_LinkButton>
+          </TG_Button>
         </div>
       </div>
     </div>

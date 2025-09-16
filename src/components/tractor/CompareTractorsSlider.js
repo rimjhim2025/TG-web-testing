@@ -1,12 +1,12 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import Slider from 'react-slick';
 import Image from 'next/image';
 import CompareTractorsSection from './CompareTractorsSection';
 
-const CompareTractorsSlider = ({ cta, currentTractor, compareTractors, isMobile, currentLang, isComparisonPage = false, tractorBrands, viewMode = true, showCheckPrice = true, translation = {} }) => {
+const CompareTractorsSlider = ({ cta, currentTractor, compareTractors, isMobile, currentLang }) => {
   const [windowWidth, setWindowWidth] = useState(
     typeof window !== 'undefined' ? window.innerWidth : 1200
   );
@@ -72,21 +72,15 @@ const CompareTractorsSlider = ({ cta, currentTractor, compareTractors, isMobile,
 
   return (
     <div className='relative w-full'>
-      <Slider {...settings} className="custom-gap-slider compare-tractors-slider mb-4 md:mb-6">
+      <Slider {...settings} className="custom-gap-slider compare-tractors-slider">
         {compareTractors?.map((compareTractor, index) => (
           <div className="w-full flex gap-4 mb-4">
             <CompareTractorsSection
               cta={cta}
-              viewMode={viewMode}
-              showCheckPrice={showCheckPrice}
+              viewMode={true}
               itemsToShow={2}
-              // currentTractor={currentTractor}
-              // compareTractor={compareTractor || null}
-              currentTractor={isComparisonPage ? compareTractor?.tractor1 : currentTractor}
-              compareTractor={isComparisonPage ? compareTractor?.tractor2 : compareTractor || null}
-              currentLang={currentLang}
-              tractorbrands={tractorBrands}
-              translation={translation}
+              currentTractor={currentTractor}
+              compareTractor={compareTractor || null}
             />
           </div>
         ))}

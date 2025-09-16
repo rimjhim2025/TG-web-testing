@@ -74,12 +74,7 @@ const CareerPage = async () => {
           canonical: baseUrl,
         }}
       />
-      <DesktopHeader
-        isMobile={isMobile}
-        translation={translation}
-        currentLang={prefLang}
-        showLanguageSelector={false}
-      />
+      <DesktopHeader isMobile={isMobile} translation={translation} currentLang={prefLang} />
       <main className="lg:mt-[159px]">
         <ScrollToTopNavigate />
         <section className="pt-0">
@@ -102,7 +97,6 @@ const CareerPage = async () => {
           currentLang={prefLang}
           tyreBrands={[]}
           defaultEnquiryType={'Tractor'}
-          isMobile={isMobile}
         />
       </main>
       <FooterServer translation={translation} />

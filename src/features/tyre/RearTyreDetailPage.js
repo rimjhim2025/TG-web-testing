@@ -163,7 +163,6 @@ const RearTyreDetailPage = async ({ params, searchParams }) => {
           translation={translation}
           currentLang={prefLang}
           brandName={`${translation?.tyre?.tractorRear || 'Tractor Rear'} ${tyreSize} ${translation?.tyre?.sizeTyre || 'Size Tyre'}`}
-          isMobile={isMobile}
         />
         <UpdatesSection
           videos={videos}
@@ -189,7 +188,6 @@ const RearTyreDetailPage = async ({ params, searchParams }) => {
           currentLang={prefLang}
           tyreBrands={tyreBrands}
           defaultEnquiryType={translation?.common?.tyre || 'Tyre'}
-          isMobile={isMobile}
         />
         <JoinOurCommunityServer translation={translation} currentLang={prefLang} />
         <TractorGyanOfferings translation={translation} />

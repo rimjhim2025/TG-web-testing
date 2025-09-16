@@ -84,7 +84,6 @@ const OffersPage = async () => {
           currentLang={prefLang}
           tyreBrands={[]}
           defaultEnquiryType={'Tractor'}
-          isMobile={isMobile}
         />
       </main>
       <FooterServer translation={translation} />

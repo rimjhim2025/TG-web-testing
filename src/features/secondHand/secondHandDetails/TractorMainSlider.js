@@ -1,13 +1,9 @@
-// ============ Used At ============
-// 1. /tractor/massey-ferguson-241-r/965
-// 2.
-// =================================
-
 'use client';
-import { useIsMobile } from '@/src/hooks/useIsMobile';
-import Image from 'next/image';
 import React, { useState, useEffect, useRef } from 'react';
 import Slider from 'react-slick';
+import Image from 'next/image';
+
+import { useIsMobile } from '@/src/hooks/useIsMobile';
 
 const TractorMainSlider = ({
   title,
@@ -15,7 +11,7 @@ const TractorMainSlider = ({
   brandLogo,
   isPopular = false,
   isSoldOut = false,
-  showThumbnails = false
+  showThumbnails = false,
 }) => {
   const isMobile = useIsMobile();
   const [nav1, setNav1] = useState(null);
@@ -23,13 +19,30 @@ const TractorMainSlider = ({
   let sliderRef1 = useRef(null);
   let sliderRef2 = useRef(null);
 
-  // Parse imgUrl - handle both string and comma-separated string
-  const imageUrls = imgUrl && typeof (imgUrl) == 'string'
-    ? imgUrl
-      .split(',')
-      .map(url => url.trim())
-      .filter(url => url)
-    : [];
+  // Process imgUrl to handle both string and array formats
+  const processImages = () => {
+    if (!imgUrl) return [];
+
+    if (Array.isArray(imgUrl)) {
+      return imgUrl;
+    }
+
+    if (typeof imgUrl === 'string') {
+      // Check if it's comma-separated
+      if (imgUrl.includes(',')) {
+        return imgUrl
+          .split(',')
+          .map(url => url.trim())
+          .filter(url => url);
+      }
+      return [imgUrl];
+    }
+
+    return [];
+  };
+
+  const imageArray = processImages();
+  const hasMultipleImages = imageArray.length > 1;
 
   useEffect(() => {
     if (sliderRef1.current && sliderRef2.current) {
@@ -58,135 +71,88 @@ const TractorMainSlider = ({
   return (
     <>
       {isMobile ? (
-        <div className="slider-container">
+        <div className="slider-container hello">
+          {/* Main Slider for tyre detail mobile */}
           <div className="relative w-full">
             {isSoldOut && <SoldOutStrip />}
             <div className="flex w-full items-start justify-between">
-              <Image
-                src={brandLogo}
-                height={100}
-                width={100}
-                className="w-full min-w-[44px] max-w-[44px]"
-                alt={'icon-' + title}
-                title={title}
-              />
+              {brandLogo && (
+                <Image
+                  src={brandLogo}
+                  height={100}
+                  width={100}
+                  className="w-full min-w-[44px] max-w-[44px]"
+                  alt={'icon-' + title}
+                  title={title}
+                />
+              )}
               {isPopular && (
                 <span className="rounded-full border border-[#D31A00] px-3 py-1 text-xs text-[#D31A00] shadow-main">
                   Popular
                 </span>
               )}
             </div>
-            <Slider
-              infinite={imageUrls.length > 1}
-              speed={500}
-              slidesToShow={1}
-              slidesToScroll={1}
-              dots={imageUrls.length > 1}
-              autoplay={imageUrls.length > 1}
-              autoplaySpeed={2000}
-              className="max-h-[260px]"
-            >
-              {imageUrls.map((image, index) => (
+
+            {/* Conditionally render slider or single image */}
+            {hasMultipleImages ? (
+              <Slider
+                asNavFor={nav2}
+                ref={sliderRef1}
+                infinite={true}
+                speed={500}
+                slidesToShow={1}
+                slidesToScroll={1}
+                dots={!showThumbnails}
+                autoplay={true}
+                autoplaySpeed={2000}
+              >
+                {imageArray.map((image, index) => (
+                  <Image
+                    key={index}
+                    src={
+                      image.startsWith('http')
+                        ? image
+                        : `https://images.tractorgyan.com/uploads${image}`
+                    }
+                    height={500}
+                    width={500}
+                    alt={title || 'tractor image'}
+                    title={title || 'tractor image'}
+                    className="h-auto w-auto"
+                  />
+                ))}
+              </Slider>
+            ) : (
+              // Single image without slider
+              imageArray.length > 0 && (
                 <Image
-                  key={index}
                   src={
-                    image.startsWith('http')
-                      ? image
-                      : `https://images.tractorgyan.com/uploads${image}`
+                    imageArray[0].startsWith('http')
+                      ? imageArray[0]
+                      : `https://images.tractorgyan.com/uploads${imageArray[0]}`
                   }
                   height={500}
                   width={500}
-                  alt={`${title} image ${index + 1}`}
-                  title={`${title} image ${index + 1}`}
-                  className="h-auto w-auto object-contain"
+                  alt={title || 'tractor image'}
+                  title={title || 'tractor image'}
+                  className="h-auto w-auto"
                 />
-              ))}
-            </Slider>
-          </div>
-        </div>
-      ) : (
-        <div className="slider-container">
-          <div className="relative flex w-full items-start justify-between">
-            <div className="h-auto w-full min-w-[44px] max-w-[65px]">
-              {brandLogo && (
-                <Image
-                  src={brandLogo}
-                  height={50}
-                  width={50}
-                  alt={'brand-icon'}
-                  title={'brand-icon'}
-                  className="h-full w-full"
-                />
-              )}
-            </div>
-            {isPopular && (
-              <span className="rounded-full border border-[#D31A00] px-3 py-1 text-xs text-[#D31A00] shadow-main">
-                Popular
-              </span>
+              )
             )}
           </div>
-          <Slider
-            asNavFor={nav2}
-            ref={sliderRef1}
-            dots={!showThumbnails}
-            arrows={false}
-            infinite={imageUrls.length > 2}
-            autoplay={true}
-            speed={500}
-            slidesToShow={1}
-            slidesToScroll={1}
-            autoplaySpeed={3000}
-            focusOnSelect={true}
-          >
-            {imageUrls.map((image, index) => (
-              <div key={index} className="relative max-h-[300px] w-full">
-                {/* <div className="relative flex w-full items-start justify-between">
-                  <div className="h-auto w-full min-w-[44px] max-w-[65px]">
-                    {brandLogo && (
-                      <Image
-                        src={brandLogo}
-                        height={50}
-                        width={50}
-                        alt={'brand-icon'}
-                        title={'brand-icon'}
-                        className="h-full w-full"
-                      />
-                    )}
-                  </div>
-                  {isPopular && (
-                    <span className="rounded-full border border-[#D31A00] px-3 py-1 text-xs text-[#D31A00] shadow-main">
-                      Popular
-                    </span>
-                  )}
-                </div> */}
-                <Image
-                  src={
-                    image.startsWith('http')
-                      ? image
-                      : `https://images.tractorgyan.com/uploads${image}`
-                  }
-                  height={500}
-                  width={500}
-                  alt={`${title} ${index + 1}`}
-                  title={`${title} ${index + 1}`}
-                  className="mx-auto h-[200px] w-auto"
-                />
-              </div>
-            ))}
-          </Slider>
 
-          {/* Thumbnail Slider */}
-          {imageUrls.length > 1 && (
+          {/* Thumbnail Slider - only show if multiple images and showThumbnails is true */}
+          {showThumbnails && hasMultipleImages && (
             <Slider
               asNavFor={nav1}
               ref={sliderRef2}
-              slidesToShow={Math.min(3, imageUrls.length)}
+              slidesToShow={4}
               swipeToSlide={true}
               focusOnSelect={true}
               autoplaySpeed={3000}
-              className="thumbnail-slider py-5"
+              className="thumbnail-slider pt-5"
             >
-              {imageUrls.map((image, index) => (
+              {imageArray.map((image, index) => (
                 <div
                   key={index}
                   className="hover:shadow-lg mx-auto mt-4 h-[60px] w-full max-w-[90px] transform cursor-pointer overflow-hidden rounded-xl border-[1px] border-gray-secondary bg-white shadow-[0px_4px_37px_0px_#0f461021] transition-transform hover:scale-105 hover:border-green-main hover:bg-green-lighter"
@@ -199,10 +165,118 @@ const TractorMainSlider = ({
                     }
                     height={200}
                     width={200}
-                    alt={`${title} thumbnail ${index + 1}`}
-                    title={`${title} thumbnail ${index + 1}`}
+                    alt={title}
+                    title={title}
                     className="h-full w-full object-contain"
                   />
+                </div>
+              ))}
+            </Slider>
+          )}
+        </div>
+      ) : (
+        <div className="slider-container">
+          {/* Main Slider for tyre detail page*/}
+          <div className="relative max-h-[300px] w-full py-4">
+            <div className="relative -top-4 flex w-full items-start justify-between">
+              <div className="h-auto w-full min-w-[44px] max-w-[65px]">
+                {brandLogo && (
+                  <Image
+                    src={brandLogo}
+                    height={50}
+                    width={50}
+                    alt={'brand-icon'}
+                    title={'brand-icon'}
+                    className="h-full w-full"
+                  />
+                )}
+              </div>
+              {isPopular && (
+                <span className="rounded-full border border-[#D31A00] px-3 py-1 text-xs text-[#D31A00] shadow-main">
+                  Popular
+                </span>
+              )}
+            </div>
+            {isSoldOut && <SoldOutStrip />}
+
+            {/* Conditionally render slider or single image */}
+            {hasMultipleImages ? (
+              <Slider
+                asNavFor={nav2}
+                ref={sliderRef1}
+                dots={imageArray.length > 1}
+                infinite={imageArray.length > 1}
+                autoplay={imageArray.length > 1}
+                speed={500}
+                slidesToShow={1}
+                slidesToScroll={1}
+                autoplaySpeed={3000}
+                focusOnSelect={true}
+              >
+                {imageArray.map((image, index) => (
+                  <Image
+                    key={index}
+                    src={
+                      image.startsWith('http')
+                        ? image
+                        : `https://images.tractorgyan.com/uploads${image}`
+                    }
+                    height={500}
+                    width={500}
+                    alt={title}
+                    title={title}
+                    className="mx-auto h-[240px] w-auto"
+                  />
+                ))}
+              </Slider>
+            ) : (
+              // Single image without slider
+              imageArray.length > 0 && (
+                <div className="flex justify-center">
+                  <Image
+                    src={
+                      imageArray[0].startsWith('http')
+                        ? imageArray[0]
+                        : `https://images.tractorgyan.com/uploads${imageArray[0]}`
+                    }
+                    height={500}
+                    width={500}
+                    alt={title}
+                    title={title}
+                    className="mx-auto h-[240px] w-auto"
+                  />
+                </div>
+              )
+            )}
+          </div>
+
+          {/* Thumbnail Slider - only show if multiple images */}
+          {hasMultipleImages && (
+            <Slider
+              asNavFor={nav1}
+              ref={sliderRef2}
+              slidesToShow={4}
+              swipeToSlide={true}
+              focusOnSelect={true}
+              autoplaySpeed={3000}
+              className="pt-10"
+            >
+              {imageArray.map((image, index) => (
+                <div key={index} className="w-full p-2">
+                  <div className="mx-auto h-[60px] w-full max-w-[90px] transform cursor-pointer overflow-hidden rounded-xl border-[1px] border-gray-secondary bg-white transition-transform hover:scale-105 hover:border-green-main hover:bg-green-lighter hover:shadow-bottom">
+                    <Image
+                      src={
+                        image.startsWith('http')
+                          ? image
+                          : `https://images.tractorgyan.com/uploads${image}`
+                      }
+                      height={200}
+                      width={200}
+                      alt={title}
+                      title={title}
+                      className="h-full w-full object-contain"
+                    />
+                  </div>
                 </div>
               ))}
             </Slider>

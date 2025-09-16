@@ -94,7 +94,7 @@ const TractorInsuranceForm = ({
   useEffect(() => {
     const fetchBrands = async () => {
       try {
-        const data = await getTractorBrands();
+        const data = await getTractorBrands(currentLang);
         setTractorBrands(data || []);
       } catch (error) {
         console.error('Error fetching tractor brands:', error);
@@ -273,7 +273,7 @@ const TractorInsuranceForm = ({
           {headingTitle && <MainHeadings text={headingTitle} />}
           <div className="flex w-full flex-col gap-8 md:items-center md:justify-between lg:flex-row">
             <div className="w-full overflow-hidden rounded-2xl shadow-main lg:max-w-[calc(100%_-_270px)] xl:max-w-[982px]">
-              <div className={`${bgColor} p-3 md:p-8`}>
+              <div className={`${bgColor} p-4 md:p-8`}>
                 <div className="mb-4 text-center text-sm font-normal text-black">
                   <MainHeadings
                     extraCss={'border-0'}
@@ -283,7 +283,7 @@ const TractorInsuranceForm = ({
                     }
                   />
                 </div>
-                <form onSubmit={handleSubmit} className="mb-0 md:mb-4 grid grid-cols-6 gap-x-2 md:gap-x-4 gap-y-2">
+                <form onSubmit={handleSubmit} className="mb-4 grid grid-cols-6 gap-x-4 gap-y-2">
                   <div className="col-span-6 md:col-span-2">
                     <label
                       htmlFor="tractorRegistration"
@@ -310,7 +310,7 @@ const TractorInsuranceForm = ({
                     </div>
                   </div>
 
-                  <div className="col-span-3 md:col-span-2">
+                  <div className="col-span-6 md:col-span-2">
                     <label
                       htmlFor="yearOfPurchase"
                       className="mb-0 block text-sm font-medium text-black"
@@ -337,7 +337,7 @@ const TractorInsuranceForm = ({
                     </div>
                   </div>
 
-                  <div className="col-span-3 md:col-span-2">
+                  <div className="col-span-6 md:col-span-2">
                     <label
                       htmlFor="registrationMonth"
                       className="mb-0 block text-sm font-medium text-black"
@@ -400,7 +400,7 @@ const TractorInsuranceForm = ({
                   <div className="col-span-3">
                     <label
                       htmlFor="tractorModel"
-                      className="mb-0 block text-sm font-medium text-black text-nowrap"
+                      className="mb-0 block text-sm font-medium text-black"
                     >
                       {currentLang === 'hi' ? 'ट्रैक्टर मॉडल चुनें' : 'Select Tractor Model'}
                     </label>
@@ -418,7 +418,7 @@ const TractorInsuranceForm = ({
                         </option>
                         {tractorModels?.length > 0 ? (
                           tractorModels.map((model, index) => (
-                            <option key={index} value={model.id}>
+                            <option key={index} value={model.model}>
                               {model.model}
                             </option>
                           ))
@@ -437,7 +437,7 @@ const TractorInsuranceForm = ({
                     </div>
                   </div>
 
-                  <div className="col-span-3">
+                  <div className="col-span-6 md:col-span-3">
                     <label htmlFor="name" className="mb-0 block text-sm font-medium text-black">
                       {currentLang === 'hi' ? 'नाम' : 'Name'}
                     </label>
@@ -457,7 +457,7 @@ const TractorInsuranceForm = ({
                     </div>
                   </div>
 
-                  <div className="col-span-3">
+                  <div className="col-span-6 md:col-span-3">
                     <label
                       htmlFor="userMobile"
                       className="mb-0 block text-sm font-medium text-black"
@@ -697,7 +697,6 @@ const TractorInsuranceForm = ({
           district={selectedDistrict}
           tehsil={selectedTehsil}
           name={name}
-          encryptedOtp={otp}
           existVerified={existVerified}
           closeEnquryPopup={() => setShowOtpPopup(false)}
           enquiryType={'Insurance'}

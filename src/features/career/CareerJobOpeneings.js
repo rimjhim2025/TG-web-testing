@@ -11,6 +11,7 @@ const CareerJobOpenings = ({ isMobile, translation, jobsData, jobListError }) =>
   const [lastOtpSentNumber, setLastOtpSentNumber] = useState('');
   const [otp, setOtp] = useState('');
   const [otpError, setOtpError] = useState('');
+
   const [otpSuccessMsg, SetOtpSuccessMsg] = useState(false);
   const [localOtp, setLocalOtp] = useState('');
   const [mainId, setMainId] = useState('');
@@ -24,6 +25,7 @@ const CareerJobOpenings = ({ isMobile, translation, jobsData, jobListError }) =>
     number: false,
   });
   const [isResendEnabled, setIsResendEnabled] = useState(false);
+
   const [openSections, setOpenSections] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
@@ -35,6 +37,7 @@ const CareerJobOpenings = ({ isMobile, translation, jobsData, jobListError }) =>
   });
   const [formErrors, setFormErrors] = useState({});
   const apiUrl = getApiUrl();
+
   const ChevronDownIcon = () => (
     <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -48,7 +51,7 @@ const CareerJobOpenings = ({ isMobile, translation, jobsData, jobListError }) =>
   );
 
   if (jobListError) {
-    return <span className="ms-6 pt-8">failed To fetch job Openings, please try again later</span>;
+    return <h1 className="ms-6 pt-8">failed To fetch job Openings, please try again later</h1>;
   }
 
   useEffect(() => {
@@ -167,7 +170,8 @@ const CareerJobOpenings = ({ isMobile, translation, jobsData, jobListError }) =>
         }
       } else {
         setOtpError(
-          `${res?.message == 'mobile_exists' && `${translation?.signin?.mobileIsAlreadyRegistered}`
+          `${
+            res?.message == 'mobile_exists' && `${translation?.signin?.mobileIsAlreadyRegistered}`
           }` || `${translation?.signin?.faildToSentOTP}`
         );
         setOtpSent(false);
@@ -289,10 +293,11 @@ const CareerJobOpenings = ({ isMobile, translation, jobsData, jobListError }) =>
       setShowSuccessPopup(true);
     } catch (errors) {
       console.error('somting went in job posting', errors);
-      setFormErrors(prev => ({
-        ...prev,
-        resume: 'Something went wrong please try again later',
-      }));
+      setFormData({
+        userName: '',
+        mobile: '',
+        resume: null,
+      });
     }
   };
 
@@ -314,12 +319,14 @@ const CareerJobOpenings = ({ isMobile, translation, jobsData, jobListError }) =>
     return null;
   };
 
+  console.log('---jobsData', jobsData);
+
   return (
     <>
-      <div className="bg-blue-lightest pb-6 pt-6 md:pb-8 md:pt-6">
+      <div className="bg-blue-lightest pb-1 pt-6 md:pt-6">
         <div className="container">
           <div className="lg:flex-cols-2 grid grid-cols-1 gap-8">
-            <div className="shadow-sm rounded-lg bg-blue-lightest">
+            <div className="shadow-sm bg-blue-lightest rounded-lg">
               {isMobile ? (
                 <div className="mb-4 flex items-center justify-center">
                   <div>
@@ -329,13 +336,13 @@ const CareerJobOpenings = ({ isMobile, translation, jobsData, jobListError }) =>
                       title={`Job Openings at TractorGyan`}
                       width={92}
                       height={92}
-                      className="h-[60px] w-[60px] object-cover transition-opacity duration-500"
+                      className="max:w-[92px] max:h-[92px] object-cover transition-opacity duration-500"
                     />
                   </div>
                   <div className="w-[75%] ps-2">
-                    <h2 className="mb-1 text-lg font-bold leading-[21px] text-black md:text-2xl">
+                    <h1 className="mb-1 text-lg font-bold leading-[21px] text-black md:text-2xl">
                       Job Openings at Tractor<span className="text-primary">Gyan</span>
-                    </h2>
+                    </h1>
                     <p className="text-xs font-medium text-black md:text-base">
                       We're always looking for great folks to join us on our mission. If you want to
                       be a part of our story, apply today.
@@ -344,9 +351,9 @@ const CareerJobOpenings = ({ isMobile, translation, jobsData, jobListError }) =>
                 </div>
               ) : (
                 <div className="mb-6">
-                  <h2 className="text-md mb-2 font-bold text-black md:text-2xl">
+                  <h1 className="text-md mb-2 font-bold text-black md:text-2xl">
                     Job Openings at Tractor<span className="text-primary">Gyan</span>
-                  </h2>
+                  </h1>
                   <p className="text-sm font-medium text-black md:text-base">
                     We're always looking for great folks to join us on our mission. If you want to
                     be a part of our story, apply today.
@@ -357,7 +364,7 @@ const CareerJobOpenings = ({ isMobile, translation, jobsData, jobListError }) =>
               <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
                 {jobsData?.map(category =>
                   category.data?.length > 0 ? (
-                    <div key={category.title} className="h-fit rounded-lg bg-white">
+                    <div key={category.title} className="rounded-lg bg-white">
                       <button
                         onClick={() => toggleSection(category.title)}
                         className="hover:bg-gray-50 flex w-full items-center justify-between p-4 text-left transition-colors"
@@ -388,13 +395,13 @@ const CareerJobOpenings = ({ isMobile, translation, jobsData, jobListError }) =>
                       {openSections[category.title] && (
                         <div className="grid gap-4 rounded-xl bg-white px-4 pb-4 pt-0">
                           {category.data.map(job => (
-                            <div key={job.id} className="rounded-xl bg-blue-lightest px-4 py-3">
+                            <div key={job.id} className="bg-blue-lightest rounded-xl px-4 py-3">
                               <div className="grid gap-4 lg:flex lg:items-center lg:justify-between lg:gap-0">
                                 <div className="flex-1">
                                   <h4 className="mb-0 text-lg font-bold text-black">{job.title}</h4>
                                   {(job?.experience || job.location) && (
                                     <p className="leading-sm text-[10px] font-medium md:text-xs md:leading-relaxed">
-                                      Experience: {job.experience || null} | Location: {job.location || null}
+                                      {job.experience || null} | {job.location || null}
                                     </p>
                                   )}
                                 </div>
@@ -437,40 +444,34 @@ const CareerJobOpenings = ({ isMobile, translation, jobsData, jobListError }) =>
         {/* Job Details Modal */}
         {isModalOpen && selectedJob && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4 backdrop-blur-[5px]">
-            <div className="max-h-[80vh] w-full max-w-2xl overflow-y-auto rounded-lg bg-white relative">
-              <div className="flex items-center justify-between border-b border-primary p-6 py-4">
-                <h2 className="text-xl font-bold text-black">{selectedJob.title}</h2>
+            <div className="max-h-[80vh] w-full max-w-2xl overflow-y-auto rounded-lg bg-white">
+              <div className="flex items-center justify-between border-b border-primary p-6">
+                <h2 className="text-xl font-bold text-black">Job Application</h2>
                 <button
                   onClick={closeAllModals}
-                  className="absolute right-2 top-2 flex h-6 w-6 min-w-6 items-center justify-center rounded-full"
+                  className="flex h-6 w-6 items-center justify-center rounded-full border-[1px] border-gray-secondary bg-white text-xl"
                 >
-                  <Image
-                    src={'https://images.tractorgyan.com/uploads/119880/1751721362close-icon.webp'}
-                    height={50}
-                    width={50}
-                    alt="close icon"
-                    title="close icon"
-                  />
+                  ×
                 </button>
               </div>
 
               <div className="p-6">
-                <h3 className="mb-2 text-lg font-semibold text-black">
+                <h3 className="mb-2 text-lg font-semibold text-gray-grey">
                   Job Title - {selectedJob.title}
                 </h3>
                 {(selectedJob.experience || selectedJob.location) && (
-                  <p className="mb-4 text-black">
-                    Experience: {selectedJob.experience || null} | Location: {selectedJob.location || null}
+                  <p className="mb-4 text-gray-grey">
+                    {selectedJob.experience || null} | {selectedJob.location || null}
                   </p>
                 )}
 
                 <div className="mb-6">
                   {/* <h4 className="mb-2 font-medium text-black">Job Description</h4> */}
                   <div
-                    className="prose prose-sm max-w-none text-black"
+                    className="prose prose-sm max-w-none text-gray-grey"
                     dangerouslySetInnerHTML={{ __html: selectedJob.details }}
                   />
-                  {/* <p className="leading-relaxed text-black">{selectedJob.details}</p> */}
+                  {/* <p className="leading-relaxed text-gray-grey">{selectedJob.details}</p> */}
                 </div>
 
                 <div className="flex space-x-4">
@@ -499,15 +500,9 @@ const CareerJobOpenings = ({ isMobile, translation, jobsData, jobListError }) =>
                 <h2 className="text-xl font-bold text-black">Apply for {selectedJob.title}</h2>
                 <button
                   onClick={closeAllModals}
-                  className="flex h-6 w-6 items-center justify-center"
+                  className="flex h-6 w-6 items-center justify-center rounded-full border-[1px] border-gray-secondary bg-white text-xl"
                 >
-                  <Image
-                    src={'https://images.tractorgyan.com/uploads/119880/1751721362close-icon.webp'}
-                    height={50}
-                    width={50}
-                    alt="close icon"
-                    title="close icon"
-                  />
+                  ×
                 </button>
               </div>
 
@@ -582,8 +577,9 @@ const CareerJobOpenings = ({ isMobile, translation, jobsData, jobListError }) =>
                         }}
                         onBlur={() => setTouchedFields(prev => ({ ...prev, number: true }))}
                         maxLength="10"
-                        className={`h-[38px] w-full rounded-lg border border-gray-light bg-transparent px-4 py-2 ps-10 text-sm text-black placeholder:text-gray-main focus:outline-none ${formErrors.mobile ? 'error' : ''
-                          }`}
+                        className={`h-[38px] w-full rounded-lg border border-gray-light bg-transparent px-4 py-2 ps-10 text-sm text-black placeholder:text-gray-main focus:outline-none ${
+                          formErrors.mobile ? 'error' : ''
+                        }`}
                       />
                       <div className="full absolute left-3 top-0 py-2 text-sm font-bold leading-[22px] text-black">
                         <span>+91</span>
@@ -644,8 +640,9 @@ const CareerJobOpenings = ({ isMobile, translation, jobsData, jobListError }) =>
                         }}
                         onBlur={() => setTouchedFields(prev => ({ ...prev, number: true }))}
                         maxLength="10"
-                        className={`h-[38px] w-full rounded-lg border border-gray-light bg-transparent px-4 py-2 ps-10 text-sm text-black placeholder:text-gray-main focus:outline-none ${formErrors.mobile ? 'error' : ''
-                          }`}
+                        className={`h-[38px] w-full rounded-lg border border-gray-light bg-transparent px-4 py-2 ps-10 text-sm text-black placeholder:text-gray-main focus:outline-none ${
+                          formErrors.mobile ? 'error' : ''
+                        }`}
                       />
                       <div className="full absolute left-3 top-0 py-2 text-sm font-bold leading-[22px] text-black">
                         <span>+91</span>
@@ -704,8 +701,9 @@ const CareerJobOpenings = ({ isMobile, translation, jobsData, jobListError }) =>
                 {otpSent && !isVerified && formData.mobile === lastOtpSentNumber && (
                   <>
                     <span
-                      className={`${otpError ? 'mt-4' : otpSuccessMsg ? 'mt-1' : 'mt-0'
-                        } registerOtpSpan relative mt-4`}
+                      className={`${
+                        otpError ? 'mt-4' : otpSuccessMsg ? 'mt-1' : 'mt-0'
+                      } registerOtpSpan relative mt-4`}
                     >
                       <label htmlFor="otp" className="mb-0 block text-sm font-bold text-black">
                         {translation?.signInForm?.otpLabel}
@@ -735,8 +733,9 @@ const CareerJobOpenings = ({ isMobile, translation, jobsData, jobListError }) =>
                                 }
                               }
                             }}
-                            className={`h-[38px] w-full rounded-lg border border-gray-light bg-transparent px-4 py-2 ps-10 text-sm text-black placeholder:text-gray-main focus:outline-none ${otpError ? 'error' : ''
-                              }`}
+                            className={`h-[38px] w-full rounded-lg border border-gray-light bg-transparent px-4 py-2 ps-10 text-sm text-black placeholder:text-gray-main focus:outline-none ${
+                              otpError ? 'error' : ''
+                            }`}
                           />
                           {!isResendEnabled && (
                             <span className="otpTimer hidden md:block">{timer}s</span>
@@ -841,12 +840,9 @@ const CareerJobOpenings = ({ isMobile, translation, jobsData, jobListError }) =>
                     title="close icon"
                   />
                 </button>
-                <div className="text-center grid">
+                <div className="text-center">
                   <span className="md:text-md text-sm text-gray-main">
-                    Your application has been submitted successfully!
-                  </span>
-                  <span className="md:text-md text-sm text-gray-main">
-                    Our HR team will contact you soon. Thank you for your interest.
+                    You Have Applied Successfully
                   </span>
                 </div>
                 <Link

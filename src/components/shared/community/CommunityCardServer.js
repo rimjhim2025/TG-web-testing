@@ -5,11 +5,9 @@ const CommunityCardServer = ({ linkUrl, imgUrl, title, followers, text, follower
   return (
     <Link
       href={linkUrl || '/'}
-      target="_blank"
-      rel="noopener noreferrer"
       className="flex-1 rounded-lg bg-white p-1 shadow-card sm:p-3 md:w-full md:min-w-[180px] md:max-w-[280px] lg:min-w-[280px] lg:max-w-[300px]"
     >
-      {/* <Link
+    {/* <Link
       href={linkUrl || '/'}
       className={` ${
         title === 'Facebook' ? 'w-[98%]' : 'flex-1'

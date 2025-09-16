@@ -1,11 +1,10 @@
 'use client';
 import React, { useState } from 'react';
 import Image from 'next/image';
-import TG_Banner from '@/src/components/shared/bannners/Banner';
 import Link from 'next/link';
 import Tooltip from '@/src/features/tyreComponents/commonComponents/Tooltip';
 
-const TractorDetailsSpecs = ({ tractorDetail, translation, currentLang, bannerDetail }) => {
+const TractorDetailsSpecs = ({ tractorDetail, translation, currentLang }) => {
   // State for each section - first section (engine) open initially
   const [openSections, setOpenSections] = useState({
     engine: true,
@@ -206,10 +205,10 @@ const TractorDetailsSpecs = ({ tractorDetail, translation, currentLang, bannerDe
         translation?.tractorSpecs?.tooltips?.model,
         'Specific model name - {model}'
       ),
-      // 'Price Range': formatTooltip(
-      //   translation?.tractorSpecs?.tooltips?.priceRange,
-      //   'Expected price range of {brandModel}'
-      // ),
+      'Price Range': formatTooltip(
+        translation?.tractorSpecs?.tooltips?.priceRange,
+        'Expected price range of {brandModel}'
+      ),
       Warranty: formatTooltip(
         translation?.tractorSpecs?.tooltips?.warranty,
         'Warranty period and coverage details for {brandModel}'
@@ -443,13 +442,13 @@ const TractorDetailsSpecs = ({ tractorDetail, translation, currentLang, bannerDe
           label: translation?.common?.brand || 'Brand',
           value: tractorDetail.brand,
           isLink: true,
-          link: `${currentLang == 'hi' ? '/hi' : ''}/tractor/${((tractorDetail.brand_name_en).replaceAll(' ', '-'))}`
+          link: `${currentLang == 'hi' ? '/hi' : ''}/tractor/${((tractorDetail.brand_name_en).replaceAll(' ', '-')).toLowerCase()}`
         },
         { label: translation?.common?.model || 'Model', value: tractorDetail.model },
-        // {
-        //   label: translation?.tractorSpecs?.priceRange || 'Price Range',
-        //   value: tractorDetail.price_range ? `₹ ${tractorDetail.price_range}` : 'NA',
-        // },
+        {
+          label: translation?.tractorSpecs?.priceRange || 'Price Range',
+          value: tractorDetail.price_range ? `₹ ${tractorDetail.price_range}` : 'NA',
+        },
 
         {
           label: translation?.tractorDetails?.specCategories?.warranty || 'Warranty',
@@ -581,13 +580,6 @@ const TractorDetailsSpecs = ({ tractorDetail, translation, currentLang, bannerDe
   return (
     <>
       <div className="relative mt-4 h-full w-full">
-        {/* Show banner above specs if provided */}
-        {bannerDetail && bannerDetail.imgUrl && (
-          <div
-            className={`max-h-[200px] mb-8 overflow-hidden rounded-xl`}
-            dangerouslySetInnerHTML={{ __html: bannerDetail.imgUrl }}
-          />
-        )}
         <div className="sticky bottom-0 top-0">
           <div className="mb-6 block md:hidden">
             <h2 className="border-b-3 inline-block border-secondary pb-2 text-lg font-semibold leading-6">

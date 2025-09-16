@@ -10,12 +10,11 @@ const TG_PopularCard = ({
   detailUrl,
   type = "tractor", // "tractor", "tyre", or "implement"
   specs = {}, // { label: value }
-  translation
 }) => {
   return (
     <div className="flex h-full flex-col justify-between rounded-2xl border border-gray-light bg-white p-5 transition-all duration-300 hover:border-secondary hover:bg-green-lighter">
       <div>
-        <h5 className={`${type === "implement" ? "mb-0 min-h-[46px]" : "mb-2.5 min-h-[56px]"} line-clamp-2 text-lg font-semibold leading-6 text-black md:min-h-[45px] py-1`}>
+        <h5 className="mb-2.5 line-clamp-2 text-lg font-semibold leading-6 text-black min-h-[45px]">
           <Link
             href={detailUrl}
             title={title}
@@ -31,7 +30,7 @@ const TG_PopularCard = ({
           aria-label={`View details about ${title}`}
           className="mb-2 inline-flex items-center gap-2 rounded-full bg-primary px-3 py-1 text-sm text-white"
         >
-          {translation.buttons.viewDetails}
+          View Details
           <Image
             src={tgi_arrow_right}
             alt="view details"
@@ -44,7 +43,7 @@ const TG_PopularCard = ({
 
       <Link
         href={detailUrl}
-        className={type === "implement" ? "mb-0" : "mb-4"}
+        className="mb-4"
         title={title}
         aria-label={`Image of ${title}`}
       >
@@ -61,14 +60,15 @@ const TG_PopularCard = ({
       </Link>
 
       {Object.keys(specs).length > 0 && (
-        <div className=" flex h-full max-h-12 justify-between rounded-lg bg-green-mint px-2 py-1.5 text-center text-sm">
+        <div className="flex h-full max-h-12 justify-between rounded-lg bg-green-mint px-2 py-1.5 text-center text-sm">
           {Object.entries(specs).map(([label, value], index, arr) => (
             <div
               key={label}
-              className={`${index !== 0 && index !== arr.length - 1
-                ? "mx-1 border-x border-primary px-2"
-                : ""
-                } flex flex-1 flex-col items-center max-w-[90px]`}
+              className={`${
+                index !== 0 && index !== arr.length - 1
+                  ? "mx-1 border-x border-primary px-2"
+                  : ""
+              } flex flex-1 flex-col items-center max-w-[90px]`}
             >
               <span className="w-full text-xs font-normal text-gray-dark text-nowrap truncate">{label}</span>
               <p className="w-full font-bold text-nowrap truncate">{value}</p>

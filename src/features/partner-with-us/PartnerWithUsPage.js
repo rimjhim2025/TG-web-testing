@@ -16,10 +16,6 @@ import ImplementPromotionSection from './ImplementPromotionSection';
 import TyrePromotionSection from './TyrePromotionSection';
 import InsuranceFinanceSection from './InsuranceFinanceSection';
 import BusinessContactForm from './BusinessContactForm';
-import SeoHead from '@/src/components/shared/header/SeoHead';
-import { getSEOByPage } from '@/src/services/seo/get-page-seo';
-import { getApiUrl } from '@/src/utils/utils';
-import ScrollToTopNavigate from '@/src/components/shared/ScrollToTop/ScrollToTopOnNavigation';
 const JoinOurCommunityServer = nextDynamic(
   () => import('@/src/components/shared/community/JoinOurCommunityServer'),
   { ssr: true }
@@ -47,28 +43,9 @@ const TG_PartnerWithUsPage = async ({ prefLangs }) => {
   } catch (error) {
     console.error('Error fetching data:', error);
   }
-
-  const apiUrl = getApiUrl();
-  const seoSlug = `partner`;
-  const seoData = await getSEOByPage(seoSlug);
-
   return (
     <>
-      <SeoHead
-        seo={seoData}
-        staticMetadata={{}}
-        preloadUrls={[]}
-        paginationLinks={{
-          canonical: `${apiUrl}/partner`,
-        }}
-      />
-      <DesktopHeader
-        isMobile={isMobile}
-        translation={translation}
-        currentLang={prefLang}
-        showLanguageSelector={false}
-      />
-      <ScrollToTopNavigate />
+      <DesktopHeader isMobile={isMobile} translation={translation} currentLang={prefLang} />
       <main className="lg:mt-[159px]">
         <GrowBusinessSection />
         <WhyJoinUsSection />
@@ -77,11 +54,10 @@ const TG_PartnerWithUsPage = async ({ prefLangs }) => {
         <OurBrandsSection />
         <HelpingMechaniseSection />
         <ImplementPromotionSection />
-
         <TyrePromotionSection />
         <InsuranceFinanceSection />
-        <BusinessContactForm isMobile={isMobile} />
-        <WhatsAppTopButton translation={translation} currentLang={prefLang} isMobile={isMobile} />
+        <BusinessContactForm />
+        <WhatsAppTopButton translation={translation} currentLang={prefLang} />
         <JoinOurCommunityServer translation={translation} currentLang={prefLang} />
       </main>
       <FooterServer translation={translation} />

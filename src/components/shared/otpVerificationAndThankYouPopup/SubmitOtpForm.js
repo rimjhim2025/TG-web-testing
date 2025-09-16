@@ -13,7 +13,7 @@ const PopupWrapper = ({ children }) => (
 );
 
 // WhatsApp Channel Link
-export const WhatsappChannel = ({ translation }) => (
+const WhatsappChannel = ({ translation }) => (
   <Link
     href="https://www.whatsapp.com/channel/0029VaBrPnQBKfi99fRpOJ1e"
     target="_blank"
@@ -319,9 +319,9 @@ const SubmitOtpForm = ({
               </button>
               <div className="mb-4 text-center">
                 <span className="text-sm text-gray-main md:text-2xl">
-                  { }
+                  {}
                   {existVerified === "Exist_Verified" ||
-                    existVerified === "Non_Verified_Exist"
+                  existVerified === "Non_Verified_Exist"
                     ? translation?.suggestedPopup.mainParaRepeat
                     : translation?.suggestedPopup.mainPara}
                 </span>

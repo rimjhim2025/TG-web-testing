@@ -4,23 +4,32 @@ import { getSelectedLanguage } from '@/src/services/locale/index.js'; // For lan
 import { isMobileView } from '@/src/utils'; // For mobile detection
 import { getDictionary } from '@/src/lib/dictonaries'; // For translations
 import TyresPriceList from '@/src/features/tyre/tyre-price/ListingMainSection';
-import nextDynamic from 'next/dynamic';
 
+import UpdatesSection from '@/src/features/tyreComponents/components/updatesAbouteTyre/UpdatesSection';
+import TractorFAQs from '@/src/features/tyre/tyreFAQs/TyreFAQs';
 import {
   getTyreReels,
   getTyreVideos,
   getTyreWebstories,
 } from '@/src/services/tyre/tyre-brand-webstore';
 import NavComponents from '@/src/features/tyre/NavComponents';
+import FooterComponents from '@/src/features/tyre/FooterComponents';
+import AboutTractorGyanServer from '@/src/components/shared/about/AboutTractorGyanServer';
 import { getTractorFAQs } from '@/src/services/tractor/get-tractor-faqs';
+import TractorGyanOfferings from '@/src/components/shared/offerings/TractorGyanOfferings';
+import JoinOurCommunityServer from '@/src/components/shared/community/JoinOurCommunityServer';
 import WhatsAppTopButton from '@/src/features/tyreComponents/commonComponents/WhatsAppTopButton';
 import { getTractorSeries } from '@/src/services/tractor/get-tractor-series';
 import { getTractorWheelDrive } from '@/src/services/tractor/get-tractor-wheel-drive';
 import { getBrandFromSlug } from '@/src/utils/tractor';
 import Image from 'next/image';
+import TyreDealersByStates from '@/src/features/tyre/TyreDealersByStates/TyreDealersByStates';
+import NewsSection from '@/src/features/tyre/tyreNews/NewsSection';
 import { getTractorBrandBlogNews } from '@/src/services/tractor/get-tractor-brand-blog-news';
 import TractorSeriesSlider from '@/src/components/tractor/TractorSeriesSlider';
 import TractorSeriesCard from '@/src/components/ui/cards/TractorSeriesCard';
+import SecondHandMiniTractorCards from '@/src/components/ui/cards/secondHandMiniTractorCards/secondHandMiniTractorCards';
+import TractorsByBrands from '@/src/components/tractor/TractorsByBrands';
 import { getTractorBrandPriceList } from '@/src/services/tractor/get-tractor-brand-price-list';
 import { getHpListingPriceList } from '@/src/services/tractor/hp-listing-price-list';
 import { getTractorBrandTopContent } from '@/src/services/tractor/get-tractor-brand-top-content';
@@ -31,18 +40,6 @@ import { getTractorBrandKeyHighlights } from '@/src/services/tractor/get-tractor
 import { getBrandSecondHandTractors } from '@/src/services/second-hand-tractors/get-brand-second-hand-tractors';
 import { getTractorBrandDealersByState } from '@/src/services/tractor/get-tractor-brand-dealers-by-state';
 import { getTractorBrands } from '@/src/services/tractor/all-tractor-brands-v2';
-
-const UpdatesSection = nextDynamic(() => import('@/src/features/tyreComponents/components/updatesAbouteTyre/UpdatesSection'));
-const TractorFAQs = nextDynamic(() => import('@/src/features/tyre/tyreFAQs/TyreFAQs'));
-const FooterComponents = nextDynamic(() => import('@/src/features/tyre/FooterComponents'));
-const AboutTractorGyanServer = nextDynamic(() => import('@/src/components/shared/about/AboutTractorGyanServer'));
-const TractorGyanOfferings = nextDynamic(() => import('@/src/components/shared/offerings/TractorGyanOfferings'));
-const JoinOurCommunityServer = nextDynamic(() => import('@/src/components/shared/community/JoinOurCommunityServer'));
-const TyreDealersByStates = nextDynamic(() => import('@/src/features/tyre/TyreDealersByStates/TyreDealersByStates'));
-const NewsSection = nextDynamic(() => import('@/src/features/tyre/tyreNews/NewsSection'));
-const SecondHandMiniTractorCards = nextDynamic(() => import('@/src/components/ui/cards/secondHandMiniTractorCards/secondHandMiniTractorCards'));
-const TractorsByBrands = nextDynamic(() => import('@/src/components/tractor/TractorsByBrands'));
-
 
 export const dynamic = 'force-dynamic'; // Ensure the page is always rendered dynamically
 
@@ -56,12 +53,10 @@ export default async function TractorByBrandPage({
 }) {
   const param = await params; // Get the params from the request
   const searchParamObj = await searchParams; // Get the search params from the request
-  const [currentLang, isMobile] = await Promise.all([
-    getSelectedLanguage(),
-    isMobileView(),
-  ]);
-
+  const currentLang = await getSelectedLanguage(); // Server-side language detection
   const translation = await getDictionary(currentLang);
+
+  const isMobile = await isMobileView(); // Server-side mobile detection
 
   const brandName = hpRange ? '' : param['brand-name'].split('-').join(' '); // Convert slug to brand name
 
@@ -81,6 +76,11 @@ export default async function TractorByBrandPage({
     ? { name: '', brand_name_en: '' } // For HP range, no specific brand
     : getBrandFromSlug(`${param['brand-name']}`, tractorBrands);
 
+  // Fetch tractor brand blog news (skip for HP range)
+  const news = await getTractorBrandBlogNews({
+    brand_name: hpRange ? hpRange : param['brand-name'],
+  });
+
   const headingTitle = hpRange
     ? hpRange.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) // Format HP range title
     : isSeriesListing && seriesName
@@ -89,91 +89,121 @@ export default async function TractorByBrandPage({
 
   const category = 'Tractors';
 
-  const priceListPromise = () => {
-    if (isSeriesListing && (seriesName.includes("2wd") || seriesName.includes("4wd"))) {
-      return getTractorBrandPriceList({
-        brand_name: param['brand-name'],
-        lang: currentLang,
-        series_name: seriesName.includes("2wd") ? '2wd' : '4wd',
-      });
-    } else {
-      return hpRange
-        ? getHpListingPriceList(hpRange, currentLang)
-        : getTractorBrandPriceList({
-          lang: currentLang,
-          brand_name: brandName,
-          ...(isSeriesListing && { series_name: seriesName }),
-        });
-    }
-  }
-
-  const topContentPromise = () => {
-    if (isSeriesListing && (seriesName.includes("2wd") || seriesName.includes("4wd"))) {
-      return getTractorBrandTopContent({
-        page_type: 'wd_tractor_page',
-        brand_en: param['brand-name'],
-        lang: currentLang,
-        wd_type: seriesName.includes("2wd") ? '2WD' : '4WD',
-      });
-    } else {
-      return getTractorBrandTopContent({
-        ad_title: hpRange
-          ? hpRange
-          : `tractor/${param['brand-name']}${isSeriesListing ? '/' + seriesName : ''}`, // Use the brand slug for the ad title
-        currentLang: currentLang,
-        ad_type_content_lang: currentLang == 'en' ? 'english' : 'hindi',
-        device_type: isMobile ? 'mobile' : 'desktop',
-        ...hpRange && { ad_type_content_lang: currentLang == 'en' ? 'english' : 'hindi' }
-      });
-    }
-  }
-
-  const [
-    news,
-    videos,
-    reels,
-    webstories,
-    seoData,
-    faqResponse,
-    priceList,
-    topContent,
-    keyHighlights,
-    secondHandData,
-    tractorSeriesData,
-    wheelDriveData,
-    dealerStatesResponse
-  ] = await Promise.all([
-    getTractorBrandBlogNews({ brand_name: hpRange ? hpRange : param['brand-name'] }),
+  const [videos, reels, webstories] = await Promise.all([
     getTyreVideos(pageSlug),
     getTyreReels(pageSlug),
     getTyreWebstories(pageSlug),
-    getSEOByPage(pageSlug),
-    getTractorFAQs({
-      faq_tag: `${seriesName ? `tractor/${param['brand-name']}/${seriesName}` : `tractor/${param['brand-name']}`}`,
-      lang: currentLang,
-    }).catch(e => { console.error('Failed to fetch FAQs:', e); return null; }),
-    priceListPromise(),
-    topContentPromise(),
-    hpRange ? Promise.resolve([]) : getTractorBrandKeyHighlights({ brand_name: brandName, lang: currentLang }),
-    hpRange ? Promise.resolve(null) : getBrandSecondHandTractors({
-      brand_name: brandName,
-      start_limit: 0,
-      end_limit: 4,
-      ...isSeriesListing && { series_name: seriesName },
-    }).catch(e => { console.error('Failed to fetch second-hand tractors:', e); return null; }),
-    hpRange ? Promise.resolve(null) : getTractorSeries({ brand_name: brandName }).catch(e => { console.error('Failed to fetch tractor series:', e); return null; }),
-    hpRange ? Promise.resolve(null) : getTractorWheelDrive({ brand_name: brandName }).catch(e => { console.error('Failed to fetch wheel drive data:', e); return null; }),
-    getTractorBrandDealersByState({ brand_name: brandName, lang: currentLang }).catch(e => { console.error('❌ Failed to fetch brand dealer states:', e); return null; })
   ]);
 
+  const seoData = await getSEOByPage(pageSlug);
+
   let faqs = [];
-  if (faqResponse && faqResponse.success) {
-    faqs = faqResponse.data || [];
+  try {
+    const faqResponse = await getTractorFAQs({
+      faq_tag: pageSlug,
+      lang: currentLang,
+    });
+    if (faqResponse && faqResponse.success) {
+      faqs = faqResponse.data || [];
+    }
+  } catch (error) {
+    console.error('Failed to fetch FAQs:', error);
+    faqs = [];
   }
 
+  // Fetch price list - use HP listing API for HP range pages
+  let priceList
+
+  if (isSeriesListing && (seriesName.includes("2wd") || seriesName.includes("4wd"))) {
+    priceList = await getTractorBrandPriceList({
+      brand_name: param['brand-name'],
+      lang: currentLang,
+      series_name: seriesName.includes("2wd") ? '2wd' : '4wd',
+    });
+
+  } else {
+    priceList = hpRange
+      ? await getHpListingPriceList(hpRange, currentLang)
+      : await getTractorBrandPriceList({
+        lang: currentLang,
+        brand_name: brandName,
+        ...(isSeriesListing && { series_name: seriesName }),
+      });
+
+  }
+
+  let topContent
+  if (isSeriesListing && (seriesName.includes("2wd") || seriesName.includes("4wd"))) {
+    topContent = await getTractorBrandTopContent({
+      page_type: 'wd_tractor_page',
+      brand_en: param['brand-name'],
+      lang: currentLang,
+      wd_type: seriesName.includes("2wd") ? '2WD' : '4WD',
+    });
+  } else {
+    topContent = await getTractorBrandTopContent({
+      ad_title: hpRange
+        ? hpRange
+        : `tractor/${param['brand-name']}${isSeriesListing ? '/' + seriesName : ''}`, // Use the brand slug for the ad title
+      currentLang: currentLang,
+      ad_type_content_lang: currentLang == 'en' ? 'english' : 'hindi',
+      device_type: isMobile ? 'mobile' : 'desktop',
+      ...hpRange && { ad_type_content_lang: currentLang == 'en' ? 'english' : 'hindi' }
+    });
+
+  }
+
+
+  const keyHighlights = hpRange
+    ? []
+    : await getTractorBrandKeyHighlights({
+      brand_name: brandName,
+      lang: currentLang,
+    });
+
+  // Fetch brand-specific second-hand tractors (skip for HP range)
   let secondHandTractors = [];
-  if (secondHandData && secondHandData.success) {
-    secondHandTractors = secondHandData.data || [];
+  if (!hpRange) {
+    try {
+      const secondHandData = await getBrandSecondHandTractors({
+        brand_name: brandName,
+        start_limit: 0,
+        end_limit: 4,
+        ...isSeriesListing && { series_name: seriesName },
+      });
+      if (secondHandData && secondHandData.success) {
+        secondHandTractors = secondHandData.data || [];
+      }
+    } catch (error) {
+      console.error('Failed to fetch second-hand tractors:', error);
+      secondHandTractors = [];
+    }
+  }
+
+  // Fetch tractor series data from API (skip for HP range)
+  let tractorSeriesData;
+  if (!hpRange) {
+    try {
+      tractorSeriesData = await getTractorSeries({
+        brand_name: brandName,
+      });
+    } catch (error) {
+      console.error('Failed to fetch tractor series:', error);
+      tractorSeriesData = null;
+    }
+  }
+
+  // Fetch tractor wheel drive data from API (skip for HP range)
+  let wheelDriveData;
+  if (!hpRange) {
+    try {
+      wheelDriveData = await getTractorWheelDrive({
+        brand_name: brandName,
+      });
+    } catch (error) {
+      console.error('Failed to fetch wheel drive data:', error);
+      wheelDriveData = null;
+    }
   }
 
   if (!hpRange) {
@@ -202,7 +232,6 @@ export default async function TractorByBrandPage({
     isSeriesListing, // Pass series listing flag
     seriesName, // Pass series name
     hpRange, // Pass HP range for HP-wise listing
-    ...param['brand-name'] && { page_url: "tractor/" + param['brand-name'] }, // Only pass brandName if not HP range
   });
 
   // Extract pagination data
@@ -234,14 +263,30 @@ export default async function TractorByBrandPage({
 
   let dealerStates = [];
   let stateImages = '';
-  if (dealerStatesResponse && dealerStatesResponse.success) {
-    dealerStates =
-      dealerStatesResponse.data?.map(state => ({
-        state_name: state.state,
-        page_url: state.page_url,
-        images: state.icon,
-      })) || [];
-    stateImages = dealerStatesResponse.state_images || '';
+
+  let storyError = false;
+
+  try {
+    const response = await getTractorBrandDealersByState({
+      brand_name: brandName,
+      lang: currentLang,
+    });
+    if (response && response.success) {
+      // Transform the data to match TyreDealersByStates expected structure
+      dealerStates =
+        response.data?.map(state => ({
+          state_name: state.state, // Changed from 'name' to 'state_name'
+          page_url: state.page_url,
+          images: state.icon, // Changed from 'image' to 'images'
+        })) || [];
+
+      stateImages = response.state_images || '';
+    } else {
+      storyError = true;
+    }
+  } catch (err) {
+    console.error('❌ Failed to fetch brand dealer states:', err);
+    storyError = true;
   }
 
   // Process tractor series data for the slider component
@@ -451,7 +496,7 @@ export default async function TractorByBrandPage({
               width: 'w-[45%]',
               dataKey: item => (
                 <Link
-                  href={(currentLang == 'hi' ? '/hi' : '') + item.page_url || '#'}
+                  href={item.page_url || '#'}
                   className="hover:text-primary-dark font-bold text-primary transition-colors duration-200"
                   title={`${item.brand} ${item.model}`}
                 >
@@ -702,15 +747,15 @@ export default async function TractorByBrandPage({
           data={secondHandTractors}
           translation={translation}
           currentLang={currentLang}
-          buttonRedirectUrl={`${currentLang == 'hi' ? '/hi' : ''}/second-hand-tractor/${param['brand-name'].toLowerCase()}`}
+          buttonRedirectUrl={`${currentLang == 'hi' ? '/hi' : ''}/second-hand-tractors/${param['brand-name']}`}
         />
       ) : null}
-      {isMobile ? <TractorsByBrands
+      <TractorsByBrands
         translation={translation}
         langPrefix={currentLang}
         allTractorBrands={tractorBrands}
         cta={translation.buttons.viewAllBrands || 'View All Brands'}
-      /> : null}
+      />
       {!hpRange ? (
         <TyreDealersByStates
           heading={translation.tractorDetails.tractorDealers.replace(
@@ -741,7 +786,7 @@ export default async function TractorByBrandPage({
       <TractorGyanOfferings translation={translation} />
       <AboutTractorGyanServer slug={pageSlug} translation={translation} />
       <FooterComponents translation={translation} />
-      <WhatsAppTopButton translation={translation} currentLang={currentLang} isMobile={isMobile} />
+      <WhatsAppTopButton translation={translation} currentLang={currentLang} />
     </main>
   );
 }

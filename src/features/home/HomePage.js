@@ -228,9 +228,6 @@ const TG_HomePage = async ({ searchParams, prefLangs }) => {
             viewMode={false}
             heading="Compare Tractors"
             cta="Compare Tractors"
-            currentLang={prefLang}
-            tractorbrands={allTractorBrands}
-            translation={translation}
           />
         </section>
 
@@ -308,7 +305,6 @@ const TG_HomePage = async ({ searchParams, prefLangs }) => {
           translation={translation}
           currentLang={prefLang}
           defaultEnquiryType={'Tractor'}
-          isMobile={isMobile}
         />
 
         <JoinOurCommunityServer translation={translation} currentLang={prefLang} />

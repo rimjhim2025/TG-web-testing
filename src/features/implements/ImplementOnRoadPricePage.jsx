@@ -22,7 +22,6 @@ import TractorImplementTypes from '@/src/components/shared/tractor-implements/Tr
 import TractorImplementBrands from '@/src/components/shared/tractor-implement-brands/TractorImplementBrands';
 import { getAllImplementTypes } from '@/src/services/implement/all-implement-types';
 import { tgb_implement_on_road_price, tgb_implement_on_road_price_mobile } from '@/src/utils/assets/banners';
-import { getAllImplementBrandsDetail } from '@/src/services/implement/get-all-implement-brands';
 
 const ImplementOnRoadPricePage = async () => {
   const currentLang = await getSelectedLanguage();
@@ -40,13 +39,58 @@ const ImplementOnRoadPricePage = async () => {
 
   const allImplementTypes = await getAllImplementTypes();
 
-  let allImplementBrands;
-  try {
-    allImplementBrands = await getAllImplementBrandsDetail();
-  } catch (error) {
-    console.error('Failed to fetch implement brands data:', error);
-    allImplementBrands = [];
-  }
+  const allImplementBrands = [
+    {
+      title: 'Agristar',
+      imgSrc: 'https://images.tractorgyan.com/uploads/implement_brand_logo/agristar.jpg',
+      url: '/tractor-implements/agristar',
+    },
+    {
+      title: 'Escorts',
+      imgSrc: 'https://images.tractorgyan.com/uploads/114335/66b48e312a1a7-escorts-Kubota-200x200-logo-01.png',
+      url: '/tractor-implements/agristar',
+    },
+    {
+      title: 'John Deere',
+      imgSrc: 'https://images.tractorgyan.com/uploads/115006/66e14394f37e9-john-deere-implement-logo.webp',
+      url: '/tractor-implements/agristar',
+    },
+    {
+      title: 'Agristar',
+      imgSrc: 'https://images.tractorgyan.com/uploads/implement_brand_logo/agristar.jpg',
+      url: '/tractor-implements/agristar',
+    },
+    {
+      title: 'Escorts',
+      imgSrc: 'https://images.tractorgyan.com/uploads/114335/66b48e312a1a7-escorts-Kubota-200x200-logo-01.png',
+      url: '/tractor-implements/agristar',
+    },
+    {
+      title: 'John Deere',
+      imgSrc: 'https://images.tractorgyan.com/uploads/115006/66e14394f37e9-john-deere-implement-logo.webp',
+      url: '/tractor-implements/agristar',
+    },
+    {
+      title: 'Agristar',
+      imgSrc: 'https://images.tractorgyan.com/uploads/implement_brand_logo/agristar.jpg',
+      url: '/tractor-implements/agristar',
+    },
+    {
+      title: 'Escorts',
+      imgSrc: 'https://images.tractorgyan.com/uploads/114335/66b48e312a1a7-escorts-Kubota-200x200-logo-01.png',
+      url: '/tractor-implements/agristar',
+    },
+    {
+      title: 'John Deere',
+      imgSrc: 'https://images.tractorgyan.com/uploads/115006/66e14394f37e9-john-deere-implement-logo.webp',
+      url: '/tractor-implements/agristar',
+    },
+    {
+      title: 'John Deere',
+      imgSrc: 'https://images.tractorgyan.com/uploads/115006/66e14394f37e9-john-deere-implement-logo.webp',
+      url: '/tractor-implements/agristar',
+    },
+  ];
 
   return (
     <>
@@ -82,12 +126,11 @@ const ImplementOnRoadPricePage = async () => {
           hideBanner={true}
           bgColor="bg-green-lighter"
           formTitle="Implement On Road Price"
-          tyreBrands={allImplementBrands}
+          tyreBrands={tyreBrands}
           translation={translation}
           currentLang={currentLang}
           type='IMPLEMENT'
           submitBtnText='₹ Get Implement Price'
-          isMobile={isMobile}
         />
 
         <TractorImplementTypes
@@ -103,8 +146,6 @@ const ImplementOnRoadPricePage = async () => {
           heading='Implements By Brands'
           allImplementBrands={allImplementBrands}
           itemsShown={isMobile ? 9 : 12}
-          translation={translation}
-          prefLang={currentLang}
         />
 
         <div className="mt-4">
@@ -136,7 +177,6 @@ const ImplementOnRoadPricePage = async () => {
           currentLang={currentLang}
           tyreBrands={tyreBrands}
           defaultEnquiryType={'Tyre'}
-          isMobile={isMobile}
         />
       </div>
       <FooterServer translation={translation} />

@@ -44,14 +44,11 @@ export default async function TyreDetailPage({ params }) {
   return (
     <>
       <SeoHead
-        seo={{}}
+        seo={{
+          canonical: `${process.env.NEXT_PUBLIC_API_URL || 'https://tractorgyan.com'}${prefLang == 'en' ? '' : `/${prefLang}`}/tyre/${brandSlug}/${tyreId}`,
+        }}
         staticMetadata={{}}
         preloadUrls={[]}
-        // paginationLinks={{
-
-        //   canonical: `${process.env.NEXT_PUBLIC_API_URL || 'https://tractorgyan.com'}${prefLang == 'en' ? '' : '/' + prefLang}/tyre/${brandSlug}/${tyreId}`,
-
-        // }}
         seoHTMLDescription={seoHTMLDescription}
       />
       <DesktopHeader currentLang={prefLang} translation={translation} isMobile={isMobile} />
@@ -79,7 +76,6 @@ export default async function TyreDetailPage({ params }) {
           translation={translation}
           currentLang={prefLang}
           brandName={`${tyreDetail.brand_name} ${tyreDetail.model_name}`}
-          isMobile={isMobile}
         />
         <TyreRatingAndReviews
           reviewData={[]}
@@ -110,7 +106,6 @@ export default async function TyreDetailPage({ params }) {
           currentLang={prefLang}
           tyreBrands={tyreBrands}
           defaultEnquiryType={'Tyre'}
-          isMobile={isMobile}
         />
         <JoinOurCommunityServer translation={translation} currentLang={prefLang} />
         <TractorGyanOfferings translation={translation} />

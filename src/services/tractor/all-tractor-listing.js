@@ -8,8 +8,7 @@ export async function getAllTractorListing(
   popularTractor,
   latestTractor,
   hpRangeFilter,
-  currentLang,
-  page_url = null,
+  currentLang
 ) {
   try {
     const startLimit = (page - 1) * itemsPerPage;
@@ -24,11 +23,7 @@ export async function getAllTractorListing(
       popular_tractor: popularTractor,
       latest_tractor: latestTractor,
       hp_range_filter: hpRangeFilter,
-      page_url: page_url,
     });
-
-    console.log("[getAllTractorListing] Result:", page_url, result);
-
 
     if (result && result.success) {
       return {

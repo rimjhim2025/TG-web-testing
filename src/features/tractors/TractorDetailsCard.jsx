@@ -6,8 +6,11 @@ import TG_Button from '@/src/components/ui/buttons/MainButtons';
 import Tooltip from '@/src/features/tyreComponents/commonComponents/Tooltip';
 import SocialMediaLinksShare from '@/src/components/shared/social-media/SocialMediaShare';
 import WhatsAppTopButton from '@/src/features/tyreComponents/commonComponents/WhatsAppTopButton';
-import { tgi_arrow_right_white, tgi_star } from '@/src/utils/assets/icons';
+import { isMobileView } from '@/src/utils';
+import { tgi_arrow_right_white } from '@/src/utils/assets/icons';
+import { IMAGE_URL } from '@/src/services/constants/url-constants';
 import Image from 'next/image';
+import TG_LinkButton from '@/src/components/ui/buttons/TgLinkButton';
 
 const TractorDetailsCard = ({
   tractorId,
@@ -81,14 +84,12 @@ const TractorDetailsCard = ({
 
   return (
     <div className="justify-around rounded-2xl md:flex md:p-4 md:shadow-main">
-      {/* <div className="relative h-full w-full flex justify-center px-4 pt-3 md:justify-start md:max-h-[480px] md:max-w-[350px] lg:max-w-[335px] xl:max-w-[350px]"> */}
-      <div className="relative h-full w-full px-0 pt-0 md:pt-3 md:max-h-[480px] md:max-w-[350px] md:px-4 lg:max-w-[335px] xl:max-w-[350px]">
+      <div className="relative h-full w-full flex justify-center px-4 pt-3 md:justify-start md:max-h-[480px] md:max-w-[350px] lg:max-w-[335px] xl:max-w-[350px]">
         <TractorMainSlider
           title={`${tractorDetail.brand} ${tractorDetail.model} image`}
-          imgUrl={tractorDetail.images}
+          imgUrl={tractorDetail.image}
           brandLogo={tractorDetail.brand_logo || ''}
-          showThumbnails={true}
-          isPopular={tractorDetail?.popular_tractor === '1' ? true : false}
+          showThumbnails={false}
         />
       </div>
       <div className="mt-8 w-full rounded-2xl p-4 shadow-main md:mt-2 md:max-w-[370px] md:p-0 md:p-2 md:shadow-none lg:max-w-[335px] xl:max-w-[450px]">
@@ -98,52 +99,10 @@ const TractorDetailsCard = ({
             {`${tractorDetail.brand} ${tractorDetail.model}`}
           </h1>
         </Tooltip> : null}
-        <div className="flex flex-row-reverse md:flex-row justify-between items-start">
-          <div>
-            {rawRating > 0 ? (
-              <div
-                className="flex justify-end md:justify-start items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity"
-                onClick={() => {
-                  const reviewSection = document.getElementById('review-section');
-                  if (reviewSection) {
-                    reviewSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                  }
-                }}
-              >
-                <div className="text-xs font-medium text-gray-main">{rawRating}</div>
-                <div className="min-w-[17px] max-w-[17px]">
-                  {starImage ? (
-                    <Image
-                      src={starImage}
-                      height={100}
-                      width={100}
-                      alt={`Rating: ${rawRating}`}
-                      title={`Rating: ${rawRating}`}
-                      className="w-4"
-                    />
-                  ) : (
-                    <Image
-                      src="https://images.tractorgyan.com/uploads/117228/677395f732537-filled-gray-star.webp"
-                      height={100}
-                      width={100}
-                      alt={`Rating: ${rawRating}`}
-                      title={`Rating: ${rawRating}`}
-                      className="w-4"
-                    />
-                  )}
-                </div>
-                <div className="text-xs font-medium text-gray-main">
-                  ({reviews} {translation?.tractorDetails?.reviews || 'reviews'})
-                </div>
-              </div>
-            ) : (
-              <div className="text-xs font-medium text-gray-main">
-                {translation?.tractorDetails?.noReviews || 'No reviews yet'}
-              </div>
-            )}
-
-            <button
-              className="flex md:hidden items-center justify-center gap-1.5 rounded-full border-[1px] border-gray-light px-3 py-1.5 md:px-4 mt-2"
+        <div className="flex justify-between">
+          {rawRating > 0 ? (
+            <div
+              className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity"
               onClick={() => {
                 const reviewSection = document.getElementById('review-section');
                 if (reviewSection) {
@@ -151,56 +110,49 @@ const TractorDetailsCard = ({
                 }
               }}
             >
-              <span className="w-3">
-                <Image
-                  src={tgi_star}
-                  height={20}
-                  width={20}
-                  alt="star-icon"
-                  title="star-icon"
-                  className="w-full"
-                />
-              </span>
-              <span className="text-xs font-medium text-gray-dark md:text-sm text-nowrap">
-                Review Tractor
-              </span>
-            </button>
-          </div>
-
-          <div>
-            <span className='block md:hidden text-sm'>Share</span>
-            <SocialMediaLinksShare
-              title={
-                translation?.tractorDetails?.shareTitle || 'Check out this tractor on TractorGyan!'
-              }
-              url={'https://tractorgyan.com' + tractorDetail.page_url}
-            />
-          </div>
+              <div className="text-xs font-medium text-gray-main">{rawRating}</div>
+              <div className="min-w-[17px] max-w-[17px]">
+                {starImage ? (
+                  <Image
+                    src={starImage}
+                    height={100}
+                    width={100}
+                    alt={`Rating: ${rawRating}`}
+                    title={`Rating: ${rawRating}`}
+                    className="w-4"
+                  />
+                ) : (
+                  <Image
+                    src="https://images.tractorgyan.com/uploads/117228/677395f732537-filled-gray-star.webp"
+                    height={100}
+                    width={100}
+                    alt={`Rating: ${rawRating}`}
+                    title={`Rating: ${rawRating}`}
+                    className="w-4"
+                  />
+                )}
+              </div>
+              <div className="text-xs font-medium text-gray-main">
+                ({reviews} {translation?.tractorDetails?.reviews || 'reviews'})
+              </div>
+            </div>
+          ) : (
+            <div className="text-xs font-medium text-gray-main">
+              {translation?.tractorDetails?.noReviews || 'No reviews yet'}
+            </div>
+          )}
+          <SocialMediaLinksShare
+            title={
+              translation?.tractorDetails?.shareTitle || 'Check out this tractor on TractorGyan!'
+            }
+            url={'https://tractorgyan.com' + tractorDetail.page_url}
+          />
         </div>
-        {isMobile ? (
-          <div className="mb-6 mt-4 grid min-h-[62px] grid-cols-3 gap-2 md:gap-4 bg-green-lighter shadow-card">
-            {productHighlight
-              .filter(({ value }) => value && value !== 'NA')
-              .splice(0, 3)
-              .map(({ label, value }, index) => (
-                <div key={`${label}-${index}`} className="flex flex-col items-center justify-center rounded-lg p-2">
-                  <span className="text-center text-xs font-normal text-gray-dark">{label}</span>
-                  <span className="text-center text-base font-semibold text-black">{value}</span>
-                </div>
-              ))}
-          </div>
-        ) : (
-          <div className="mb-6 mt-4 grid min-h-[62px] grid-cols-3 gap-2 md:gap-4">
-            {productHighlight
-              .filter(({ value }) => value && value !== 'NA')
-              .map(({ label, value }, index) => (
-                <div key={`${label}-${index}`} className="flex flex-col items-center justify-center rounded-lg bg-green-lighter shadow-card p-2">
-                  <span className="text-center text-xs font-normal text-gray-dark">{label}</span>
-                  <span className="text-center text-base font-semibold text-black">{value}</span>
-                </div>
-              ))}
-          </div>
-        )}
+        <div className="mb-6 mt-4 grid min-h-[62px] grid-cols-3 gap-2 md:gap-4">
+          {productHighlight
+            .filter(({ value }) => value && value !== 'NA')
+            .map(({ label, value }) => renderHighlightItem(label, value))}
+        </div>
         <div className="mt-6 flex w-full gap-2 md:flex-col md:gap-4">
           <TG_Button
             className={`${secondaryBtnText ? 'w-1/2' : 'w-full'} md:w-full md:flex-1`}
@@ -233,7 +185,6 @@ const TractorDetailsCard = ({
           preFilledTractorBrand={tractorDetail.brand}
           preFilledTractorModelId={tractorDetail.id}
           onClose={() => setShowWhatsAppForm(false)}
-
         />
       )}
     </div>

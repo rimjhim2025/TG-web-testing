@@ -1,10 +1,8 @@
 import { fetchData } from "../apiMethods";
 
-export async function getAllTractorSubsidyStates({ lang = 'en' }) {
+export async function getAllTractorSubsidyStates({ pageSlug }) {
   try {
-    const result = await fetchData(`/api/subsidy_state_list?lang=${lang}`);
-    console.log("Fetched subsidy states:", result);
-
+    const result = await fetchData(`/api/subsidy_state_list`);
     return result.data;
   } catch (error) {
     console.error("Error fetching subsidy states:", error);

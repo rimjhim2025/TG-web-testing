@@ -2,8 +2,8 @@ import { postData } from "../apiMethods";
 
 export async function getAllImplementBrandsByType(implement_type) {
   try {
-    const result = await postData("/api/implement_brand", {
-      slug: implement_type,
+    const result = await postData("/api/implement_type_brand_list", {
+      implement_type,
     });
     console.log("Fetched Implemnt brands based on implement Types...", result);
     return result.data;

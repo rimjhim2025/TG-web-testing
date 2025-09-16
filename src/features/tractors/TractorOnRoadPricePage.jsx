@@ -26,7 +26,6 @@ import TG_Banner from '@/src/components/shared/bannners/Banner';
 import TyreDealersByStates from '../tyre/TyreDealersByStates/TyreDealersByStates';
 import { getDetailPageHeaderSEO } from '@/src/services/detailPageHeaderSeo';
 import { getTractorDetail } from '@/src/services/tractor/tractor-detail';
-import apiUrl from '@/src/services/apiUrl';
 
 const TractorOnRoadPricePage = async ({ params, searchParams }) => {
   const routeParams = await params;
@@ -92,16 +91,13 @@ const TractorOnRoadPricePage = async ({ params, searchParams }) => {
 
   return (
     <>
-      <SeoHead seo={seoData} staticMetadata={{}} preloadUrls={[]} seoHTMLDescription={htmlSeo?.data}
-        paginationLinks={{
-          canonical: `${routeParams['brand-model'] ? `${apiUrl}/${currentLang === 'hi' ? 'hi/' : ''}${routeParams['brand-model']}/tractor-on-road-price/${routeParams['modelId']}` : apiUrl + '/' + (currentLang === 'hi' ? 'hi/' : '') + 'tractor-on-road-price'}`,
-        }} />
+      <SeoHead seo={seoData} staticMetadata={{}} preloadUrls={[]} seoHTMLDescription={htmlSeo.data} />
       <DesktopHeader isMobile={isMobile} translation={translation} currentLang={currentLang} />{' '}
       <div className="pt-4 md:mt-[164px]">
         <div className="container">
           <TittleAndCrumbs
             title={routeParams['brand-model'] ? translation?.tractorOnRoadPrice.byModel.replace('{brandName}', `${tractorDetail.brand} ${tractorDetail.model}`) : translation?.tractorOnRoadPrice?.title || 'Get Tractor On Road Price'}
-            breadcrumbs={routeParams && routeParams['brand-model'] && routeParams['modelId'] ?
+            breadcrumbs={routeParams ?
               [
                 {
                   label: translation?.breadcrubm?.tractorGyanHome || 'Home',
@@ -115,7 +111,7 @@ const TractorOnRoadPricePage = async ({ params, searchParams }) => {
                 },
                 {
                   label: tractorDetail.brand + ' ' + translation.common.tractors,
-                  href: (currentLang == 'hi' ? '/hi' : '') + '/tractor/' + (tractorDetail.brand_name_en.replaceAll(' ', '-')),
+                  href: (currentLang == 'hi' ? '/hi' : '') + '/tractor/' + (tractorDetail.brand_name_en.toLowerCase().replaceAll(' ', '-')),
                   title: tractorDetail.brand + ' ' + translation.common.tractors,
                 },
 
@@ -158,8 +154,8 @@ const TractorOnRoadPricePage = async ({ params, searchParams }) => {
         </div>
 
         <TyrePriceInquireForm
-          preFilledBrand={tractorDetail?.brand_name_en}
-          preFilledModel={tractorDetail?.model_name_en}
+          preFilledBrand={tractorDetail.brand_name_en}
+          preFilledModel={tractorDetail.model_name_en}
           preFilledModelId={routeParams['modelId']}
           hideBanner={true}
           bgColor="bg-green-lighter"
@@ -168,7 +164,6 @@ const TractorOnRoadPricePage = async ({ params, searchParams }) => {
           translation={translation}
           currentLang={currentLang}
           type="TRACTOR"
-          isMobile={isMobile}
         />
 
         <SelectHP
@@ -220,7 +215,7 @@ const TractorOnRoadPricePage = async ({ params, searchParams }) => {
         <JoinOurCommunityServer translation={translation} currentLang={currentLang} />
         <TractorGyanOfferings translation={translation} />
         <AboutTractorGyanServer
-          slug={(currentLang == 'hi' ? 'hi/' : '') + (routeParams.hasOwnProperty('brand-model') ? `${routeParams['brand-model']}/tractor-on-road-price/${routeParams['modelId']}` : 'tractor-on-road-price')}
+          slug={(currentLang == 'hi' ? 'hi/' : '') + (routeParams ? `${routeParams['brand-model']}/tractor-on-road-price/${routeParams['modelId']}` : 'tractor-on-road-price')}
           translation={translation}
         />
         <WhatsAppTopButton
@@ -228,7 +223,6 @@ const TractorOnRoadPricePage = async ({ params, searchParams }) => {
           currentLang={currentLang}
           tyreBrands={allTractorBrands}
           defaultEnquiryType={translation?.common?.tractor || 'Tractor'}
-          isMobile={isMobile}
         />
       </div>
       <FooterServer translation={translation} />

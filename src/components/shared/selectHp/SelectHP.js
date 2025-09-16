@@ -11,7 +11,7 @@ import { getTractorHPs } from "@/src/services/tractor/get-tractor-hps";
 
 const tractorHPs = await getTractorHPs();
 
-const SelectHP = ({ langPrefix, isMobile, translation, sectionClasses }) => {
+const SelectHP = ({ isMobile, translation, sectionClasses }) => {
   const groupIntoPairs = (list) => {
     const pairs = [];
     for (let i = 0; i < list.length; i += 2) {
@@ -33,7 +33,7 @@ const SelectHP = ({ langPrefix, isMobile, translation, sectionClasses }) => {
 
   const Card = ({ item }) => (
     <Link
-      href={langPrefix == 'hi' ? '/hi' + item.page_url : item.page_url}
+      href={item.page_url}
       // href={item.url}
       className="flex w-full flex-col items-center justify-center rounded-lg border-[1px] border-transparent bg-white p-2 py-4 shadow-bottom hover:border-secondary hover:bg-green-lighter max-md:mb-2 lg:p-4 lg:py-6"
     >
@@ -52,7 +52,7 @@ const SelectHP = ({ langPrefix, isMobile, translation, sectionClasses }) => {
         {isMobile ? (
           <Slider {...sliderSettings} className="custom-slider h-full py-2">
             {groupIntoPairs(tractorHPs).map((pair, index) => (
-              // {groupIntoPairs(tractorsByHp).map((pair, index) => (
+            // {groupIntoPairs(tractorsByHp).map((pair, index) => (
               <div key={index} className="flex flex-col gap-4 px-2">
                 {pair.map((item, i) => (
                   <Card key={i} item={item} />
@@ -63,7 +63,7 @@ const SelectHP = ({ langPrefix, isMobile, translation, sectionClasses }) => {
         ) : (
           <div className="flex flex-wrap gap-2 md:gap-6">
             {tractorHPs.map((item, index) => (
-              // {tractorsByHp.map((item, index) => (
+            // {tractorsByHp.map((item, index) => (
               <div key={index} className="w-[30%] md:w-[15%]">
                 <Card item={item} />
               </div>

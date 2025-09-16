@@ -7,48 +7,13 @@ const TyreFAQsServer = dynamic(() => import('./TyreFAQsServer'), {
   ssr: true,
 });
 
-const TyreFAQs = ({
-  translation,
-  faqs,
-  headingKey,
-  isDynamicTitle,
-  brandName,
-  faqsError,
-  bgColor,
-  tractorDealerPayload,
-}) => {
+const TyreFAQs = ({ translation, faqs, headingKey, isDynamicTitle, brandName, faqsError, bgColor }) => {
   let headingTitle = tg_getTittleFromNestedKey(translation, headingKey);
 
   if (isDynamicTitle) {
-    // Replace brandName parameter (legacy support)
-    if (brandName) {
-      headingTitle = headingTitle.replace('{brandName}', brandName);
-    }
-
-    // Replace parameters from tractorDealerPayload
-    if (tractorDealerPayload) {
-      console.log('TyreFAQs: Original headingTitle:', headingTitle);
-      console.log('TyreFAQs: tractorDealerPayload:', tractorDealerPayload);
-
-      // Replace {brand_name}
-      if (tractorDealerPayload.brand_name) {
-        headingTitle = headingTitle.replace('{brand_name}', tractorDealerPayload.brand_name);
-      }
-
-      // Replace {state}
-      if (tractorDealerPayload.state) {
-        headingTitle = headingTitle.replace('{state}', tractorDealerPayload.state);
-      }
-
-      // Replace {city}
-      if (tractorDealerPayload.city) {
-        headingTitle = headingTitle.replace('{city}', tractorDealerPayload.city);
-      }
-
-      console.log('TyreFAQs: Final headingTitle after replacements:', headingTitle);
-    }
+    headingTitle = `${headingTitle.replace('{brandName}', brandName)}`;
   }
-  // console.log('heading title', headingTitle);
+  console.log('heading title', headingTitle);
 
   const formattedFaqs = faqs?.map((faq, index) => ({
     question: faq[`ques_${index + 1}`],

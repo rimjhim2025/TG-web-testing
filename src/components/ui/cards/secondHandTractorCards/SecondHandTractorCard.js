@@ -12,37 +12,22 @@ const SecondHandTractorCard = ({
 }) => {
   currentLang = currentLang === "hi" ? "/hi" : "";
 
-  // Format price (e.g., 390000 -> ₹ 3.90 Lakh)
-  const formatPrice = price => {
-    if (!price) return 'Price on Request';
-    const num = parseInt(price, 10);
-    if (isNaN(num)) return price;
-    if (num >= 100000) return `₹ ${(num / 100000).toFixed(2)} Lakh`;
-    return `₹ ${num.toLocaleString('en-IN')}`;
-  };
-
-  // Format running hour (e.g., above-4000 -> Above 4000 Hrs)
-  const formatRunningHour = rh => {
-    if (!rh) return '-';
-    if (rh.startsWith('above-')) return `Above ${rh.replace('above-', '')} Hrs`;
-    if (rh.endsWith('-hrs')) return rh.replace('-', ' to ').replace('hrs', 'Hrs');
-    return rh;
-  };
-
-  // Compose location
-  const location = [data?.district, data?.state].filter(Boolean).join(', ');
-
   return (
-    <div className={`${verticalView ? 'md:flex-col' : 'md:flex-row lg:w-[49%] xl:w-[49%]'} hover:border-gray relative flex flex-col h-auto w-full overflow-hidden rounded-2xl border border-gray-light bg-white hover:bg-green-lighter`}>
+   <div className={`${verticalView ? 'md:flex-col' : 'md:flex-row lg:w-[49%] xl:w-[49%]'} hover:border-gray relative flex flex-col h-auto w-full overflow-hidden rounded-2xl border border-gray-light bg-white hover:bg-green-lighter`}>
+   {/* <div className={`${verticalView ? 'md:flex-col' : 'md:flex-row'} hover:border-gray relative flex flex-col h-auto w-full overflow-hidden rounded-2xl border border-gray-light bg-white hover:bg-green-lighter lg:w-[49%] xl:w-[49%]`}> */}
       {/* Image Section */}
       <div className={`${verticalView ? '' : 'md:w-2/5'} relative min-h-[220px] w-full overflow-hidden`}>
         <Link
           href={currentLang + pageUrl}
+          // title={${brandName} ${modelName} image}
+          // aria-label={know more about ${brandName} in India}
         >
           <Image
-            src={data?.image ? `https://images.tractorgyan.com/uploads/${data.image}` : '/assets/images/buy-used-tractor.svg'}
+            src={'/assets/images/buy-used-tractor.svg'}
             fill
-            alt={data?.model || 'Used Tractor'}
+            alt="image"
+            // alt={${brandName} ${modelName} image}
+            // title={${brandName} ${modelName} image}
             className="object-cover"
           />
         </Link>
@@ -59,15 +44,16 @@ const SecondHandTractorCard = ({
                 src="/assets/images/address-icon.svg"
                 height={50}
                 width={50}
-                alt="location-icon"
-                title="location-icon"
+                alt="share-icon"
+                title="share-icon"
                 className="h-4 w-4 -ml-1"
               />
-              <span className="text-xs text-gray-dark">{location || '-'}</span>
+              <span className="text-xs text-gray-dark">Faridabad, Haryana</span>
             </div>
 
-            {/* Views (static for now) */}
+            {/* Views */}
             <div className="flex items-center gap-1 rounded-full bg-red-viewsBG px-2 py-1 font-medium text-white">
+              {/* TODO:: Update Icon */}
               <Image
                 src="https://images.tractorgyan.com/uploads/117331/677cd475d38ef-show-hide-icon_small.webp"
                 height={16}
@@ -82,35 +68,35 @@ const SecondHandTractorCard = ({
 
           {/* Title */}
           <h3 className="mb-2 line-clamp-2 text-[16px] font-bold leading-snug text-black">
-            {data?.manufacture ? `Second Hand ${data.manufacture} ${data.model} Tractor` : data?.model || 'Used Tractor'}
+            Second Hand Swaraj 744 XT Tractor
           </h3>
 
           {/* Info Stats */}
           <div className="mb-3 flex overflow-hidden rounded-lg border border-green-mint bg-green-lighter text-center text-xs font-medium">
             <div className="w-1/3 py-2">
               <div className="text-gray-dark">Purchase</div>
-              <div className="text-sm font-semibold text-black">{data?.year_of_purchase || '-'}</div>
+              <div className="text-sm font-semibold text-black">2016</div>
             </div>
             <div className="w-1/3 border-x border-green-mint py-2">
               <div className="text-gray-dark">Running</div>
-              <div className="text-sm font-semibold text-black">{formatRunningHour(data?.running_hour)}</div>
+              <div className="text-sm font-semibold text-black">0-1000 Hrs</div>
             </div>
             <div className="w-1/3 py-2">
               <div className="text-gray-dark">Condition</div>
-              <div className="text-sm font-semibold text-black">{data?.condition || '-'}</div>
+              <div className="text-sm font-semibold text-black">Very Good</div>
             </div>
           </div>
 
           {/* Price and Action */}
           <div className="mb-2 flex items-center justify-between">
-            <div className="text-[18px] font-semibold text-green-lightest">{formatPrice(data?.price)}</div>
-            {/* Optionally, show EMI if available in data */}
-            {/* <div>
+            <div className="text-[18px] font-semibold text-green-lightest">₹ 8.90 Lakh</div>
+            <div>
               <span className="text-sm text-gray-dark">EMI Starts:</span>
               <span className="text-sm font-semibold text-black">₹ 19,251*</span>
-            </div> */}
+            </div>
           </div>
           <div className="flex items-center justify-between gap-4 md:gap-2">
+            {/* TODO:: Update Share Icon */}
             <TG_Button
               variant="outline"
               icon="https://images.tractorgyan.com/uploads/119912/68467f5fec55b-green-arrow.webp"

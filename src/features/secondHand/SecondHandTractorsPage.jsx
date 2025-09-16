@@ -33,7 +33,6 @@ import SecondHandMiniTractorMobileCards from '@/src/components/ui/cards/secondHa
 import TyrePageHeader from '../tyre/allTyreListing/tyresListing/TyrePageHeader';
 import TyresListingClient from '../tyre/allTyreListing/tyresListing/TyresListingClient';
 import TractorListing from '../tractors/listing/TractorListing';
-import SecondHandTractorListing from './SecondHandTractorListing';
 import { getSecondHandTopContent } from '@/src/services/second-hand-tractors/SecondHandTractorTopContent';
 import { getSecondHandTractorPriceList } from '@/src/services/second-hand-tractors/SecondHandTractorPriceList';
 import { getUsedTractorFAQs } from '@/src/services/second-hand-tractors/used-tractor-faqs';
@@ -169,7 +168,7 @@ export default async function SecondHandTractorsPage({ params, searchParams }) {
             <div className="container mx-auto">
               <TyrePageHeader
                 isMobile={isMobile}
-                brandName="Usedd"
+                brandName="Used"
                 translation={translation}
                 heading={translation?.headings?.allTractorsByBrand}
                 activeFilters={tyresListingProps.activeFilters}
@@ -188,19 +187,7 @@ export default async function SecondHandTractorsPage({ params, searchParams }) {
 
                 {/* Results Column */}
                 <div className="flex-1">
-                  {/* Use new API-based listing for used_tractors only */}
-                  {tyresListingProps.pageType === 'used_tractors' ? (
-                    <SecondHandTractorListing
-                      brand={tyresListingProps.activeFilters?.brand}
-                      state={tyresListingProps.activeFilters?.state}
-                      district={tyresListingProps.activeFilters?.district}
-                      search={tyresListingProps.activeFilters?.searchQuery || tyresListingProps.activeFilters?.search}
-                      page={tyresListingProps.currentPage}
-                      itemsPerPage={tyresListingProps.itemsPerPage}
-                    />
-                  ) : (
-                    <TractorListing {...tyresListingProps} />
-                  )}
+                  <TractorListing {...tyresListingProps} />
                 </div>
               </div>
             </div>
@@ -296,7 +283,6 @@ export default async function SecondHandTractorsPage({ params, searchParams }) {
             currentLang={currentLang}
             tyreBrands={tyreBrandsData}
             defaultEnquiryType={'Tyre'}
-            isMobile={isMobile}
           />
           <JoinOurCommunityServer translation={translation} currentLang={currentLang} />
           <TractorGyanOfferings translation={translation} />

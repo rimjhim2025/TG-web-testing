@@ -176,7 +176,6 @@ const BlogDetail = async ({ blogId, blogSlug }) => {
           translation={translation}
           currentLang={prefLang}
           tyreBrands={[]}
-          isMobile={isMobile}
         />
         <JoinOurCommunityServer
           translation={translation}

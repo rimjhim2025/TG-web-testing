@@ -28,7 +28,7 @@ const RelatedTyres = ({
           detail: tyreDetail,
           heading:
             customHeading ||
-            `${tyreDetail.brand_name || tyreDetail.brand || tyreDetail.brand_name_en} ${tyreDetail.model_name || tyreDetail.model}`,
+            `${tyreDetail.brand_name || tyreDetail.brand} ${tyreDetail.model_name || tyreDetail.model}`,
           linkType: 'tractor-loan',
         };
       default: // tyre
@@ -42,9 +42,6 @@ const RelatedTyres = ({
 
   const { detail, heading, linkType } = getItemDetail();
 
-  if (tyres.length === 0) {
-    return null; // Don't render the section if there are no related tyres
-  }
   return (
     <section className="m-0 bg-section-gray">
       <div className="container">
@@ -55,7 +52,7 @@ const RelatedTyres = ({
             </div>
             <div className="model-slider mb-4 min-h-[280px] w-full gap-2 rounded-2xl border-[1px] border-gray-gainsboro bg-white p-3 md:mb-16 md:flex md:px-0">
               {!isMobile ? (
-                <TyreModelSlider tyres={tyres} currentLang={currentLang} mode={mode} translation={translation} />
+                <TyreModelSlider tyres={tyres} currentLang={currentLang} mode={mode} />
               ) : (
                 <>
                   {tyres?.map((tyre, index) => (
@@ -63,18 +60,17 @@ const RelatedTyres = ({
                       key={index}
                       reviews={tyre.reviews || tyre.review_count}
                       rating={tyre.rating || tyre.avg_rating}
-                      size={tyre.tyre_size || tyre.hp || tyre.implement_power}
+                      size={tyre.tyre_size || tyre.hp}
                       type={tyre.tyre_type || tyre.cylinder}
-                      title={tyre.title || tyre.model}
+                      title={tyre.title}
                       brandName={tyre.brandName || tyre.brand_name}
-                      imgUrl={tyre.imgUrl || tyre.images || tyre.image}
+                      imgUrl={tyre.imgUrl || tyre.images}
                       pageUrl={
                         (currentLang === 'hi' ? '/hi' : '') + (tyre.pageUrl || tyre.page_url)
                       }
                       popularTyre={tyre.popularTyre || tyre.popular_tyre}
                       isLast={index === tyres.length - 1}
                       mode={mode}
-                      translation={translation}
                     />
                   ))}
                 </>

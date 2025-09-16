@@ -3,15 +3,15 @@ import { tg_getTittleFromNestedKey } from "@/src/utils";
 import TyreContentToggle from "@/src/features/tyre/tyre-price/TyreContentToggle";
 
 const ListingHeroSection = ({
-  currentLang,
-  translation,
-  priceList,
-  topContent,
-  deviceType,
-  headingKey,
-  headingTitle,
-  category,
-  brandName = "",
+    currentLang,
+    translation,
+    priceList,
+    topContent,
+    deviceType,
+    headingKey,
+    headingTitle,
+    category,
+    brandName = "",
 }) => {
   // Ensure currentLang is correct
   const langPrefix = currentLang === "hi" ? "/hi" : "";
@@ -76,30 +76,11 @@ const ListingHeroSection = ({
                         {translation.headings.tractorTyreModel}
                       </span>
                     </td>
-                    {priceList?.some(item => item?.size) && (
-                      <td className="w-[20%] text-center">
-                        <span className="text-sm font-bold text-black">
-                          {translation.headings.tyreSize}
-                        </span>
-                      </td>
-                    )}
-
-                    {priceList?.some(item => item?.implement_power) && (
-                      <td className="w-[20%] text-center">
-                        <span className="text-sm font-bold text-black">
-                          {translation.headings.implementPower}
-                        </span>
-                      </td>
-                    )}
-
-                    {/* {priceList?.some(item => item?.size) && (
-                      <td className="w-[20%] text-center">
-                        <span className="text-sm font-bold text-black">
-                          {translation.headings.tyreSize}
-                        </span>
-                      </td>
-                    )} */}
-
+                    <td className="w-[20%] text-center">
+                      <span className="text-sm font-bold text-black">
+                        {translation.headings.tyreSize}
+                      </span>
+                    </td>
                     <td className="w-[35%] text-center">
                       <span className="text-sm font-bold text-black">
                         {translation.headings.tyrePrice}
@@ -115,21 +96,14 @@ const ListingHeroSection = ({
                     >
                       <td className="w-[45%] text-center">
                         <span className="text-xs font-normal text-gray-dark">
-                          {currentLang === "en" ? item.brand_name : item.brand_name_hi + " " + item.modal_name}
+                          {item.brand_name + " " + item.modal_name}
                         </span>
                       </td>
-                      {item?.size && (<td className="w-[20%] text-center">
+                      <td className="w-[20%] text-center">
                         <span className="text-sm font-medium text-black">
                           {item.size}
                         </span>
-                      </td>)}
-
-                      {item?.implement_power && (<td className="w-[20%] text-center">
-                        <span className="text-sm font-medium text-black">
-                          {item.implement_power}
-                        </span>
-                      </td>)}
-
+                      </td>
                       <td className="w-[35%] text-center">
                         <span className="text-sm font-medium text-black">
                           Rs. {item.tyre_price}*
