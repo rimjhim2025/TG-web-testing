@@ -8,7 +8,7 @@ const withAnalyzer = withBundleAnalyzer({
 const nextConfig = {
   images: {
     loader: 'default', // Prevents Vercel's optimization
-    unoptimized: false, // Disables all image optimizations globallysss
+    unoptimized: false, // Disables all image optimizations globally
     domains: [
       'images.tractorgyan.com',
       'staging.tractorgyan.com',

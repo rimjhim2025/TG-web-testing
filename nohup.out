@@ -10,7 +10,6 @@
  ○ Compiling /_not-found ...
  ⨯ ./app/tractor-implements-in-india/page.js
 Error: 
-Error: 
   [31mx[0m You're importing a component that needs useEffect. It only works in a Client Component but none of its parents are marked with "use client", so they're Server Components by default.
   [31m|[0m Learn more: https://nextjs.org/docs/getting-started/react-essentials
   [31m|[0m 
