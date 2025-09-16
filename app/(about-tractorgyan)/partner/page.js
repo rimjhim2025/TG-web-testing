@@ -1,6 +1,11 @@
 import React from 'react';
-import TG_PartnerWithUsPage from '@/src/features/partner-with-us/PartnerWithUsPage';
-
+import nextDynamic from 'next/dynamic';
+const TG_PartnerWithUsPage = nextDynamic(
+  () => import('@/src/features/partner-with-us/PartnerWithUsPage'),
+  {
+    ssr: true, // Changed to ssr: true
+  }
+);
 export const dynamic = 'force-dynamic';
 
 const page = () => {
