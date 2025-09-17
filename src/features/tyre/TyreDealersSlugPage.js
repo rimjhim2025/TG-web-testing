@@ -135,7 +135,7 @@ export default async function TyreDealersSlugPage({ params, searchParams }) {
           brandName.toUpperCase() === dealerBrand.toUpperCase() ||
           brandName === dealerBrand ||
           brandName.replace(/\b\w/g, c => c.toUpperCase()) ===
-            dealerBrand.replace(/\b\w/g, c => c.toUpperCase()) ||
+          dealerBrand.replace(/\b\w/g, c => c.toUpperCase()) ||
           brandName.toLowerCase() === dealerBrand.toLowerCase()
         );
       });
@@ -248,7 +248,13 @@ export default async function TyreDealersSlugPage({ params, searchParams }) {
 
       {dealerDetail && (
         <>
-          <TyreDealerDetail dealerDetail={dealerDetail} translation={translation} />
+          <TyreDealerDetail
+            dealerDetail={dealerDetail}
+            translation={translation}
+            currentLang={prefLang}
+            dealerType="tyre"
+            isMobile={isMobile}
+          />
           <DealershipRegistrationForm translation={translation} />
 
           <TyreDealersByBrands
@@ -277,6 +283,7 @@ export default async function TyreDealersSlugPage({ params, searchParams }) {
         currentLang={prefLang}
         tyreBrands={tyreBrands}
         defaultEnquiryType={'Tyre-Dealer'}
+        isMobile={isMobile}
       />
       <JoinOurCommunityServer translation={translation} currentLang={prefLang} />
       <TractorGyanOfferings translation={translation} />

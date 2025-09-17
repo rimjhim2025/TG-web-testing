@@ -178,6 +178,7 @@ export default async function BlogListingPage({ searchParams, prefLangs }) {
           translation={translation}
           currentLang={prefLang}
           defaultEnquiryType={'Tractor'}
+          isMobile={isMobile}
         />
         <JoinOurCommunityServer translation={translation} currentLang={prefLang} />
         <TractorGyanOfferings translation={translation} />

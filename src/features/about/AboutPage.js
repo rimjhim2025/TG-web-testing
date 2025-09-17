@@ -27,6 +27,7 @@ import JoinOurTeamSection from './JoinOurTeamSection';
 import RapsaGroupMembersSection from './RapsaGroupMembersSection';
 import JourneySection from './JourneySection';
 import NewsAndMediaSection from './NewsAndMediaSection';
+import WhatsAppTopButton from '../tyreComponents/commonComponents/WhatsAppTopButton';
 
 export default async function AboutPage({ searchParams }) {
     const apiUrl = getApiUrl();
@@ -50,6 +51,7 @@ export default async function AboutPage({ searchParams }) {
                 isMobile={isMobile}
                 translation={translation}
                 currentLang={currentLang}
+                showLanguageSelector={false}
             />
             <main>
                 <AboutHeading isMobile={isMobile} />
@@ -63,6 +65,8 @@ export default async function AboutPage({ searchParams }) {
                 <LifeAtTractorGyan isMobile={isMobile} />
                 <JoinOurTeamSection isMobile={isMobile} />
                 <RapsaGroupMembersSection isMobile={isMobile} />
+                <WhatsAppTopButton translation={translation} currentLang={currentLang} isMobile={isMobile} />
+
             </main>
             <FooterComponents translation={translation} />
             {isMobile && <MobileFooter translation={translation} />}

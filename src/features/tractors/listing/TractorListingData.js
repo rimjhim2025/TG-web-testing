@@ -19,6 +19,7 @@ export default async function TractorListingData({
   isSeriesListing = false, // New parameter for series listing
   seriesName = null, // New parameter for series name
   hpRange = null, // New parameter for HP range
+  page_url = null
 }) {
   const param = await params;
   const searchParamsObj = await searchParams;
@@ -42,6 +43,7 @@ export default async function TractorListingData({
     isSeriesListing, // Pass through series listing flag
     seriesName, // Pass through series name
     hpRange, // Pass through HP range
+    page_url
   });
 
   // Extract pagination info for parent component
@@ -71,7 +73,7 @@ export default async function TractorListingData({
             </div>
           )}
           <div className="flex-1">
-            <TractorListing {...tractorListingProps} />
+            <TractorListing {...tractorListingProps} isMobile={isMobile} reel={tractorListingProps.reel} />
           </div>
         </div>
       </div>

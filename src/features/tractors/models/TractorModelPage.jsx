@@ -1,3 +1,4 @@
+import './globals.css';
 import TittleAndCrumbs from '@/src/components/shared/TittleAndCrumbs/TittleAndCrumbs';
 import NavComponents from '../../tyre/NavComponents';
 import { getSelectedLanguage } from '@/src/services/locale';
@@ -10,7 +11,6 @@ import TyreFAQs from '../../tyre/tyreFAQs/TyreFAQs';
 import { getModelDetailFAQ } from '@/src/services/tractor/model-detail-faq';
 import { getTyreBrands } from '@/src/services/tyre/tyre-brands';
 import TractorGyanOfferings from '@/src/components/shared/offerings/TractorGyanOfferings';
-import AboutTractorGyanServer from '@/src/components/shared/about/AboutTractorGyanServer';
 import PopularSection from '@/src/components/shared/popularSection/PopularSection';
 import TractorDetailsCard from '../TractorDetailsCard';
 import TractorDetailsSpecs from './TractorModelSpecs';
@@ -20,12 +20,10 @@ import { getAllTractorBrands } from '@/src/services/tractor/all-tractor-brands';
 import InquireForm from '../../tyreComponents/components/forms/InquireForm';
 import TyreRatingAndReviews from '../../tyreComponents/components/tyreRatingAndReviews/TyreRatingAndReviews';
 import RelatedTyres from '../../tyre/relatedTyres/RelatedTyres';
-import { getRelatedTractors } from '@/src/services/tractor/related-tractors';
 import { getOtherTractorModels } from '@/src/services/tractor/other-tractor-models';
 import { getTractorDetail } from '@/src/services/tractor/tractor-detail';
 import { getSimilarSecondHandTractors } from '@/src/services/tractor/similar-second-hand-tractors';
 import SecondHandMiniTractorCards from '@/src/components/ui/cards/secondHandMiniTractorCards/secondHandMiniTractorCards';
-import CompareTractorsSection from '@/src/components/tractor/CompareTractorsSection';
 import MainHeadings from '../../tyreComponents/commonComponents/MainHeadings';
 import { getDetailPageHeaderSEO } from '@/src/services/detailPageHeaderSeo';
 import SeoHead from '@/src/components/shared/header/SeoHead';
@@ -34,9 +32,9 @@ import {
   getCompareTractorsByHP,
 } from '@/src/services/tractor/related-tractors';
 import CompareTractorsSlider from '@/src/components/tractor/CompareTractorsSlider';
-import { getAllStatesBySlug } from '@/src/services/geo/get-states-by-slug';
 import { getTractorDealerUrls } from '@/src/services/tractor/get-tractor-dealer-urls';
 import TyreDealersByStates from '../../tyre/TyreDealersByStates/TyreDealersByStates';
+import { getTractorDetailBrandContent } from '@/src/services/tractor/tractor-detail-brand-content';
 
 export const dynamic = 'force-dynamic';
 export default async function TractorModelPage({ params }) {
@@ -160,21 +158,25 @@ export default async function TractorModelPage({ params }) {
     console.error('Error fetching compare tractors:', error);
   }
   const aboutSectionSlot = (
-    <div className="rounded-2xl border-[1px] border-gray-light p-4 pe-0 md:max-h-[468px]">
+    <div className="rounded-2xl border-[1px] border-gray-light p-4 pe-0 md:max-h-[550px]">
       <div className="pe-4">
         <h2 className="border-b-3 mb-4 inline-block border-secondary pb-1 text-lg font-semibold md:mb-6 lg:text-2xl">
           {`${currentLang == 'en' ? translation?.tractorDetails?.about : ''} ${tractorDetail.brand}  ${tractorDetail.model} ${currentLang == 'hi' ? translation?.tractorDetails?.about : ''}`}
         </h2>
       </div>
-      <div className="custom-scroller h-full max-h-[280px] overflow-auto pe-4 text-sm font-normal text-gray-dark md:max-h-[340px]">
+      <div className="custom-scroller h-full max-h-[360px] overflow-auto pe-4 text-sm font-normal text-gray-dark md:max-h-[460px]">
         {tractorDetail?.about_tractor ? (
           <div
-            dangerouslySetInnerHTML={{
-              __html: isMobile
-                ? tractorDetail.mob_about_tractor || tractorDetail.about_tractor
-                : tractorDetail.about_tractor,
-            }}
-          />
+            className="tg-html-content"
+          >
+            <div
+              dangerouslySetInnerHTML={{
+                __html: isMobile
+                  ? tractorDetail.mob_about_tractor || tractorDetail.about_tractor
+                  : tractorDetail.about_tractor,
+              }}
+            />
+          </div>
         ) : (
           <div>
             <p className="mb-3">
@@ -322,10 +324,25 @@ export default async function TractorModelPage({ params }) {
     popularTractorsError = true;
   }
 
+  let banners = [];
+  try {
+    const pageURL = `tractor/${brandName}/${productId}`; // WIP
+    const tractorDetailTopContent = await getTractorDetailBrandContent({
+      ad_title: pageURL,
+      ad_type_image_lang: currentLang,
+      device_type: isMobile ? 'mobile' : 'desktop'
+    });
+    banners = tractorDetailTopContent?.banner || [];
+    console.log("banners : ", banners);
+
+  } catch (error) {
+    console.error('Error fetching tyre brands data:', error);
+  }
+
   return (
     <main>
       <SeoHead
-        seo={seoData}
+        seo={{}}
         staticMetadata={{}}
         preloadUrls={[]}
         seoHTMLDescription={seoData.data}
@@ -336,6 +353,7 @@ export default async function TractorModelPage({ params }) {
       <div className="container mx-auto pt-4 md:mt-[164px]">
         {
           <div className="mt-2 md:mt-[170px]">
+            {/* Banner removed as per request */}
             <TittleAndCrumbs
               showBack={true}
               hideTitle={true}
@@ -380,7 +398,16 @@ export default async function TractorModelPage({ params }) {
             <div className="hidden lg:block">{aboutSectionSlot}</div>
           </div>
           <div className="relative h-full w-full md:w-1/4">
-            <TractorDetailsSpecs currentLang={currentLang} translation={translation} tractorDetail={tractorDetail} />
+            <TractorDetailsSpecs
+              currentLang={currentLang}
+              translation={translation}
+              tractorDetail={tractorDetail}
+              bannerDetail={{
+                imgUrl: banners && banners.length > 0 ? banners[0].image : null,
+                imageClasses: 'max-h-[200px]',
+                unoptimized: true
+              }}
+            />
           </div>
           <div className="block lg:hidden">{aboutSectionSlot}</div>
         </div>
@@ -420,8 +447,8 @@ export default async function TractorModelPage({ params }) {
         modelId={tractorId}
         model={tractorDetail.model_name_en}
         showUserReviewTitle={isMobile}
-        // TODO:: Update No Review Image
-        noReviewImg="https://images.tractorgyan.com/uploads/117235/6773e5b906cbc-no-review-card.webp"
+        isTractorReviewPage={true}
+        noReviewImg="https://images.tractorgyan.com/uploads/120828/68b2a79244bd5-tractor-review-image.webp"
       />
 
       {/* TODO:: Update it to make it generic */}
@@ -442,13 +469,15 @@ export default async function TractorModelPage({ params }) {
       {compareTractors.length > 0 ? (
         <section className="bg-white">
           <div className="container">
-            <MainHeadings text={translation?.buttons?.compareTractor || 'Compare Tractors'} />
+            <MainHeadings text={translation?.headings?.compareTractorWith.replace('{modelName}', tractorDetail.brand + ' ' + tractorDetail.model) || 'Compare Tractors'} />
 
             <CompareTractorsSlider
               cta={translation?.buttons?.compareTractor || 'Compare Tractors'}
               currentTractor={tractorDetail}
               compareTractors={compareTractors || null}
               isMobile={isMobile}
+              tractorBrands={allTractorBrands}
+
             />
             {/* <div className="flex gap-4">
               <div className="flex w-full flex-col gap-4 md:w-[calc(50%-.5rem)]">
@@ -476,18 +505,8 @@ export default async function TractorModelPage({ params }) {
         </section>
       ) : null}
 
-      {/* TODO:: Manage Sell Your Tractor Banner */}
-      <SecondHandMiniTractorCards
-        heading={`${translation?.secondHandTractors?.similar || 'Similar'} ${tractorDetail.brand} ${tractorDetail.model} ${translation?.secondHandTractors?.secondHandTractors || 'Second Hand Tractors'}`}
-        showEmi={false}
-        isMobile={isMobile}
-        translation={translation}
-        data={similarSecondHandTractors}
-        currentLang={currentLang}
-      />
-
       <PopularSection
-        heading={`${translation?.common?.related || 'Related'} ${tractorDetail.brand} ${tractorDetail.model} ${translation?.common?.tractors || 'Tractors'}`}
+        heading={`${translation?.common?.similar || 'Related'} ${tractorDetail.brand} ${tractorDetail.model} ${translation?.common?.tractors || 'Tractors'}`}
         popularData={releatedTractors}
         popularDataError={popularTractorsError}
         translation={translation}
@@ -497,9 +516,21 @@ export default async function TractorModelPage({ params }) {
         redirectRoute={'/tractors'}
       />
 
+      {/* TODO:: Manage Sell Your Tractor Banner */}
+      <SecondHandMiniTractorCards
+        heading={`${translation?.common?.similar || 'Similar'} ${tractorDetail.brand} ${tractorDetail.model} ${translation?.footer?.secondHandTractors || 'Second Hand Tractors'}`}
+        showEmi={false}
+        isMobile={isMobile}
+        translation={translation}
+        data={similarSecondHandTractors}
+        currentLang={currentLang}
+      />
+
+
+
       {(dealerStates.length > 0) ?
         <TyreDealersByStates
-          title={translation.tractorDetails.tractorDealers.replace('{brandName}', ``)}
+          title={translation.tractorDetails.tractorDealers.replace('{brandName}', `${tractorDetail.brand}`)}
           translation={translation}
           isMobile={isMobile}
           dealerStates={dealerStates}
@@ -527,7 +558,10 @@ export default async function TractorModelPage({ params }) {
         translation={translation}
         currentLang={currentLang}
         tyreBrands={tyreBrandsData}
-        defaultEnquiryType={translation?.common?.tractor || 'Tractor'}
+        defaultEnquiryType={'Tractor'}
+        isMobile={isMobile}
+        preFilledTractorBrand={tractorDetail.brand_name_en}
+        preFilledTractorModelId={tractorDetail.id}
       />
     </main>
   );

@@ -11,10 +11,12 @@ export default function CareerMainSlider({
 }) {
   const [currentSlide, setCurrentSlide] = useState(0);
 
-  const slides = useMemo(
-    () => (isMobile ? mobileImages : desktopImages),
-    [isMobile, mobileImages, desktopImages]
-  );
+  // const slides = useMemo(
+  //   () => (isMobile ? mobileImages : desktopImages),
+  //   [isMobile, mobileImages, desktopImages]
+  // );
+
+  const slides = useMemo(() => desktopImages, [isMobile, mobileImages, desktopImages]);
 
   if (imageListError) {
     return <h1 className="ms-6 pt-8">failed To fetch career images, please try again later</h1>;
@@ -41,21 +43,20 @@ export default function CareerMainSlider({
   };
 
   return (
-    <div className="relative h-screen max-h-[500px] w-full overflow-hidden">
+    <div className="relative h-screen max-h-[170px] w-full overflow-hidden md:max-h-[500px]">
       {slides?.map((slide, index) => (
         <div
           key={index}
-          className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
-            index === currentSlide ? 'opacity-100' : 'opacity-0'
-          }`}
+          className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${index === currentSlide ? 'opacity-100' : 'opacity-0'
+            }`}
         >
           <Image
             src={`https://images.tractorgyan.com/uploads${slide.image_url}`}
             alt={`Slide ${index + 1}`}
             title={slide.image_url}
             className="h-full w-full object-cover"
-            width={100}
-            height={100}
+            width={1400}
+            height={800}
           />
           <div className="absolute inset-0 bg-black bg-opacity-40"></div>
         </div>
@@ -95,9 +96,8 @@ export default function CareerMainSlider({
           <button
             key={index}
             onClick={() => goToSlide(index)}
-            className={`h-2 w-2 rounded-full transition-all duration-300 ${
-              index === currentSlide ? 'scale-125 bg-primary' : 'bg-white hover:bg-opacity-75'
-            }`}
+            className={`h-2 w-2 rounded-full transition-all duration-300 ${index === currentSlide ? 'scale-125 bg-primary' : 'bg-white hover:bg-opacity-75'
+              }`}
             aria-label={`Go to slide ${index + 1}`}
           />
         ))}

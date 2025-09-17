@@ -35,7 +35,7 @@ const CareerCoreValue = () => {
           {coreValues.map((value, index) => (
             <div
               key={index}
-              className="bg-blue-lightest border-linkLight rounded-lg border p-0 px-2 py-2 transition-all duration-300 hover:-translate-y-1 hover:shadow-none sm:rounded-xl md:px-6 md:py-4 lg:rounded-xl"
+              className="border-blue-borderBlue rounded-lg border bg-blue-lightest p-0 px-2 py-2 transition-all duration-300 hover:-translate-y-1 hover:shadow-none sm:rounded-xl md:px-6 md:py-4 lg:rounded-xl"
             >
               <div className="justify-left mb-2 flex">
                 <Image

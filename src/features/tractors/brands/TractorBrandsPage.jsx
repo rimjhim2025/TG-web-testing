@@ -10,7 +10,6 @@ import MobileFooter from '@/src/components/shared/footer/MobileFooter';
 import { getSelectedLanguage } from '@/src/services/locale';
 import ScrollToTopOnNavigation from '@/src/components/shared/ScrollToTopOnNavigation/ScrollToTopOnNavigation';
 import DesktopHeader from '@/src/components/shared/header/DesktopHeader';
-import { getAllTractorBrands } from '@/src/services/tractor/all-tractor-brands';
 import BrandCards from '../../tyreComponents/components/tractorsByBrands/BrandCards';
 import TittleAndCrumbs from '@/src/components/shared/TittleAndCrumbs/TittleAndCrumbs';
 import ListingSkeleton from '@/src/components/ui/listingSkeleton/listingSkeleton';
@@ -23,15 +22,16 @@ import LeadingTractorGroup from '@/src/components/tractor/LeadingTractorGroup';
 import SeoHead from '@/src/components/shared/header/SeoHead';
 import { getSEOByPage } from '@/src/services/seo/get-page-seo';
 import { getLeadingTractorGroup } from '@/src/services/tractor/leading-tractor-group';
+import apiUrl from '@/src/services/apiUrl';
+import { getTractorBrands } from '@/src/services/tractor/all-tractor-brands-v2';
 
 export default async function TractorBrandsPage({ searchParams, isHindi = false }) {
   const prefLang = isHindi ? 'hi' : await getSelectedLanguage();
   const translation = await getDictionary(prefLang);
   const isMobile = await isMobileView();
 
-  const allTractorBrandsData = await getAllTractorBrands();
-  const allTractorBrands = allTractorBrandsData || [];
-
+  const allTractorBrandsData = await getTractorBrands(prefLang);
+  const allTractorBrandsDataFiltered = allTractorBrandsData.map(brand => ({ ...brand, image: "https://images.tractorgyan.com/uploads" + brand.image || '/default-image.png' }));
   const seoData = await getSEOByPage((prefLang == 'hi' ? 'hi/' : '') + 'tractor-brands');
 
   // TODO:: Update this to fetch Tractor Brand News
@@ -47,35 +47,38 @@ export default async function TractorBrandsPage({ searchParams, isHindi = false 
     console.error('Error fetching leading tractor groups:', error);
   }
 
-  const headingTitle = 'All Brands';
+  const headingTitle = translation.headings.allTractorbrands;
 
   return (
     <>
       <ScrollToTopOnNavigation />
-      <SeoHead seo={seoData} />
+      <SeoHead seo={seoData} paginationLinks={{
+        canonical: `${apiUrl}/${prefLang === 'hi' ? 'hi/' : ''}tractor-brands`,
+
+      }} />
       <DesktopHeader isMobile={isMobile} translation={translation} currentLang={prefLang} />
       <main className="pt-4 lg:mt-[164px]">
         <div className="container relative">
           <TittleAndCrumbs
             title={headingTitle}
             breadcrumbs={[
-              { label: 'Home', href: '/', title: 'Home' },
+              { label: translation.breadcrubm.tractorGyanHome, href: `${prefLang === 'hi' ? '/hi' : ''}/`, title: translation.breadcrubm.tractorGyanHome },
               {
-                label: `All Tractor Brands`,
-                title: `All Tractor Brands`,
+                label: `${translation.headings.allTractorbrands}`,
+                title: `${translation.headings.allTractorbrands}`,
                 isCurrent: true,
               },
             ]}
           />
           {/* <Suspense fallback={<ListingSkeleton />}> */}
           <div className="justify-left -mx-2 mb-4 flex flex-wrap md:-mx-4 md:mb-8">
-            {allTractorBrands?.map((item, index) => (
+            {allTractorBrandsDataFiltered?.map((item, index) => (
               <div className="basis-1/3 px-2 md:px-4 md:[flex-basis:calc(100%/9)]">
                 <BrandCards
                   imgUrl={item.image}
-                  name={isHindi ? item.name_hi : item.name}
+                  name={item.name}
                   key={index}
-                  url={item.url}
+                  url={(prefLang == 'hi' ? '/hi' : '') + item.url}
                 />
               </div>
             ))}
@@ -86,7 +89,8 @@ export default async function TractorBrandsPage({ searchParams, isHindi = false 
         <WhatsAppTopButton
           translation={translation}
           currentLang={prefLang}
-          // tyreBrands={tyreBrands}
+          isMobile={isMobile}
+        // tyreBrands={tyreBrands}
         />
 
         {leadingTractorGroups && leadingTractorGroups.length > 0 && (
@@ -94,6 +98,7 @@ export default async function TractorBrandsPage({ searchParams, isHindi = false 
             langPrefix={prefLang}
             isMobile={isMobile}
             leadingTractorGroups={leadingTractorGroups}
+            title={translation.headings.leadingTractorGroup}
           />
         )}
 

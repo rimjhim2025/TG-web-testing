@@ -90,7 +90,7 @@ export default async function SellOldTractorPage({ searchParams }) {
         bgColor={'bg-section-white'}
       />
 
-      <WhatsAppTopButton translation={translation} currentLang={currentLang} />
+      <WhatsAppTopButton translation={translation} currentLang={currentLang} isMobile={isMobile} />
       <FooterComponents translation={translation} />
     </main>
   );

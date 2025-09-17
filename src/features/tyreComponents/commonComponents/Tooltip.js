@@ -64,9 +64,9 @@ const Tooltip = props => {
         {props.children}
         {active && (
           <div className={`Tooltip-Tip`}>
-            <span className="absolute left-1/2 top-10 z-50 w-[280px] -translate-x-1/2 transform md:-left-[80px] md:w-auto md:min-w-[180px] md:translate-x-0">
+            <span className="absolute left-[min(140px,_50%)] top-10 z-50 w-[280px] -translate-x-1/2 transform md:-left-[80px] md:w-auto md:min-w-[180px] md:translate-x-0">
               <div className="shadow-lg w-full rounded-2xl bg-green-mint p-3 font-normal text-gray-dark">
-                <div className="absolute -top-2 left-1/2 h-6 w-6 -translate-x-1/2 rotate-45 transform bg-green-mint md:left-20 md:translate-x-0"></div>
+                <div className="absolute -top-2 left-1/2 -z-[1] h-6 w-6 -translate-x-1/2 rotate-45 transform bg-green-mint md:left-20 md:translate-x-0"></div>
                 <span className="text-xs leading-4">{props.content} </span>
               </div>
             </span>

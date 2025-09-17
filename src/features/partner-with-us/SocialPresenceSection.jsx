@@ -3,6 +3,7 @@
 import { getV2SocialMediaCount } from '@/src/services/social/V2SocialMediaCount';
 import { modifiedSubsCount } from '@/src/utils';
 import Image from 'next/image';
+import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 
 const SocialPresenceSection = () => {
@@ -30,36 +31,42 @@ const SocialPresenceSection = () => {
             platform: 'Youtube',
             description: 'Subscribers on Youtube',
             icon: 'https://images.tractorgyan.com/uploads/120046/687e159e07188-youtube-green.webp',
+            url: "https://www.youtube.com/@TractorGyan"
         },
         {
             id: 2,
             platform: 'Instagram',
             description: 'Followers on Instagram',
             icon: 'https://images.tractorgyan.com/uploads/120053/687e1f0eb427d-instagram-green.webp',
+            url: "https://www.instagram.com/tractorgyan"
         },
         {
             id: 3,
             platform: 'Facebook',
             description: 'Followers on Facebook',
             icon: 'https://images.tractorgyan.com/uploads/120052/687e1e9baf366-facebook-green.webp',
+            url: "https://www.facebook.com/TractorsGyan"
         },
         {
             id: 4,
             platform: 'LinkedIn',
             description: 'Followers on LinkedIn',
             icon: 'https://images.tractorgyan.com/uploads/120051/687e1e3013bbd-linkedin-green.webp',
+            url: "https://www.linkedin.com/company/tractorgyan"
         },
         {
             id: 5,
             platform: 'WhatsApp',
             description: 'Followers on WhatsApp',
             icon: 'https://images.tractorgyan.com/uploads/120150/6880858cb1e75-whatsapp-green.webp',
+            url: "https://whatsapp.com/channel/0029VaBrPnQBKfi99fRpOJ1e"
         },
         {
             id: 6,
             platform: 'Twitter',
             description: 'Followers on Twitter',
             icon: 'https://images.tractorgyan.com/uploads/120151/688085d85363a-twitterx-green.webp',
+            url: "https://twitter.com/TractorGyan"
         },
     ];
 
@@ -92,27 +99,30 @@ const SocialPresenceSection = () => {
                                 className="flex justify-center items-center space-x-3 md:space-x-4 bg-white shadow-lg hover:shadow-xl p-1 md:p-2 rounded-lg w-[48.5%] md:w-full md:min-w-[180px] lg:min-w-[280px] md:max-w-[280px] lg:max-w-[300px]"
                             >
                                 {/* Icon */}
-                                <div className="flex-shrink-0">
-                                    <Image
-                                        src={stat.icon}
-                                        alt={`${stat.platform} icon`}
-                                        title={`${stat.platform} icon`}
-                                        width={32}
-                                        height={32}
-                                        className="w-auto max-w-8 h-full max-h-8 md:max-h-10"
-                                    />
-                                </div>
+                                <Link href={stat.url} target='_blank'>
+                                    <div className="flex-shrink-0">
+                                        <Image
+                                            src={stat.icon}
+                                            alt={`${stat.platform} icon`}
+                                            title={`${stat.platform} icon`}
+                                            width={32}
+                                            height={32}
+                                            className="w-auto max-w-8 h-full max-h-8 md:max-h-10"
+                                        />
+                                    </div>
+                                </Link>
 
-                                {/* Count + Description */}
-                                <div className="flex-grow">
-                                    <div className="font-bold text-black text-base md:text-xl">
-                                        {numericPart}
-                                        <span className="text-primary"> {suffix}+</span>
+                                <Link href={stat.url} target='_blank'>
+                                    <div className="flex-grow">
+                                        <div className="font-bold text-black text-base md:text-xl">
+                                            {numericPart}
+                                            <span className="text-primary"> {suffix}+</span>
+                                        </div>
+                                        <div className="font-medium text-black text-xs md:text-sm">
+                                            {stat.description}
+                                        </div>
                                     </div>
-                                    <div className="font-medium text-black text-xs md:text-sm">
-                                        {stat.description}
-                                    </div>
-                                </div>
+                                </Link>
                             </div>
                         );
                     })}

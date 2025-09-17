@@ -287,6 +287,7 @@ export default async function SecondHandTractorsDetailsPage({ searchParams }) {
         currentLang={currentLang}
         tyreBrands={tyreBrandsData}
         defaultEnquiryType={'Tyre'}
+        isMobile={isMobile}
       />
 
       <AboutTractorGyanServer slug={'tyres'} translation={translation} />

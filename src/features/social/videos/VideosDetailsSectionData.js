@@ -6,48 +6,66 @@ import { postVideoReelDetails } from "@/src/services/social/VideoReelDetail";
 import { getSocialMediaSubsCount } from "@/src/services/social/SubscriberCounts";
 import VideosDetailSection from "./VideosDetailSection";
 
+// Cache for API responses to avoid duplicate calls in the same request
+const cache = new Map();
+
 export default async function VideosDetailsSectionData({ params }) {
   const prefLang = await getSelectedLanguage();
-  const translation = await getDictionary(prefLang);
-  const isMobile = await isMobileView();
+  const [translation, isMobile] = await Promise.all([
+    getDictionary(prefLang),
+    isMobileView()
+  ]);
 
   const param = params?.slug;
 
-  let reelDetailError = false;
-  let seoError = false;
-  let youtubeError = false;
+  // Generate cache keys
+  const videoCacheKey = `video-${param}`;
+  const youtubeCacheKey = 'youtube-count';
 
-  let videoDetailData = null;
-  let youtubeCount = null;
+  let videoDetailData = cache.get(videoCacheKey);
+  let youtubeCount = cache.get(youtubeCacheKey);
 
-  try {
-    const payload = {
-      video_url: param,
-      video_type: "videos",
-    };
+  let reelDetailError = !videoDetailData;
+  let youtubeError = !youtubeCount;
 
-    const videoDetails = await postVideoReelDetails(payload);
+  // Only fetch video details if not in cache
+  if (!videoDetailData) {
+    try {
+      const payload = {
+        video_url: param,
+        video_type: "videos",
+      };
 
-    if (videoDetails && videoDetails) {
-      videoDetailData = videoDetails;
-    } else {
+      const videoDetails = await postVideoReelDetails(payload);
+
+      if (videoDetails) {
+        videoDetailData = videoDetails;
+        cache.set(videoCacheKey, videoDetailData);
+        reelDetailError = false;
+      } else {
+        reelDetailError = true;
+      }
+    } catch (err) {
+      console.error("❌ Failed to fetch reel detail:", err);
       reelDetailError = true;
     }
-  } catch (err) {
-    console.error("❌ Failed to fetch reel detail:", err);
-    reelDetailError = true;
   }
 
-  try {
-    const response = await getSocialMediaSubsCount();
-    if (response) {
-      youtubeCount = response.youtube_count;
-    } else {
+  // Only fetch YouTube count if not in cache
+  if (!youtubeCount) {
+    try {
+      const response = await getSocialMediaSubsCount();
+      if (response) {
+        youtubeCount = response.youtube_count;
+        cache.set(youtubeCacheKey, youtubeCount);
+        youtubeError = false;
+      } else {
+        youtubeError = true;
+      }
+    } catch (err) {
+      console.error("⚠️ YouTube count fetch failed:", err);
       youtubeError = true;
     }
-  } catch (err) {
-    console.error("⚠️ YouTube count fetch failed:", err);
-    youtubeError = true;
   }
 
   if (reelDetailError) {
@@ -66,13 +84,12 @@ export default async function VideosDetailsSectionData({ params }) {
   }
 
   return (
-    <>
-      <VideosDetailSection
-        translation={translation}
-        param={param}
-        videoDetailData={videoDetailData}
-        isMobile={isMobile}
-      />
-    </>
+    <VideosDetailSection
+      translation={translation}
+      param={param}
+      videoDetailData={videoDetailData}
+      isMobile={isMobile}
+      youtubeCount={youtubeError ? null : youtubeCount}
+    />
   );
 }

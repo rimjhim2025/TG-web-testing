@@ -1,5 +1,5 @@
 .tyre-states-grid.collapsed {
-  max-height: 40vh; /* Show up to 40% of viewport height */
+  max-height: 42vh; /* Show up to 40% of viewport height */
   overflow: hidden;
   transition: max-height 0.3s ease-in-out;
 }

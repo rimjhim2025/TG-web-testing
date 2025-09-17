@@ -11,33 +11,43 @@ const DealerCard = async ({
 }) => {
   const currentlang = await getSelectedLanguage();
   return (
-    <div className="col-span-6 sm:col-span-4 xl:col-span-2">
-      <div className="flex h-full flex-col justify-between gap-2 rounded-2xl bg-white p-2.5 shadow-bottom">
+    <div className="col-span-6 border-[2px] border-transparent bg-white shadow-[1px_5px_16px_0px_rgba(88,98,89,0.21)] hover:border-secondary hover:bg-green-lighter transition-colors duration-200 rounded-xl p-4  sm:col-span-4 xl:col-span-2">
+      <div className="flex h-full flex-col justify-between gap-2 rounded-2xl  p-2.5 ">
         <div>
           <div className="mb-4 flex justify-between md:mb-2">
             {showBrandLogo ? (
-              <Image
-                src={dealer.images}
-                height={100}
-                width={100}
-                alt="brand-logo"
-                title="brand-logo"
-                className="h-auto max-h-12 max-w-12"
-              />
+              <div className="flex h-12 w-12 items-center justify-center">
+                <Image
+                  src={dealer.images}
+                  height={48}
+                  width={48}
+                  alt="brand-logo"
+                  title="brand-logo"
+                  className="h-auto max-h-12 w-auto max-w-12 object-contain"
+                  style={{
+                    objectFit: 'contain'
+                  }}
+                />
+              </div>
             ) : null}
             {(dealer.verified_status === 'Verified' ||
               dealer.verified_status !== 'Non_Verified') && (
-              <Image
-                src={
-                  'https://images.tractorgyan.com/uploads/116793/674d478769820-VerifiedByBadgeBlackText.webp'
-                }
-                height={500}
-                width={500}
-                alt="brand-logo"
-                title="brand-logo"
-                className="h-auto max-h-11 w-auto max-w-14"
-              />
-            )}
+                <div className="flex h-11 w-14 items-center justify-center">
+                  <Image
+                    src={
+                      'https://images.tractorgyan.com/uploads/116793/674d478769820-VerifiedByBadgeBlackText.webp'
+                    }
+                    height={44}
+                    width={56}
+                    alt="verified-badge"
+                    title="verified-badge"
+                    className="h-auto max-h-11 w-auto max-w-14 object-contain"
+                    style={{
+                      objectFit: 'contain'
+                    }}
+                  />
+                </div>
+              )}
           </div>
           <Link
             href={(currentlang == 'hi' ? '/hi' : '') + dealer.page_url}

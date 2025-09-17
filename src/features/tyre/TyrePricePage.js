@@ -58,6 +58,7 @@ export default async function TyrePricePage() {
           tyreBrands={tyreBrands}
           translation={translation}
           currentLang={prefLang}
+          isMobile={isMobile}
         />
         <PopularTyres
           langPrefix={prefLang}
@@ -80,6 +81,7 @@ export default async function TyrePricePage() {
           currentLang={prefLang}
           tyreBrands={tyreBrands}
           defaultEnquiryType={'Tyre'}
+          isMobile={isMobile}
         />
       </div>
       <FooterServer translation={translation} />

@@ -4,9 +4,13 @@ import PriceListToggle from './PriceListToggle';
 import { tg_getTittleFromNestedKey } from '@/src/utils';
 import TittleAndCrumbs from '@/src/components/shared/TittleAndCrumbs/TittleAndCrumbs';
 import TyrePriceBannerClient from './TyrePriceBannerClient';
-import TG_Banner from '@/src/components/shared/bannners/Banner';
-import BannerSlider from '@/src/components/shared/bannners/BannerSlider';
+// import BannerSlider from '@/src/components/shared/bannners/BannerSlider';
 import HeightSyncClient from './HeightSyncClient';
+import dynamic from 'next/dynamic';
+const BannerSlider = dynamic(() => import('@/src/components/shared/bannners/BannerSlider'), {
+  loading: () => <div style={{ minHeight: '250px' }} />,
+  ssr: true
+});
 
 const TyresPriceList = ({
   currentLang,
@@ -91,7 +95,6 @@ const TyresPriceList = ({
   return (
     <section className="pt-4 lg:mt-[144px]">
       <div className="container relative">
-        <TittleAndCrumbs title={headingTitle} breadcrumbs={finalBreadcrumbs} />
         {showBanner && (
           <>
             {/* Use BannerSlider if banners are available from tyreTopContent, otherwise use default TG_Banner */}
@@ -109,10 +112,11 @@ const TyresPriceList = ({
             }
           </>
         )}
+        <TittleAndCrumbs title={headingTitle} breadcrumbs={finalBreadcrumbs} />
         <div className="flex h-full w-full flex-col gap-8 lg:flex-row lg:items-start">
           <div
             id="left-content"
-            className="h-full w-full rounded-2xl p-4 text-sm font-normal text-gray-dark shadow-main lg:max-w-[700px] xl:max-w-[900px]"
+            className="h-full w-full rounded-2xl p-3 md:p-4 text-sm font-normal text-gray-dark shadow-main lg:max-w-[700px] xl:max-w-[900px]"
           >
             {/* SEO: Render all content for crawlers */}
             <div id="tyre-top-content" className="relative">
@@ -126,7 +130,9 @@ const TyresPriceList = ({
                 dangerouslySetInnerHTML={{ __html: content }}
               />
               {/* Client-side expand/collapse overlay */}
-              <TyreContentToggle deviceType={deviceType} />
+              <TyreContentToggle deviceType={deviceType}
+                {...(productType === 'tractor' ? { maxMobileHeight: 'max-h-24' } : {})}
+              />
             </div>
           </div>
 
@@ -134,10 +140,14 @@ const TyresPriceList = ({
             {/* Show image container on desktop when price list is empty - outside of toggle */}
             {!priceList || priceList.length === 0 ? (
               <div className="h-full lg:flex lg:items-stretch">
-                <TyrePriceBannerClient currentLang={currentLang} translation={translation} />
+                <TyrePriceBannerClient currentLang={currentLang} translation={translation} productType={productType === 'tractor' ? "Tractor" : "Tyre"} />
               </div>
             ) : (
-              <div className="h-full overflow-hidden rounded-b-lg lg:flex lg:flex-col">
+              <div
+                className="h-full overflow-hidden rounded-b-lg lg:flex lg:flex-col"
+                itemScope
+                itemType="https://schema.org/Table"
+              >
                 <PriceListToggle
                   isMobile={isMobile}
                   brandName={brandName}
@@ -153,11 +163,7 @@ const TyresPriceList = ({
                     maxHeight: isMobile ? undefined : 'calc(100vh - 200px)', // Fallback for desktop
                   }}
                 >
-                  <table
-                    className="w-full bg-white p-2 shadow-main"
-                    itemScope
-                    itemType="https://schema.org/Table"
-                  >
+                  <table className="w-full bg-white p-2 shadow-main">
                     <thead className="sticky top-0 z-10 bg-white">
                       <tr className="flex gap-2 border-b-[1px] border-gray-light px-2 py-2.5 md:gap-4">
                         {finalTableHeaders.map((header, index) => (

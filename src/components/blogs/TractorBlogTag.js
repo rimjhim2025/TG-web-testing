@@ -157,6 +157,7 @@ const TractorBlogTagPage = async ({ params, searchParams, prefLangs }) => {
           translation={translation}
           currentLang={prefLang}
           defaultEnquiryType={'Tractor'}
+          isMobile={isMobile}
         />
         <JoinOurCommunityServer translation={translation} currentLang={currentLang} />
         <TractorGyanOfferings translation={translation} />

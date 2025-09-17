@@ -17,6 +17,8 @@ export default async function AllTractorsListingData({
   showTyreBrandsSection = false,
   brandName = '',
   sectionName = 'allTractors',
+  isMiniTractorPage = false,
+  isMiniTractorBrandPage = false,
 }) {
   const param = await params;
   const searchParamsObj = await searchParams;
@@ -35,7 +37,7 @@ export default async function AllTractorsListingData({
       showBrandFilter,
       showTractorHPFilter,
       isMobile,
-      ITEMS_PER_PAGE: 16,
+      ITEMS_PER_PAGE: 18,
       tractorBrands,
       basePathFromUrl: basePath,
       sectionName,
@@ -64,7 +66,7 @@ export default async function AllTractorsListingData({
         <div className="flex flex-col gap-6 md:flex-row lg:gap-2 xl:gap-6">
           {!isMobile && (
             <div className="md:w-[32%] lg:w-[24%] xl:w-[30%]">
-              <TyresListingClient {...tractorListingClientProps} />
+              <TyresListingClient {...tractorListingClientProps} isMiniTractorPage={isMiniTractorPage} isMiniTractorBrandPage={isMiniTractorBrandPage} />
             </div>
           )}
           <div className="flex-1">

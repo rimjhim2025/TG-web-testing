@@ -146,6 +146,7 @@ const RearTyrePage = async ({ params, searchParams }) => {
           translation={translation}
           currentLang={prefLang}
           brandName={translation.headings.rearTyre}
+          isMobile={isMobile}
         />
         <UpdatesSection
           videos={videos}
@@ -170,6 +171,7 @@ const RearTyrePage = async ({ params, searchParams }) => {
           currentLang={prefLang}
           tyreBrands={tyreBrands}
           defaultEnquiryType={'Tyre'}
+          isMobile={isMobile}
         />
         <JoinOurCommunityServer translation={translation} currentLang={prefLang} />
         <TractorGyanOfferings translation={translation} />

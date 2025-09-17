@@ -7,6 +7,7 @@ export const tractorPageConfigs = {
     faqTag: 'tractors',
     seoPageKey: 'tractors',
     breadcrumbKey: 'tractorPages.allTractors',
+    headingPopularTableKey: null
   },
   latestTractors: {
     sectionName: 'latest_tractor',

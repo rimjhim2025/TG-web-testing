@@ -2,13 +2,16 @@ import React from 'react';
 import TittleAndCrumbs from '../../../components/shared/TittleAndCrumbs/TittleAndCrumbs';
 import CategoryComponent from '../CategoryComponent';
 import SearchBarWithFilterButton from '../SearchBarWithFilterButton';
-import ReelsCard from './ReelsCard';
 import Link from 'next/link';
 import YoutubeSubscribeButton from '../../../components/shared/youtubeSubscribeButton/YoutubeSubscribeButton';
-import Image from 'next/image';
-import TG_Button from '@/src/components/ui/buttons/MainButtons';
 import { TG_ReelsCard } from '@/src/components/ui/cards/reels/ReelsCards';
 import { tgi_arrow_right_white } from '@/src/utils/assets/icons';
+import TG_Button from '@/src/components/ui/buttons/MainButtons';
+
+// Memoized card component to prevent unnecessary re-renders
+const MemoizedReelsCard = React.memo(({ data }) => (
+  <TG_ReelsCard data={data} />
+));
 
 const ReelsListing = ({
   BrandReelData,
@@ -21,6 +24,13 @@ const ReelsListing = ({
   prefLang,
 }) => {
   const page = currentPage || 1;
+  const showPagination = dataCount > 12;
+  const isFirstPage = page <= 1;
+
+  // Precompute URLs
+  const prevPageUrl = `${prefLang === 'en' ? '' : '/hi'}/tractor-reels-and-shorts?page=${page - 1}`;
+  const nextPageUrl = `${prefLang === 'en' ? '' : '/hi'}/tractor-reels-and-shorts?page=${page + 1}`;
+
   return (
     <section className="max-md:pt-3 lg:mt-[155px]">
       <div className="container relative">
@@ -39,9 +49,9 @@ const ReelsListing = ({
             },
           ]}
         />
+
         {isMobile ? (
           <div className="grid gap-4">
-            {/* <CategoryComponent title={"Webstory Category"} /> */}
             <div className="flex flex-col items-center justify-center gap-3">
               <SearchBarWithFilterButton
                 parent={parent}
@@ -53,22 +63,20 @@ const ReelsListing = ({
             <main className="h-full w-full">
               <div className="grid grid-cols-3 gap-6">
                 {BrandReelData?.map((item, index) => (
-                  <div key={index} className="col-span-3 sm:col-span-2 lg:col-span-1">
-                    <TG_ReelsCard data={item} dataCount={dataCount} />
+                  <div key={item.id || index} className="col-span-3 sm:col-span-2 lg:col-span-1">
+                    <MemoizedReelsCard data={item} />
                   </div>
                 ))}
               </div>
-              {dataCount > 12 && (
+              {showPagination && (
                 <div className="mt-6 flex justify-center gap-4">
                   <Link
-                    href={`${
-                      prefLang === 'en' ? '' : '/hi'
-                    }/tractor-reels-and-shorts?page=${page - 1}`}
+                    href={prevPageUrl}
                     scroll={false}
-                    className={page <= 1 ? 'pointer-events-none opacity-50' : ''}
+                    className={isFirstPage ? 'pointer-events-none opacity-50' : ''}
                   >
                     <TG_Button
-                      disabled={page <= 1}
+                      disabled={isFirstPage}
                       icon={tgi_arrow_right_white}
                       iconPosition="left"
                       iconClass="rotate-180"
@@ -79,9 +87,7 @@ const ReelsListing = ({
                   </Link>
 
                   <Link
-                    href={`${
-                      prefLang === 'en' ? '' : '/hi'
-                    }/tractor-reels-and-shorts?page=${page + 1}`}
+                    href={nextPageUrl}
                     scroll={false}
                   >
                     <TG_Button
@@ -111,23 +117,20 @@ const ReelsListing = ({
               </div>
               <div className="grid grid-cols-4 gap-4">
                 {BrandReelData?.map((item, index) => (
-                  <div key={index} className="col-span-4 sm:col-span-2 lg:col-span-1">
-                    {/* <ReelsCard data={item} /> */}
-                    <TG_ReelsCard data={item} />
+                  <div key={item.id || index} className="col-span-4 sm:col-span-2 lg:col-span-1">
+                    <MemoizedReelsCard data={item} />
                   </div>
                 ))}
               </div>
-              {dataCount > 12 && (
+              {showPagination && (
                 <div className="mt-6 flex justify-center gap-4">
                   <Link
-                    href={`${
-                      prefLang === 'en' ? '' : '/hi'
-                    }/tractor-reels-and-shorts?page=${page - 1}`}
+                    href={prevPageUrl}
                     scroll={false}
-                    className={`${page <= 1 ? 'pointer-events-none opacity-50' : ''}`}
+                    className={isFirstPage ? 'pointer-events-none opacity-50' : ''}
                   >
                     <TG_Button
-                      disabled={page <= 1}
+                      disabled={isFirstPage}
                       icon={tgi_arrow_right_white}
                       iconPosition="left"
                       iconClass="rotate-180"
@@ -138,9 +141,7 @@ const ReelsListing = ({
                   </Link>
 
                   <Link
-                    href={`${
-                      prefLang === 'en' ? '' : '/hi'
-                    }/tractor-reels-and-shorts?page=${page + 1}`}
+                    href={nextPageUrl}
                     scroll={false}
                   >
                     <TG_Button
@@ -161,4 +162,12 @@ const ReelsListing = ({
   );
 };
 
-export default ReelsListing;
+// Only re-render when props actually change
+export default React.memo(ReelsListing, (prevProps, nextProps) => {
+  return (
+    prevProps.BrandReelData === nextProps.BrandReelData &&
+    prevProps.currentPage === nextProps.currentPage &&
+    prevProps.dataCount === nextProps.dataCount &&
+    prevProps.translation === nextProps.translation
+  );
+});

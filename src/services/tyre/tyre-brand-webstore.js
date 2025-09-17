@@ -19,6 +19,8 @@ export async function getTyreMedia(mediaType, slug) {
       payload = { video_type: mediaType, video_tag: slug };
     }
 
+    console.log("Fetching tyre media with payload:", payload, endpoint);
+
     // Use the postData method for POST requests with payload
     const result = await postData(endpoint, payload);
 

@@ -5,7 +5,7 @@ import Image from "next/image";
 const mediaSlides1 = [
     "https://images.tractorgyan.com/uploads/120153/6880905f0b319-life-at-tractorgyan-1.webp",
     "https://images.tractorgyan.com/uploads/120154/68809074f3619-life-at-tractorgyan-2.webp",
-    "https://images.tractorgyan.com/uploads/120155/68809087965de-life-at-tractorgyan-3.webp",
+    "https://images.tractorgyan.com/uploads/120829/68b2a7e5c049e-SPR01011-(1)-(1).webp",
     "https://images.tractorgyan.com/uploads/120156/6880909bd90f1-life-at-tractorgyan-4.webp",
     "https://images.tractorgyan.com/uploads/120157/688090c296a87-life-at-tractorgyan-5.webp",
     "https://images.tractorgyan.com/uploads/120158/688090d5d128f-life-at-tractorgyan-6.webp",
@@ -19,7 +19,7 @@ const mediaSlides2 = [
     "https://images.tractorgyan.com/uploads/120160/6880910ab92ce-life-at-tractorgyan-8.webp",
     "https://images.tractorgyan.com/uploads/120153/6880905f0b319-life-at-tractorgyan-1.webp",
     "https://images.tractorgyan.com/uploads/120154/68809074f3619-life-at-tractorgyan-2.webp",
-    "https://images.tractorgyan.com/uploads/120155/68809087965de-life-at-tractorgyan-3.webp",
+    "https://images.tractorgyan.com/uploads/120829/68b2a7e5c049e-SPR01011-(1)-(1).webp",
     "https://images.tractorgyan.com/uploads/120157/688090c296a87-life-at-tractorgyan-5.webp",
     "https://images.tractorgyan.com/uploads/120156/6880909bd90f1-life-at-tractorgyan-4.webp",
 ];
@@ -74,8 +74,11 @@ const LifeAtTractorGyan = ({ isMobile }) => {
                         src={img}
                         alt={`Life at Tractor Gyan ${start + index + 1}`}
                         width={442}
-                        height={230}
-                        className="w-full h-[250px] sm:h-full object-fill rounded-2xl"
+                        height={280}
+                        title={`Life at Tractor Gyan ${start + index + 1}`}
+                        className="w-full h-[200px] md:h-[270px] object-fill rounded-2xl"
+                        placeholder="empty"
+                        quality={100}
 
                     />
                 </div>
@@ -94,7 +97,7 @@ const LifeAtTractorGyan = ({ isMobile }) => {
                                 <div className="flex justify-start items-start mb-4 px-3 ">
                                     <h2 className="text-xl font-bold text-black">
                                         Life At Tractor
-                                        <span className="text-primary">Gyan</span>
+                                        <span className="text-primary ml-2">Gyan</span>
                                     </h2>
                                 </div>
 
@@ -150,7 +153,7 @@ const LifeAtTractorGyan = ({ isMobile }) => {
                             <div className="flex justify-center items-center mb-12 ">
                                 <h2 className="text-2xl font-bold text-black">
                                     Life At Tractor
-                                    <span className="text-primary">Gyan</span>
+                                    <span className="text-primary ml-2">Gyan</span>
                                 </h2>
                             </div>
 

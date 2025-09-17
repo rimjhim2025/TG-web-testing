@@ -41,12 +41,82 @@ export default async function DealerFilterSection({
   const totalCount = dealerResult?.count || 0;
   const totalPages = Math.ceil(totalCount / PAGE_SIZE);
 
+  // Function to generate dynamic title based on page context (similar to FAQ heading logic)
+  const getDynamicTitle = () => {
+    const hasBrand = selectedBrand;
+    const hasState = selectedState;
+    const hasCity = selectedCity;
+
+    // Determine if we're in Hindi mode
+    const isHindi = currentLang === 'hi';
+
+    // Get dealer type text based on language
+    let dealerTypeTextPlural;
+    if (page === 'implement') {
+      dealerTypeTextPlural = translation?.dealer?.implementDealers || 'Implement Dealers';
+    } else if (dealerType === 'tractor') {
+      dealerTypeTextPlural = translation?.dealer?.tractorDealers || 'Tractor Dealers';
+    } else {
+      dealerTypeTextPlural = translation?.dealer?.tyreDealers || 'Tyre Dealers';
+    }
+
+    // Generate titles with proper grammar for each language
+    if (isHindi) {
+      // Hindi grammar patterns
+      if (hasBrand && hasState && hasCity) {
+        return `${selectedCity}, ${selectedState} में ${selectedBrand} ${dealerTypeTextPlural} खोजें`;
+      }
+      if (hasBrand && hasState) {
+        return `${selectedState} में ${selectedBrand} ${dealerTypeTextPlural} खोजें`;
+      }
+      if (hasState && hasCity) {
+        return `${selectedCity}, ${selectedState} में ${dealerTypeTextPlural} खोजें`;
+      }
+      if (hasBrand) {
+        return `${selectedBrand} ${dealerTypeTextPlural} खोजें`;
+      }
+      if (hasState) {
+        return `${selectedState} में ${dealerTypeTextPlural} खोजें`;
+      }
+      if (hasCity) {
+        return `${selectedCity} में ${dealerTypeTextPlural} खोजें`;
+      }
+    } else {
+      // English grammar patterns
+      if (hasBrand && hasState && hasCity) {
+        return `Find ${selectedBrand} ${dealerTypeTextPlural} in ${selectedCity}, ${selectedState}`;
+      }
+      if (hasBrand && hasState) {
+        return `Find ${selectedBrand} ${dealerTypeTextPlural} in ${selectedState}`;
+      }
+      if (hasState && hasCity) {
+        return `Find ${dealerTypeTextPlural} in ${selectedCity}, ${selectedState}`;
+      }
+      if (hasBrand) {
+        return `Find ${selectedBrand} ${dealerTypeTextPlural}`;
+      }
+      if (hasState) {
+        return `Find ${dealerTypeTextPlural} in ${selectedState}`;
+      }
+      if (hasCity) {
+        return `Find ${dealerTypeTextPlural} in ${selectedCity}`;
+      }
+    }
+
+    // Default fallback using existing translations
+    return page === 'implement'
+      ? translation?.headings?.findImplementDealerNearYou || 'Find Implement Dealer Near You'
+      : dealerType === 'tractor'
+        ? translation?.tractorDealers?.findDealers || 'Find Tractor Dealers'
+        : translation?.headings?.findTyreDealerNearYou || 'Find Tyre Dealer Near You';
+  };
+
   // Banner images
   const bannerImageDesktop =
     page === 'implement'
       ? 'https://images.tractorgyan.com/uploads/118597/67f9091c36751-implement-dealer-desktop-banner.webp'
       : dealerType === 'tractor'
-        ? 'https://images.tractorgyan.com/uploads/120678/68a6dcd8de076-tractor-dealer-banner.webp' // Use appropriate tractor banner
+        ? 'https://images.tractorgyan.com/uploads/120980/1757481146Tractor-Dealers-Banner.webp' // Use appropriate tractor banner
         : 'https://images.tractorgyan.com/uploads/117673/67988ae001a95-tyre-dealer-banner-desktop.webp';
   const bannerImageMobile =
     page === 'implement'
@@ -56,54 +126,24 @@ export default async function DealerFilterSection({
         : 'https://images.tractorgyan.com/uploads/117674/67988ae896d7f-tyre-dealer-banner-mobile.webp';
 
   return (
-    <section className="lg:mt-[144px]">
-      <div className="container relative">
+    <section className="container lg:mt-[142px]">
+      <div className=" relative">
         {/* <div className={isMobile ? `w-[90%] m-auto` : ``}>
         </div> */}
         <TittleAndCrumbs
-          title={
-            page === 'implement'
-              ? translation?.headings?.findImplementDealerNearYou ||
-              'Find Implement Dealer Near You'
-              : dealerType === 'tractor'
-                ? translation?.tractorDealers?.findDealers || 'Find Tractor Dealers'
-                : `${translation?.headings?.findTyreDealerNearYou || 'Find Tyre Dealer Near You'}`
-          }
+          title={getDynamicTitle()}
           breadcrumbs={(() => {
             const breadcrumbs = [
               {
                 label:
                   dealerType === 'tractor'
-                    ? translation?.breadcrubm?.tractorGyanHome || 'Tractor Home'
+                    ? translation?.breadcrubm?.tractorGyanHome || 'TractorGyan Home'
                     : translation?.breadcrubm?.home || 'Home',
                 href: currentLang === 'hi' ? '/hi' : '/',
-                title: translation?.breadcrubm?.home || 'Home',
-              },
-              {
-                label:
-                  page === 'implement'
-                    ? translation?.breadcrubm?.implementHome || 'Implement Home'
-                    : dealerType === 'tractor'
-                      ? translation?.breadcrubm?.tractorHome || 'Tractor Home'
-                      : translation.headerNavbar.tyreHome,
-                href:
-                  page === 'implement'
-                    ? currentLang === 'hi'
-                      ? '/hi/tractor-implements-in-india'
-                      : '/tractor-implements-in-india'
-                    : dealerType === 'tractor'
-                      ? currentLang === 'hi'
-                        ? '/hi/tractors-in-india'
-                        : '/tractors-in-india'
-                      : currentLang === 'hi'
-                        ? '/hi/tractor-tyre-in-india'
-                        : '/tractor-tyre-in-india',
                 title:
-                  page === 'implement'
-                    ? translation?.breadcrubm?.implementHome || 'Implement Home'
-                    : dealerType === 'tractor'
-                      ? translation?.breadcrubm?.tractorHome || 'Tractor Home'
-                      : translation.headerNavbar.tyreHome,
+                  dealerType === 'tractor'
+                    ? translation?.breadcrubm?.tractorGyanHome || 'TractorGyan Home'
+                    : translation?.breadcrubm?.home || 'Home',
               },
               {
                 label:
@@ -241,7 +281,7 @@ export default async function DealerFilterSection({
             />
           </div>
           {/* Filter Overlay */}
-          <div className="top-0 z-[5px] h-full w-full p-4 md:absolute md:flex md:items-center md:justify-center md:p-0">
+          <div className="top-0 z-[5px] h-full w-full p-4 md:absolute md:flex md:flex-col md:items-center md:justify-center md:p-0">
             <DealerFilterClient
               page={page}
               urlSlug={urlSlug}
@@ -275,16 +315,16 @@ export default async function DealerFilterSection({
               <Link
                 rel="prev"
                 href={`/${page === 'implement'
+                  ? currentLang === 'hi'
+                    ? 'hi/implement-dealers-in-india'
+                    : 'implement-dealers-in-india'
+                  : dealerType === 'tractor'
                     ? currentLang === 'hi'
-                      ? 'hi/implement-dealers-in-india'
-                      : 'implement-dealers-in-india'
-                    : dealerType === 'tractor'
-                      ? currentLang === 'hi'
-                        ? 'hi/tractor-dealers-in-india'
-                        : 'tractor-dealers-in-india'
-                      : currentLang === 'hi'
-                        ? 'hi/tractor-tyre-dealers-in-india'
-                        : 'tractor-tyre-dealers-in-india'
+                      ? 'hi/tractor-dealers-in-india'
+                      : 'tractor-dealers-in-india'
+                    : currentLang === 'hi'
+                      ? 'hi/tractor-tyre-dealers-in-india'
+                      : 'tractor-tyre-dealers-in-india'
                   }${currentPage - 1 === 1 ? '' : `?page=${currentPage - 1}`}`}
                 className="hover:bg-primary-dark rounded-lg bg-primary px-4 py-2 text-lg text-white"
               >
@@ -299,16 +339,16 @@ export default async function DealerFilterSection({
               <Link
                 rel="next"
                 href={`/${page === 'implement'
+                  ? currentLang === 'hi'
+                    ? 'hi/implement-dealers-in-india'
+                    : 'implement-dealers-in-india'
+                  : dealerType === 'tractor'
                     ? currentLang === 'hi'
-                      ? 'hi/implement-dealers-in-india'
-                      : 'implement-dealers-in-india'
-                    : dealerType === 'tractor'
-                      ? currentLang === 'hi'
-                        ? 'hi/tractor-dealers-in-india'
-                        : 'tractor-dealers-in-india'
-                      : currentLang === 'hi'
-                        ? 'hi/tractor-tyre-dealers-in-india'
-                        : 'tractor-tyre-dealers-in-india'
+                      ? 'hi/tractor-dealers-in-india'
+                      : 'tractor-dealers-in-india'
+                    : currentLang === 'hi'
+                      ? 'hi/tractor-tyre-dealers-in-india'
+                      : 'tractor-tyre-dealers-in-india'
                   }?page=${currentPage + 1}`}
                 className="hover:bg-primary-dark rounded-lg bg-primary px-4 py-2 text-lg text-white"
               >

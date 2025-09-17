@@ -144,6 +144,7 @@ export default async function ConstructionMachineryPage({ searchParams }) {
           heading='Construction Machinery By Brands'
           allImplementBrands={allImplementBrands}
           itemsShown={isMobile ? 9 : 12}
+          translation={translation}
         />
         <UpdatesSection
           videos={videos}
@@ -167,7 +168,7 @@ export default async function ConstructionMachineryPage({ searchParams }) {
         />
 
         <WhatsAppTopButton translation={translation} currentLang={currentLang}
-          defaultEnquiryType={'Tyre'} />
+          defaultEnquiryType={'Tyre'} isMobile={isMobile} />
         <JoinOurCommunityServer
           translation={translation} currentLang={currentLang} />
         <TractorGyanOfferings translation={translation} />

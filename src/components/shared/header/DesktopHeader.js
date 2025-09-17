@@ -4,23 +4,17 @@ import Link from 'next/link';
 import menuItems from '@/src/data/menuItems.json';
 import { useRef } from 'react';
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import SecondNavbar from './SecondNavbar';
 import { postData } from '@/src/services/apiMethods';
 import SignInPopup from '../../auth/SignInPopup';
 import LanguagePopupMain from '../Language-popup/LagnguagePop';
 import { getCookie, setCookie, deleteCookie } from '@/src/utils/cookies';
+// import GlobalCTA from './GlobalCTA';
 
-const DesktopHeader = ({
-  translation,
-  currentLang,
-  isMobile,
-  showLanguageSelector = true, // <-- default true
-}) => {
+const DesktopHeader = ({ translation, currentLang, isMobile, showLanguageSelector = true }) => {
   const [selectedLanguage, setSelectedLanguage] = useState(currentLang);
 
-  // Set first visible menu as selected in mobile (not "home")
   const firstMenuLabel =
     menuItems.find(item => item.label !== 'home')?.label || menuItems?.[0]?.label;
 
@@ -47,9 +41,10 @@ const DesktopHeader = ({
   const router = useRouter();
   const popupRef = useRef(null);
 
+  const showGlobalCTA = true; //TODO:: Update the GIF Visibility Condition
+
   const toggleDropdowns = () => setIsOpen(!isOpen);
 
-  // TODO:: Show More Button Implementation
   const [showAllSubMenu, setSubMenuShowAll] = useState(false);
   const [showAllSubMenu1, setSubMenuShowAll1] = useState(false);
   const [showAllSubMenu2, setSubMenuShowAll2] = useState(false);
@@ -68,7 +63,6 @@ const DesktopHeader = ({
     setIsPopupOpen(false);
   };
 
-  // Prevent background scrolling when mobile navbar is open
   useEffect(() => {
     if (isNavbarOpen) {
       document.body.classList.add('no-scroll');
@@ -76,7 +70,6 @@ const DesktopHeader = ({
       document.body.classList.remove('no-scroll');
     }
 
-    // Cleanup function to remove class when component unmounts
     return () => {
       document.body.classList.remove('no-scroll');
     };
@@ -85,7 +78,6 @@ const DesktopHeader = ({
   useEffect(() => {
     const fetchTractorBrands = async () => {
       if (inputValue.length < 2) {
-        // Clear suggestions if input is too short
         if (isActive) {
           setTractorBrands([]);
           setSuggestions([]);
@@ -113,14 +105,6 @@ const DesktopHeader = ({
         setTractorBrands(brandsArray);
 
         setTractorBrands(brandsArray);
-        // 2. Correct Filtering Logic: Set suggestions directly from API response or filter newBrands
-        // Assuming API returns relevant suggestions based on inputValue.
-        // If further client-side filtering is needed on brandsArray before setting suggestions:
-        // const filteredSuggestions = brandsArray.filter((brand) =>
-        //   brand.name.toLowerCase().includes(inputValue.toLowerCase())
-        // );
-        // setSuggestions(filteredSuggestions);
-        // For now, setting suggestions directly from what API provides:
         setSuggestions(brandsArray);
         setIsLoadingSuggestions(false);
       } catch (error) {
@@ -142,22 +126,21 @@ const DesktopHeader = ({
       const parsedSearches = JSON.parse(storedSearchesRaw);
       loadedSearches = parsedSearches.map(item => {
         if (typeof item === 'string') {
-          return { name: item, url: null }; // Convert legacy string to object
+          return { name: item, url: null };
         }
-        return item; // Already new object format
+        return item;
       });
     }
     setRecentSearches(loadedSearches);
   }, []);
   const updateRecentSearches = searchItem => {
-    // Filter out existing items with the same name to ensure uniqueness
     let updatedSearches = recentSearches.filter(
       item => (typeof item === 'string' ? item : item.name) !== searchItem.name
     );
-    updatedSearches = [searchItem, ...updatedSearches]; // Add new item to the beginning
+    updatedSearches = [searchItem, ...updatedSearches];
 
     if (updatedSearches.length > 5) {
-      updatedSearches.pop(); // Keep only the latest 5
+      updatedSearches.pop();
     }
     localStorage.setItem('recentSearches', JSON.stringify(updatedSearches));
     setRecentSearches(updatedSearches);
@@ -171,23 +154,10 @@ const DesktopHeader = ({
     const value = e.target.value;
     setInputValue(value);
     setRecentSearchesVisible(false);
-    // if (value?.length >= 2) {
-    //   const filteredSuggestions = tractorBrands.filter((brand) =>
-    //     brand.name.toLowerCase().includes(value.toLowerCase())
-    //   );
-    //   console.log("Filtered Suggestions:", filteredSuggestions);
-
-    //   setSuggestions(filteredSuggestions);
-    // } else {
-    //   setSuggestions([]);
-    // }
   };
   const handleInputFocus = () => {
     setIsDropdownOpen(true);
     setRecentSearchesVisible(inputValue?.length === 0);
-    // The suggestions themselves will be fetched by the useEffect based on inputValue
-    // If inputValue has content, recentSearchesVisible will be false, and the
-    // suggestions/loading/no-results logic within the dropdown will take over.
   };
   const handleBlur = () => {
     setTimeout(() => {
@@ -201,7 +171,6 @@ const DesktopHeader = ({
     if (suggestion.name === 'Related Blogs') return;
     setInputValue(suggestion.name);
     setSuggestions([]);
-    // Pass the whole suggestion object or the required parts
     updateRecentSearches({ name: suggestion.name, url: suggestion.url });
     router.push(suggestion.url);
     setIsDropdownOpen(false);
@@ -209,8 +178,8 @@ const DesktopHeader = ({
   };
   const handleRecentSearchClick = searchItem => {
     setInputValue(searchItem.name);
-    setSuggestions([]); // Clear any open suggestions
-    setRecentSearchesVisible(false); // Hide recent searches list
+    setSuggestions([]);
+    setRecentSearchesVisible(false);
     if (searchItem.url) {
       router.push(searchItem.url);
     }
@@ -225,7 +194,7 @@ const DesktopHeader = ({
   const handleLanguageChange = async lang => {
     setSelectedLanguage(lang);
     setIsOpen(false);
-    if (lang === currentLang) return; // Prevent navigation if already selected
+    if (lang === currentLang) return;
 
     await fetch('/nx-api/set-language', {
       method: 'POST',
@@ -249,9 +218,6 @@ const DesktopHeader = ({
     SetIsShowSigninPopup(true);
   };
 
-  // const handlePopupClose = () => {
-  //   setIsLanguagePopupVisible(false);
-  // };
   const handlePopupClose = e => {
     e?.stopPropagation();
     setIsLanguagePopupVisible(false);
@@ -304,8 +270,6 @@ const DesktopHeader = ({
     };
   }, [isLanguagePopupVisible]);
 
-  // Render Helpers
-  // ====== Sub Menu Item ======
   const renderSubMenuItem = (item, index) => (
     <li
       key={index}
@@ -330,7 +294,6 @@ const DesktopHeader = ({
     </li>
   );
 
-  // ====== Sub Menu See More Button ======
   const renderSeeMoreButton = (showAll, setShowAll, truncatedLength, fullLength) => {
     if (truncatedLength >= fullLength) return null;
 
@@ -348,9 +311,8 @@ const DesktopHeader = ({
               height={20}
               alt="up_arrow_button"
               title="up_arrow_button"
-              className={`${
-                showAll ? 'rotate-0' : 'rotate-180'
-              } h-4 w-4 transition-transform duration-300 md:h-6 md:w-6`}
+              className={`${showAll ? 'rotate-0' : 'rotate-180'
+                } h-4 w-4 transition-transform duration-300 md:h-6 md:w-6`}
             />
           </span>
         </button>
@@ -360,7 +322,7 @@ const DesktopHeader = ({
 
   return (
     <>
-      <header className="pt-3 bg-header hidden lg:flex flex-col gap-3 fixed top-0 right-0 left-0 z-20">
+      <header className="fixed left-0 right-0 top-0 z-20 hidden flex-col gap-3 bg-header pt-3 lg:flex">
         <div className="container flex justify-between">
           <Link href={'/'} className="me-[45px] max-h-[40px] min-w-[179px] max-w-[179px]">
             <Image
@@ -400,7 +362,7 @@ const DesktopHeader = ({
               </button>
             </div>
             {isDropdownOpen && (
-              <ul className="relative z-20 custom-scroller mt-[2px] h-full max-h-[200px] w-full overflow-y-auto rounded-md bg-white px-4 shadow-main">
+              <ul className="custom-scroller relative z-20 mt-[2px] h-full max-h-[200px] w-full overflow-y-auto rounded-md bg-white px-4 shadow-main">
                 {/* Recent Searches header and items */}
                 {recentSearchesVisible && recentSearches?.length > 0 && (
                   <>
@@ -528,6 +490,13 @@ const DesktopHeader = ({
             )}
           </div>
 
+          {/* {showGlobalCTA ? (
+            <GlobalCTA
+              mediaURL={'https://images.tractorgyan.com/uploads/120879/68b689ff29431-Sales-Report-mini-image.gif'}
+              isMobile={isMobile}
+            />
+          ) : null} */}
+
           <div onClick={handleShowSignIn} className="flex cursor-pointer items-center gap-2">
             <div className="h-[35px] w-[35px] overflow-hidden rounded-full border-[1px] border-gray-gainsboro">
               <Image
@@ -587,13 +556,13 @@ const DesktopHeader = ({
                       width={50}
                       alt="tractorgyan rupee logo"
                       title="tractorgyan rupee logo"
+                      unoptimized={true}
                     />
                   </Link>
 
                   <div
-                    className={`flex w-full min-w-[30px] max-w-[32px] flex-col items-center md:gap-1 ${
-                      showLanguageSelector ? 'flex' : 'hidden'
-                    }`}
+                    className={`flex w-full min-w-[30px] max-w-[32px] flex-col items-center md:gap-1 ${showLanguageSelector ? 'flex' : 'hidden'
+                      }`}
                     onClick={handleManualLanguageButtonClick}
                   >
                     <Image
@@ -700,11 +669,10 @@ const DesktopHeader = ({
                           onMouseDown={() => {
                             isSuggestionClickedRef.current = true;
                           }}
-                          className={`hover:bg-gray-100 w-full cursor-pointer border-b-[1px] border-gray-light p-2 text-sm ${
-                            suggestion.name === 'Related Blogs'
-                              ? 'font-medium text-primary'
-                              : 'text-gray-main'
-                          }`}
+                          className={`hover:bg-gray-100 w-full cursor-pointer border-b-[1px] border-gray-light p-2 text-sm ${suggestion.name === 'Related Blogs'
+                            ? 'font-medium text-primary'
+                            : 'text-gray-main'
+                            }`}
                         >
                           {suggestion.name}
                         </li>
@@ -760,11 +728,10 @@ const DesktopHeader = ({
                   .map((item, index) => (
                     <li
                       key={index}
-                      className={`${
-                        selectedMenu === item.label
-                          ? 'selected-menu rounded-s-xl bg-white text-black'
-                          : 'text-white'
-                      } relative mb-2 flex cursor-pointer items-center gap-2 p-1 text-[13px] font-medium`}
+                      className={`${selectedMenu === item.label
+                        ? 'selected-menu rounded-s-xl bg-white text-black'
+                        : 'text-white'
+                        } relative mb-2 flex cursor-pointer items-center gap-2 p-1 text-[13px] font-medium`}
                       onClick={() => setselectedMenu(item.label)}
                     >
                       <div className="h-10 w-10 rounded-full bg-white p-[2px]">
@@ -893,6 +860,14 @@ const DesktopHeader = ({
         </div>
       )}
 
+      {/* {showGlobalCTA && isMobile ? (
+        <GlobalCTA
+          mediaURL={'https://images.tractorgyan.com/uploads/120865/68b558208907f-Adobe-Express---Sales-min.gif'}
+          isMobile={isMobile}
+        />
+      ) : null} */}
+
+
       {isShowSigninPopup && (
         <SignInPopup
           onClose={handleClosePopup}
@@ -906,6 +881,7 @@ const DesktopHeader = ({
           ref={popupRef}
           onClosePopup={handlePopupClose}
           currentLang={currentLang}
+          a
         />
       )}
     </>

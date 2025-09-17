@@ -267,54 +267,57 @@ const TractorDealershipEnquiryForm = ({
                     </div>
                   )}
 
-                  <div className="col-span-6 md:col-span-3">
-                    <label htmlFor="name" className="mb-0 block text-sm font-bold text-black">
-                      {translation.enquiryForm.name}
-                    </label>
-                    <div className="mt-2">
-                      <input
-                        type="text"
-                        id="name"
-                        placeholder={translation.enquiryForm.enterName}
-                        value={name}
-                        onChange={e => {
-                          setName(e.target.value);
-                          clearFieldError('name');
-                        }}
-                        required
-                        autoComplete="given-name"
-                        className={`h-[38px] w-full rounded-lg border ${fieldErrors.name ? 'border-red-500' : 'border-gray-light'} bg-transparent px-4 py-2 text-sm text-black placeholder:text-gray-main focus:outline-none`}
-                      />
-                      {fieldErrors.name && (
-                        <p className="text-red-500 mt-1 text-xs">{fieldErrors.name}</p>
-                      )}
-                    </div>
-                  </div>
-                  <div className="col-span-6 md:col-span-3">
-                    <label htmlFor="userMobile" className="mb-0 block text-sm font-bold text-black">
-                      {translation.enquiryForm.mobile}
-                    </label>
-                    <div className="relative mt-2">
-                      <input
-                        type="tel"
-                        id="userMobile"
-                        placeholder=" xxxxxxxxxx"
-                        value={mobile}
-                        onChange={e => {
-                          setMobile(e.target.value);
-                          clearFieldError('mobile');
-                        }}
-                        required
-                        pattern="[6-9]{1}[0-9]{9}"
-                        maxLength="10"
-                        className={`h-[38px] w-full rounded-lg border ${fieldErrors.mobile ? 'border-red-500' : 'border-gray-light'} bg-transparent px-4 py-2 ps-10 text-sm text-black placeholder:text-gray-main focus:outline-none`}
-                      />
-                      <div className="full absolute left-3 top-0 py-2 text-sm font-bold leading-[22px] text-black">
-                        <span>+91</span>
+                  {/* Name and Mobile in one row, half width each on all screens */}
+                  <div className="col-span-6 flex flex-row gap-x-2">
+                    <div className="basis-1/2">
+                      <label htmlFor="name" className="mb-0 block text-sm font-bold text-black">
+                        {translation.enquiryForm.name}
+                      </label>
+                      <div className="mt-2">
+                        <input
+                          type="text"
+                          id="name"
+                          placeholder={translation.enquiryForm.enterName}
+                          value={name}
+                          onChange={e => {
+                            setName(e.target.value);
+                            clearFieldError('name');
+                          }}
+                          required
+                          autoComplete="given-name"
+                          className={`h-[38px] w-full rounded-lg border ${fieldErrors.name ? 'border-red-500' : 'border-gray-light'} bg-transparent px-4 py-2 text-sm text-black placeholder:text-gray-main focus:outline-none`}
+                        />
+                        {fieldErrors.name && (
+                          <p className="text-red-500 mt-1 text-xs">{fieldErrors.name}</p>
+                        )}
                       </div>
-                      {fieldErrors.mobile && (
-                        <p className="text-red-500 mt-1 text-xs">{fieldErrors.mobile}</p>
-                      )}
+                    </div>
+                    <div className="basis-1/2">
+                      <label htmlFor="userMobile" className="mb-0 block text-sm font-bold text-black">
+                        {translation.enquiryForm.mobile}
+                      </label>
+                      <div className="relative mt-2">
+                        <input
+                          type="tel"
+                          id="userMobile"
+                          placeholder=" xxxxxxxxxx"
+                          value={mobile}
+                          onChange={e => {
+                            setMobile(e.target.value);
+                            clearFieldError('mobile');
+                          }}
+                          required
+                          pattern="[6-9]{1}[0-9]{9}"
+                          maxLength="10"
+                          className={`h-[38px] w-full rounded-lg border ${fieldErrors.mobile ? 'border-red-500' : 'border-gray-light'} bg-transparent px-4 py-2 ps-10 text-sm text-black placeholder:text-gray-main focus:outline-none`}
+                        />
+                        <div className="full absolute left-3 top-0 py-2 text-sm font-bold leading-[22px] text-black">
+                          <span>+91</span>
+                        </div>
+                        {fieldErrors.mobile && (
+                          <p className="text-red-500 mt-1 text-xs">{fieldErrors.mobile}</p>
+                        )}
+                      </div>
                     </div>
                   </div>
                   <div className="col-span-6">
@@ -345,7 +348,7 @@ const TractorDealershipEnquiryForm = ({
                       )}
                     </div>
                   </div>
-                  <div className="col-span-6 md:col-span-3">
+                  <div className="col-span-6">
                     <label
                       htmlFor="investmentAmount"
                       className="mb-0 block text-sm font-bold text-black"
@@ -377,73 +380,75 @@ const TractorDealershipEnquiryForm = ({
                       )}
                     </div>
                   </div>
-                  <div className="col-span-3">
-                    <label htmlFor="tyreBrand" className="mb-0 block text-sm font-bold text-black">
-                      {type === 'TYRE'
-                        ? translation.enquiryForm.tyreBrand
-                        : type === 'TRACTOR'
-                          ? translation.enquiryForm.tractorBrand || 'Tractor Brand'
-                          : type === 'IMPLEMENT'
-                            ? translation.enquiryForm.implementBrand
-                            : translation.enquiryForm.selectBrand}
-                    </label>
-                    <div className="mt-2">
-                      <select
-                        id="tyreBrand"
-                        value={selectedBrand}
-                        onChange={e => setSelectedBrand(e.target.value)}
-                        required
-                        className={`h-[38px] w-full rounded-lg border ${fieldErrors.selectedBrand ? 'border-red-500' : 'border-gray-light'} bg-transparent px-4 py-2 text-sm text-black focus:outline-none`}
-                      >
-                        <option value="">{translation.enquiryForm.selectBrand}</option>
-                        {brands?.length > 0 ? (
-                          brands.map((brand, index) => (
-                            <option key={index} value={brand.brand_id || brand.id || brand.name}>
-                              {currentLang == 'hi' ? brand.name_hi || brand.name : brand.name}
-                            </option>
-                          ))
-                        ) : (
-                          <option disabled>Loading...</option>
+                  {/* Brand and State in one row, half width each on all screens */}
+                  <div className="col-span-6 flex flex-row gap-x-2">
+                    <div className="basis-1/2">
+                      <label htmlFor="tyreBrand" className="mb-0 block text-sm font-bold text-black">
+                        {type === 'TYRE'
+                          ? translation.enquiryForm.tyreBrand
+                          : type === 'TRACTOR'
+                            ? translation.enquiryForm.tractorBrand || 'Tractor Brand'
+                            : type === 'IMPLEMENT'
+                              ? translation.enquiryForm.implementBrand
+                              : translation.enquiryForm.selectBrand}
+                      </label>
+                      <div className="mt-2">
+                        <select
+                          id="tyreBrand"
+                          value={selectedBrand}
+                          onChange={e => setSelectedBrand(e.target.value)}
+                          required
+                          className={`h-[38px] w-full rounded-lg border ${fieldErrors.selectedBrand ? 'border-red-500' : 'border-gray-light'} bg-transparent px-4 py-2 text-sm text-black focus:outline-none`}
+                        >
+                          <option value="">{translation.enquiryForm.selectBrand}</option>
+                          {brands?.length > 0 ? (
+                            brands.map((brand, index) => (
+                              <option key={index} value={brand.brand_id || brand.id || brand.name}>
+                                {currentLang == 'hi' ? brand.name_hi || brand.name : brand.name}
+                              </option>
+                            ))
+                          ) : (
+                            <option disabled>Loading...</option>
+                          )}
+                        </select>
+                        {fieldErrors.selectedBrand && (
+                          <p className="text-red-500 mt-1 text-xs">{fieldErrors.selectedBrand}</p>
                         )}
-                      </select>
-                      {fieldErrors.selectedBrand && (
-                        <p className="text-red-500 mt-1 text-xs">{fieldErrors.selectedBrand}</p>
-                      )}
+                      </div>
                     </div>
-                  </div>
-
-                  <div className="col-span-6 md:col-span-3">
-                    <label
-                      htmlFor="selectState"
-                      className="mb-0 block text-sm font-bold text-black"
-                    >
-                      {translation.enquiryForm.selectState}
-                    </label>
-                    <div className="mt-2">
-                      <select
-                        id="selectState"
-                        value={selectedState}
-                        onChange={e => {
-                          setSelectedState(e.target.value);
-                          clearFieldError('selectedState');
-                        }}
-                        required
-                        className={`h-[38px] w-full rounded-lg border ${fieldErrors.selectedState ? 'border-red-500' : 'border-gray-light'} bg-transparent px-4 py-2 text-sm text-black focus:outline-none`}
+                    <div className="basis-1/2">
+                      <label
+                        htmlFor="selectState"
+                        className="mb-0 block text-sm font-bold text-black"
                       >
-                        <option value="">{translation.enquiryForm.selectState}</option>
-                        {states?.length > 0 ? (
-                          states.map(state => (
-                            <option key={state.id} value={state.state}>
-                              {state.state}
-                            </option>
-                          ))
-                        ) : (
-                          <option disabled>Loading...</option>
+                        {translation.enquiryForm.selectState}
+                      </label>
+                      <div className="mt-2">
+                        <select
+                          id="selectState"
+                          value={selectedState}
+                          onChange={e => {
+                            setSelectedState(e.target.value);
+                            clearFieldError('selectedState');
+                          }}
+                          required
+                          className={`h-[38px] w-full rounded-lg border ${fieldErrors.selectedState ? 'border-red-500' : 'border-gray-light'} bg-transparent px-4 py-2 text-sm text-black focus:outline-none`}
+                        >
+                          <option value="">{translation.enquiryForm.selectState}</option>
+                          {states?.length > 0 ? (
+                            states.map(state => (
+                              <option key={state.id} value={state.state}>
+                                {state.state}
+                              </option>
+                            ))
+                          ) : (
+                            <option disabled>Loading...</option>
+                          )}
+                        </select>
+                        {fieldErrors.selectedState && (
+                          <p className="text-red-500 mt-1 text-xs">{fieldErrors.selectedState}</p>
                         )}
-                      </select>
-                      {fieldErrors.selectedState && (
-                        <p className="text-red-500 mt-1 text-xs">{fieldErrors.selectedState}</p>
-                      )}
+                      </div>
                     </div>
                   </div>
                   <div className="col-span-3 md:col-span-3">
@@ -517,7 +522,7 @@ const TractorDealershipEnquiryForm = ({
                       )}
                     </div>
                   </div>
-                  <div className="col-span-6 md:col-span-3">
+                  <div className="col-span-6">
                     <label htmlFor="pincode" className="mb-0 block text-sm font-bold text-black">
                       {translation.enquiryForm?.pincode || 'Pincode'}
                     </label>
@@ -592,10 +597,7 @@ const TractorDealershipEnquiryForm = ({
                     <button
                       type="submit"
                       disabled={isSubmitting}
-                      className={`mx-auto flex w-full max-w-[263px] items-center justify-center gap-2 rounded-lg px-4 py-2 text-lg text-white ${isSubmitting
-                          ? 'bg-gray-400 cursor-not-allowed'
-                          : 'hover:bg-primary-dark bg-primary'
-                        }`}
+                      className={`mx-auto flex w-full max-w-[263px] items-center justify-center gap-2 rounded-lg px-4 py-2 text-lg text-white hover:bg-primary-dark bg-primary`}
                     >
                       <span>
                         {isSubmitting
@@ -654,6 +656,7 @@ const TractorDealershipEnquiryForm = ({
       {/* Success Popup after OTP verification */}
       {showThankYouPopup && (
         <SuccessPopup
+          translation={translation}
           message={
             translation.common?.dealershipEnquirySuccess ||
             'Thank you for your dealership enquiry! Our team will review your application and get back to you within 2-3 business days.'

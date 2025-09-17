@@ -137,6 +137,7 @@ export default async function TractorTyreInIndiaPage() {
           currentLang={prefLang}
           tyreBrands={tyreBrands}
           defaultEnquiryType={'Tyre'}
+          isMobile={isMobile}
         />
         <JoinOurCommunityServer translation={translation} currentLang={prefLang} />
         <TractorGyanOfferings translation={translation} />

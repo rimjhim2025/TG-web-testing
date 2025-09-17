@@ -3,6 +3,22 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
 
+/**
+ * TyreDetailsCard component for displaying product details in a card format
+ * @param {Object} props - Component props
+ * @param {string} props.size - Size of the product
+ * @param {string} props.type - Type of the product
+ * @param {string} props.title - Product title
+ * @param {string} props.brandName - Brand name
+ * @param {string} props.pageUrl - URL for product details page
+ * @param {string} props.imgUrl - Image URL
+ * @param {string} props.popularTyre - Whether tyre is popular ('Yes'/'No')
+ * @param {number} props.reviews - Number of reviews
+ * @param {number} props.rating - Product rating
+ * @param {boolean} props.isLast - Whether this is the last card (for styling)
+ * @param {string} props.mode - Display mode ('tyre', 'tractor', 'implement')
+ * @param {function} props.translation - Translation function that takes a key and returns translated text
+ */
 const TyreDetailsCard = ({
   size,
   type,
@@ -15,6 +31,7 @@ const TyreDetailsCard = ({
   rating,
   isLast,
   mode = 'tyre', // 'tyre', 'tractor', 'implement'
+  translation
 }) => {
   // Function to round rating to nearest 0.5 for available star images
   const roundToNearestHalf = (num) => {
@@ -40,7 +57,7 @@ const TyreDetailsCard = ({
 
   const featureItem = (label, value) => {
     return (
-      <span className="flex items-center gap-1.5 text-xs font-normal text-gray-main">
+      <span className="flex items-center gap-1.5 text-xs font-normal text-gray-main capitalize">
         {/* <Image
             src={"https://images.tractorgyan.com/uploads/117228/677395f732537-filled-gray-star.webp"}
             height={100}
@@ -56,24 +73,26 @@ const TyreDetailsCard = ({
 
   // Get feature labels and button text based on mode
   const getModeSpecificContent = () => {
+
     switch (mode) {
       case 'tractor':
         return {
-          feature1Label: 'HP',
-          feature2Label: 'Cylinder',
-          buttonText: 'View Tractor Price',
+          feature1Label: translation.tractorSpecs?.hp || 'HP',
+          feature2Label: translation.tractorSpecs?.cylinders || 'Cylinders',
+          buttonText: translation.buttons?.viewTractorPrice || 'View Tractor Price',
         };
       case 'implement':
         return {
-          feature1Label: 'Type',
-          feature2Label: 'Category',
-          buttonText: 'View Implement Price',
+          // feature1Label: translation.headings.type || 'Type',
+          feature1Label: translation.headings.power || 'Power',
+          // feature2Label: translation.blogs.category || 'Category',
+          buttonText: translation.buttons?.viewPrice || 'View Implement Price',
         };
       default: // tyre
         return {
-          feature1Label: 'Size',
-          feature2Label: 'Type',
-          buttonText: 'View Tyre Price',
+          feature1Label: translation.headings?.size || 'Size',
+          feature2Label: translation.headings?.type || 'Type',
+          buttonText: translation.buttons?.viewTyrePrice || 'View Tyre Price',
         };
     }
   };
@@ -83,12 +102,12 @@ const TyreDetailsCard = ({
   return (
     // <div className="flex w-full justify-center gap-3 border-b-[1px] border-gray-gainsboro py-4 md:block md:max-w-[240px] md:border-b-[0px] md:border-r-[1px] md:p-4 md:pb-2 mb-4 md:mb-0">
     <div
-      className={`flex w-full justify-center gap-3 py-4 md:max-w-[240px] md:flex-col md:justify-between md:border-b-[0px] md:border-r-[1px] md:p-4 md:pb-2 ${isLast ? 'mb-0 border-b-0' : 'mb-4 border-b-[1px] border-gray-gainsboro md:mb-0'}`}
+      className={`flex w-full justify-center gap-3 py-4 md:max-w-[240px] md:flex-col md:justify-between md:border-b-[0px] md:border-r-[1px] md:p-4 md:pb-2 ${isLast ? 'mb-0 border-b-0 md:border-r-0' : 'mb-4 border-b-[1px] border-gray-gainsboro md:mb-0'}`}
     >
       {' '}
       <div className="relative flex h-[128px] w-2/5 max-w-[183px] items-center justify-center md:mb-3 md:w-full">
-        {popularTyre == 'Yes' && (
-          <span className="absolute -top-3 left-0 rounded-full border-[1px] border-[#D31A00] bg-white px-3 py-1 text-xs text-[#D31A00] shadow-main">
+        {popularTyre === 'Yes' && (
+          <span className={`${mode === 'implement' ? 'bg-error-main text-white' : 'bg-white text-[#D31A00]'} absolute -top-3 left-0 rounded-full border-[1px] border-[#D31A00] px-3 py-1 text-xs shadow-main`}>
             Popular
           </span>
         )}
@@ -152,14 +171,16 @@ const TyreDetailsCard = ({
         <div className="mb-3 flex items-center gap-1.5">
           {/* TODO:: Update and Replace Icon Images below */}
           {featureItem(feature1Label, size)}
-          {featureItem(feature2Label, type)}
+          {feature2Label ? (
+            featureItem(feature2Label, type)
+          ) : null}
         </div>
 
         <Link
           href={pageUrl || '/'}
           title={`${brandName} ${title} price`}
-          aria-label={`read more aboute ${brandName} ${title} ${mode} in india`}
-          className="flex items-center justify-center gap-2 rounded-full bg-primary px-3 py-1 text-sm text-white md:w-full"
+          aria-label={`read more about ${brandName} ${title} ${mode} in india`}
+          className="flex items-center justify-center gap-2 rounded-full bg-primary px-3 py-1 text-[13px] md:text-sm text-white text-nowrap md:w-full"
         >
           ₹ {buttonText}{' '}
           <Image

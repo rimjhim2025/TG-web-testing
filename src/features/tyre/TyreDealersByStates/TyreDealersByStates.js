@@ -12,14 +12,22 @@ const TyreDealersByStates = ({
   title,
   buttonText,
   isMobile,
+  showHeading = true, // Used at '/tractors-subsidy-in-india'
+  toggleMode = true
 }) => {
   // Use title prop if provided, otherwise fallback to heading, then to default translation
   const displayHeading = title || heading || translation.headings.TyreDealersByStates;
 
   return (
-    <section className="">
-      <div id="tyre-states-grid" className="container">
-        <MainHeadings text={displayHeading} />
+    <section className={`container ${!showHeading && isMobile ? 'pt-0' : ''} `}>
+      <div id="tyre-states-grid" className={toggleMode ? 'expanded' : ''}>
+        {!isMobile ? (
+          <MainHeadings text={displayHeading} />
+        ) :
+          showHeading ? (
+            <MainHeadings text={displayHeading} />
+          ) : null
+        }
         <div
           className={`tyre-states-grid mb-8 grid grid-cols-9 gap-4 md:grid-cols-8 md:gap-8 xl:grid-cols-9`}
         >
@@ -30,14 +38,14 @@ const TyreDealersByStates = ({
               title={item.state_name + ' image'}
               className="col-span-3 md:col-span-2 xl:col-span-1"
             >
-              <div className="mb-2 flex h-[65px] items-center justify-center rounded-xl border-[2px] border-transparent bg-white shadow-[1px_5px_16px_0px_rgba(88,98,89,0.21)] hover:border-secondary hover:bg-green-lighter md:mb-4 md:h-[99px]">
+              <div className={"mb-2 flex h-[65px] items-center justify-center rounded-xl border-[2px] border-transparent bg-white shadow-[1px_5px_16px_0px_rgba(88,98,89,0.21)] hover:border-secondary hover:bg-green-lighter md:mb-4 md:h-[99px] overflow-hidden" + (toggleMode ? ' expanded' : '')}>
                 <Image
                   src={item.images}
                   height={300}
                   width={300}
                   alt={item.state_name + 'image'}
                   title={item.state_name + ' image'}
-                  className="h-auto w-full"
+                  className="h-full w-full object-contain"
                 />
               </div>
               <p className="mb-2 text-center text-xs font-semibold md:text-base">
@@ -46,8 +54,8 @@ const TyreDealersByStates = ({
             </Link>
           ))}
         </div>
-        <TyreDealersByStateToggle translation={translation} buttonText={buttonText} />
-      </div>
+        {toggleMode ? <TyreDealersByStateToggle translation={translation} buttonText={buttonText} />
+          : null}      </div>
     </section>
   );
 };

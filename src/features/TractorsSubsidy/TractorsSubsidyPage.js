@@ -64,6 +64,8 @@ export default async function TractorsSubsidyPage({ searchParams, prefLangs }) {
       />
       <main className="lg:mt-[159px]">
         <ScrollToTopNavigate />
+
+
         <TractorSubsidyBanner translation={translation} />
         {/* <Suspense fallback={<ListingSkeleton />}> */}
         <TractorSubsidyData searchParams={searchParams} porpsCurrentLang={prefLangs} />
@@ -74,6 +76,7 @@ export default async function TractorsSubsidyPage({ searchParams, prefLangs }) {
           currentLang={prefLang}
           tyreBrands={[]}
           defaultEnquiryType={'Tractor'}
+          isMobile={isMobile}
         />
         {/* These components are assumed to handle their own errors or not be critical if parent data fails */}
         <JoinOurCommunityServer translation={translation} currentLang={prefLang} />

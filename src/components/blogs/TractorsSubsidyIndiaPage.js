@@ -59,9 +59,8 @@ const TractorsSubsidyIndiaPage = async ({ params, searchParams, subsidyID, prefL
   const translation = await getDictionary(currentLang);
 
   try {
-    const seoSlug = `${
-      prefLang == 'hi' ? 'hi/' : ''
-    }tractors-subsidy-in-india/${slug}/${subsidyID}`;
+    const seoSlug = `${prefLang == 'hi' ? 'hi/' : ''
+      }tractors-subsidy-in-india/${slug}/${subsidyID}`;
     seoData = await getSEOByPage(seoSlug);
   } catch (err) {
     console.error('Failed to fetch SEO:', err);
@@ -159,6 +158,7 @@ const TractorsSubsidyIndiaPage = async ({ params, searchParams, subsidyID, prefL
           translation={translation}
           currentLang={prefLang}
           defaultEnquiryType={'Tractor'}
+          isMobile={isMobile}
         />
         <JoinOurCommunityServer translation={translation} currentLang={currentLang} />
         <TractorGyanOfferings translation={translation} />

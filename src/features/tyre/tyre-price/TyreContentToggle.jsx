@@ -8,7 +8,7 @@ const TyreContentToggle = ({ deviceType, maxHeight = 'max-h-44', maxMobileHeight
   const contentRef = useRef(null);
 
   const isMobile = deviceType === 'mobile';
-  const collapsedHeight = isMobile ? 80 : 176; // 80px for mobile, 176px for desktop
+  const collapsedHeight = isMobile ? 90 : 176; // 80px for mobile, 176px for desktop
   // const collapsedClass = isMobile ? 'max-h-20' : 'max-h-44'; // h-20 = 80px, h-44 = 176px
   const collapsedClass = isMobile ? maxMobileHeight : maxHeight; // h-20 = 80px, h-44 = 176px
 

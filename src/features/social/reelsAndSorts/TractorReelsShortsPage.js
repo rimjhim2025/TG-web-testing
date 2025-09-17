@@ -32,34 +32,33 @@ export default async function TractorReelShortsPage({ searchParams, porpsCurrent
   let seoData = null;
   let hasNextPage = false;
 
-  // 1. Fetch Reels Data
+  // 1. Fetch Reels Data and SEO in parallel to reduce waiting time
   try {
-    const payload = {
-      video_type: 'reels',
-      start_limit: start,
-      end_limit: end,
-    };
+    const [reelsResponse, seoResponse] = await Promise.allSettled([
+      getBrandVideos({
+        video_type: 'reels',
+        start_limit: start,
+        end_limit: end,
+      }),
+      getSEOByPage(`${porpsCurrentLang ? 'hi/' : ''}tractor-reels-and-shorts`)
+    ]);
 
-    const response = await getBrandVideos(payload);
-
-    if (response && response.data) {
-      BrandReelData = response.data;
-      dataCount = response.count || 0;
+    if (reelsResponse.status === 'fulfilled' && reelsResponse.value && reelsResponse.value.data) {
+      BrandReelData = reelsResponse.value.data;
+      dataCount = reelsResponse.value.count || 0;
       hasNextPage = BrandReelData.length === end - start;
     } else {
       reelError = true;
     }
-  } catch (err) {
-    console.error('❌ Failed to fetch brand reels:', err);
-    reelError = true;
-  }
 
-  // 2. Fetch SEO (independent of error)
-  try {
-    const seoSlug = `${porpsCurrentLang ? 'hi/' : ''}tractor-reels-and-shorts`;
-    seoData = await getSEOByPage(seoSlug);
+    if (seoResponse.status === 'fulfilled') {
+      seoData = seoResponse.value;
+    } else {
+      console.error('⚠️ Failed to fetch SEO:', seoResponse.reason);
+    }
   } catch (err) {
-    console.error('⚠️ Failed to fetch SEO:', err);
+    console.error('❌ Failed to fetch data:', err);
+    reelError = true;
   }
 
   // 3. Construct URLs
@@ -93,7 +92,8 @@ export default async function TractorReelShortsPage({ searchParams, porpsCurrent
           reelError={reelError}
           prefLang={prefLang}
         />
-        <WhatsAppTopButton translation={translation} currentLang={prefLang} />
+
+        <WhatsAppTopButton translation={translation} currentLang={prefLang} isMobile={isMobile} />
         <JoinOurCommunityServer translation={translation} currentLang={prefLang} />
         <TractorGyanOfferings translation={translation} />
         <AboutTractorGyanServer slug={'tractor-reels-and-shorts'} translation={translation} />

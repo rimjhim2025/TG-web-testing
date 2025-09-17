@@ -1,7 +1,7 @@
 // Reusable Tractor Page Layout Component
 import React, { Suspense } from 'react';
 import { getSelectedLanguage } from '@/src/services/locale/index.js';
-import { isMobileView } from '@/src/utils';
+import { isMobileView, tg_getTittleFromNestedKey } from '@/src/utils';
 import { getDictionary } from '@/src/lib/dictonaries';
 
 import UpdatesSection from '@/src/features/tyreComponents/components/updatesAbouteTyre/UpdatesSection';
@@ -14,29 +14,34 @@ import {
 import NavComponents from '@/src/features/tyre/NavComponents';
 import FooterComponents from '@/src/features/tyre/FooterComponents';
 import AboutTractorGyanServer from '@/src/components/shared/about/AboutTractorGyanServer';
-import { getTractorFAQs } from '@/src/services/tractor/get-tractor-faqs';
+import { getMiniTractorFAQs, getTractorFAQs } from '@/src/services/tractor/get-tractor-faqs';
 import TractorGyanOfferings from '@/src/components/shared/offerings/TractorGyanOfferings';
 import JoinOurCommunityServer from '@/src/components/shared/community/JoinOurCommunityServer';
 import WhatsAppTopButton from '@/src/features/tyreComponents/commonComponents/WhatsAppTopButton';
-import { getTractorBrands } from '@/src/services/tractor/all-tractor-brands-v2';
+import { getMiniTractorBrands, getTractorBrands } from '@/src/services/tractor/all-tractor-brands-v2';
 import SecondHandMiniTractorCards from '@/src/components/ui/cards/secondHandMiniTractorCards/secondHandMiniTractorCards';
 import TractorsByBrands from '@/src/components/tractor/TractorsByBrands';
 import { getHomeSecondHandTractors } from '@/src/services/tractor/home-second-hand-tractor';
-import CustomerReviews from '@/src/components/shared/customer-reviews/CustomerReviews';
-import CompareTractorsSection from '@/src/components/tractor/CompareTractorsSection';
-import MainHeadings from '../tyreComponents/commonComponents/MainHeadings';
 import TyresPriceList from '@/src/features/tyre/tyre-price/ListingMainSection';
 import AllTractorsListingData from '@/src/features/tractors/listing/AllTractorsListingData';
-import ListingSkeleton from '@/src/components/ui/listingSkeleton/listingSkeleton';
 import { getSEOByPage } from '@/src/services/seo/get-page-seo';
 import SeoHead from '@/src/components/shared/header/SeoHead';
-import { getAllPriceList } from '@/src/services/tyre/all-price-list';
-import { getTyreTopContent } from '@/src/services/tyre/top-content';
+import { getMiniTractorTopContent, getTyreTopContent } from '@/src/services/tyre/top-content';
 import { getNewTractorSectionPriceList } from '@/src/services/tractor/new-tractor-section-price-list';
 import { getTractorPageConfig } from './tractorPageConfigs';
-export const dynamic = 'force-dynamic'; // Ensure the page is always rendered dynamically
 import '../../../app/tyreGlobals.css';
-import { getBrandSecondHandTractors } from '@/src/services/second-hand-tractors/get-brand-second-hand-tractors';
+import { getBrandSecondHandTractors, getMiniTractorBrandSecondHandTractors } from '@/src/services/second-hand-tractors/get-brand-second-hand-tractors';
+import PopularSection from '@/src/components/shared/popularSection/PopularSection';
+import { getTractorPopularDetails } from '@/src/services/tractor/tractor-popular-details';
+import { getHomeVideos } from '@/src/services/home/home-videos';
+import Link from 'next/link';
+import { getAllWebstories } from '@/src/services/home/home-webstory';
+import NewsSection from '../tyre/tyreNews/NewsSection';
+import { getAllTractorNews } from '@/src/services/tractor/all-tractor-news';
+import { getBrandFromSlug } from '@/src/utils/tyre';
+import DesktopTractorsByBrands from '@/src/components/tractor/DesktopTractorsByBrands';
+
+export const dynamic = 'force-dynamic'; // Ensure the page is always rendered dynamically
 
 /**
  * Generic Tractor Page Layout Component
@@ -44,7 +49,7 @@ import { getBrandSecondHandTractors } from '@/src/services/second-hand-tractors/
  * @param {Object} params - Next.js params
  * @param {Object} searchParams - Next.js search params
  */
-export default async function TractorPageLayout(config, { params, searchParams }) {
+export default async function TractorPageLayout(config, { params, searchParams }, isMiniTractorPage = false, isMiniTractorBrandPage = false) {
   try {
     // If config is a string, get the predefined configuration
     const pageConfig = typeof config === 'string' ? getTractorPageConfig(config) : config;
@@ -60,7 +65,10 @@ export default async function TractorPageLayout(config, { params, searchParams }
       customHeadingTitle = null,
       breadcrumbKey = null,
       brandName = '',
+      brandNameKey = null
     } = pageConfig;
+
+
 
     const param = await params; // Get the params from the request
     const searchParamObj = await searchParams; // Get the search params from the request
@@ -72,21 +80,46 @@ export default async function TractorPageLayout(config, { params, searchParams }
     const resolvedPageSlug = pageSlug || `${currentLang == 'hi' ? 'hi/' : ''}tractors`;
 
     // Fetch tractor brands with error handling
+
+
     let tractorBrands = [];
-    try {
-      const brandsData = await getTractorBrands(currentLang);
-      tractorBrands = brandsData.map(brand => ({
-        ...brand,
-        image: 'https://images.tractorgyan.com/uploads' + brand.image,
-      }));
-    } catch (error) {
-      console.error('Error fetching tractor brands:', error);
-      tractorBrands = [];
+    if (isMiniTractorPage) {
+      try {
+        const brandsData = await getMiniTractorBrands(currentLang);
+        tractorBrands = brandsData.map(brand => ({
+          ...brand,
+          name_hi: brand.name
+        }));
+      } catch (error) {
+        console.error('Error fetching tractor brands:', error);
+        tractorBrands = [];
+      }
+    } else {
+
+      try {
+        const brandsData = await getTractorBrands(currentLang);
+        tractorBrands = brandsData.map(brand => ({
+          ...brand,
+          image: 'https://images.tractorgyan.com/uploads' + brand.image,
+        }));
+      } catch (error) {
+        console.error('Error fetching tractor brands:', error);
+        tractorBrands = [];
+      }
+    }
+
+    let brandByLang;
+    if (isMiniTractorBrandPage) {
+      brandByLang = getBrandFromSlug(`${param['brand']}`, tractorBrands);
+      console.log("brandByLang:", brandByLang, param['brand'], tractorBrands);
+
     }
 
     // Get heading title from translation using the provided key path or use custom title
     let headingTitle;
-    if (customHeadingTitle) {
+    if (isMiniTractorBrandPage) {
+      headingTitle = (translation?.headings?.miniTractorsByBrands || '').replace('{brand}', brandByLang.name)
+    } else if (customHeadingTitle) {
       headingTitle = customHeadingTitle;
     } else {
       headingTitle =
@@ -98,20 +131,40 @@ export default async function TractorPageLayout(config, { params, searchParams }
       ? breadcrumbKey.split('.').reduce((obj, key) => obj?.[key], translation) || headingTitle
       : headingTitle;
 
+    let news;
+    try {
+      news = await getAllTractorNews('tractor-news');
+    } catch (error) {
+      console.error('Error fetching tractor news:', error);
+      news = [];
+    }
     // Determine the appropriate listing to show based on page configuration
     // const listingType = isTyrePage ? 'tyres' : 'tractors';    // Fetch videos, reels, and webstories with error handling
     let videos = [],
       reels = [],
       webstories = [];
     try {
-      const [videosData, reelsData, webstoriesData] = await Promise.all([
-        getTyreVideos(seoPageKey),
-        getTyreReels(seoPageKey),
-        getTyreWebstories(seoPageKey),
-      ]);
-      videos = videosData || [];
-      reels = reelsData || [];
-      webstories = webstoriesData || [];
+      if (seoPageKey === "mini-tractors-in-india") {
+        const [videosData, reelsData, webstoriesData] = await Promise.all([
+          getTyreVideos((currentLang == 'hi' ? 'hi/' : '') + seoPageKey),
+          getTyreReels((currentLang == 'hi' ? 'hi/' : '') + seoPageKey),
+          getTyreWebstories((currentLang == 'hi' ? 'hi/' : '') + seoPageKey),
+        ]);
+        videos = videosData || [];
+        reels = reelsData || [];
+        webstories = webstoriesData || [];
+      } else {
+        const [videosData, webstoriesData, reelData] = await Promise.all([
+          getHomeVideos('videos'),
+          getAllWebstories(),
+          getHomeVideos('reels')
+        ]);
+        videos = videosData || [];
+        webstories = webstoriesData || [];
+        reels = reelData || [];
+        console.log("webstoriesdata:", webstoriesData);
+
+      }
     } catch (error) {
       console.error('Error fetching videos/reels/webstories:', error);
       videos = [];
@@ -122,32 +175,50 @@ export default async function TractorPageLayout(config, { params, searchParams }
     // Fetch SEO data with error handling
     let seoData = {};
     try {
-      seoData = await getSEOByPage((currentLang == 'hi' ? 'hi/' : '') + seoPageKey);
+      seoData = await getSEOByPage(isMiniTractorBrandPage ? (currentLang == 'hi' ? 'hi/' : '') + 'mini-tractors-in-india/' + param.brand : (currentLang == 'hi' ? 'hi/' : '') + seoPageKey);
     } catch (error) {
       console.error('Error fetching SEO data:', error);
       seoData = {};
     }
 
     let faqs = [];
-    try {
-      const faqResponse = await getTractorFAQs({
-        faq_tag: seoPageKey,
-        lang: currentLang,
-      });
-      if (faqResponse && faqResponse.success) {
-        faqs = faqResponse.data || [];
+    if (isMiniTractorBrandPage) {
+      try {
+        const faqResponse = await getMiniTractorFAQs({
+          brand_name: param.brand,
+          faq_lang: currentLang,
+        });
+        if (faqResponse && faqResponse.success) {
+          faqs = faqResponse.data || [];
+        }
+      } catch (error) {
+        console.error('Failed to fetch FAQs:', error);
+        faqs = [];
       }
-    } catch (error) {
-      console.error('Failed to fetch FAQs:', error);
-      faqs = [];
+    } else {
+      try {
+        const faqResponse = await getTractorFAQs({
+          faq_tag: seoPageKey,
+          lang: currentLang,
+        });
+        if (faqResponse && faqResponse.success) {
+          faqs = faqResponse.data || [];
+        }
+      } catch (error) {
+        console.error('Failed to fetch FAQs:', error);
+        faqs = [];
+      }
+
     }
 
     // Fetch price list with error handling
     let priceList = [];
+
     try {
       priceList = await getNewTractorSectionPriceList({
         section_name: sectionName,
         lang: currentLang,
+        ...isMiniTractorBrandPage && { brand_name: param.brand }
       });
     } catch (error) {
       console.error('Error fetching price list:', error);
@@ -156,16 +227,32 @@ export default async function TractorPageLayout(config, { params, searchParams }
 
     // Fetch top content with error handling
     let topContent = [];
-    try {
-      topContent = await getTyreTopContent({
-        ad_title: seoPageKey,
-        currentLang: currentLang,
-        device_type: isMobile ? 'mobile' : 'desktop',
-      });
-    } catch (error) {
-      console.error('Error fetching top content:', error);
-      topContent = {};
+    if (isMiniTractorBrandPage) {
+      try {
+        topContent = await getMiniTractorTopContent({
+          brand_name: param?.brand,
+          lang: currentLang
+        });
+      } catch (error) {
+        console.error('Error fetching top content:', error);
+        topContent = {};
+      }
+    } else {
+      try {
+        topContent = await getTyreTopContent({
+          ad_title: seoPageKey,
+          currentLang: currentLang,
+          device_type: isMobile ? 'mobile' : 'desktop',
+        });
+      } catch (error) {
+        console.error('Error fetching top content:', error);
+        topContent = {};
+      }
+
     }
+
+    const popularTractors = (await getTractorPopularDetails(currentLang)) || [];
+
 
     // Default listing configuration
     const defaultListingConfig = {
@@ -197,7 +284,9 @@ export default async function TractorPageLayout(config, { params, searchParams }
         ...defaultListingConfig,
         ...listingConfig,
         sectionName: sectionName || undefined,
-        brandName,
+        brandName: isMiniTractorBrandPage ? brandByLang.name + ' ' + translation.tractorBrandNames.mini : brandName,
+        isMiniTractorPage,
+        isMiniTractorBrandPage
       });
       TractorListingComponent = listingData.component;
       paginationInfo = listingData.paginationInfo;
@@ -220,11 +309,27 @@ export default async function TractorPageLayout(config, { params, searchParams }
     // Second hand tractors with error handling
     let secondHandTractors = [];
     try {
-      secondHandTractors = await getBrandSecondHandTractors({
-        brand_name: seoPageKey,
-        start_limit: 0,
-        end_limit: 4,
-      });
+      if (isMiniTractorBrandPage) {
+        secondHandTractors = await getMiniTractorBrandSecondHandTractors({
+          brand_name: param.brand,
+          start_limit: 0,
+          end_limit: 4
+        });
+
+      } else if (seoPageKey === 'mini-tractors-in-india') {
+        secondHandTractors = await getBrandSecondHandTractors({
+          brand_name: seoPageKey,
+          start_limit: 0,
+          end_limit: 4,
+          page_name: 'mini-tractor'
+        });
+
+      } else {
+        secondHandTractors = await getHomeSecondHandTractors(currentLang);
+        secondHandTractors = { data: secondHandTractors }; // Normalize to match expected structure
+
+      }
+
     } catch (error) {
       console.error('Error fetching second hand tractors:', error);
       secondHandTractors = [];
@@ -237,15 +342,17 @@ export default async function TractorPageLayout(config, { params, searchParams }
           staticMetadata={{}}
           paginationLinks={{
             canonical:
-              currentPage > 1
-                ? `${process.env.NEXT_PUBLIC_API_URL || 'https://tractorgyan.com'}${basePath}?page=${currentPage}`
-                : `${process.env.NEXT_PUBLIC_API_URL || 'https://tractorgyan.com'}${basePath}`,
+              isMiniTractorBrandPage ? `${(process.env.NEXT_PUBLIC_API_URL || 'https://tractorgyan.com') + (currentLang == 'hi' ? '/hi' : '') + '/' + 'mini-tractors-in-india/' + param.brand}` : currentPage > 1
+                ? `${(process.env.NEXT_PUBLIC_API_URL || 'https://tractorgyan.com')}${(currentLang == 'hi' ? '/hi' : '') + basePath}?page=${currentPage}`
+                : `${(process.env.NEXT_PUBLIC_API_URL || 'https://tractorgyan.com')}${(currentLang == 'hi' ? '/hi' : '') + basePath}`,
             prev:
               currentPage > 1
-                ? `${process.env.NEXT_PUBLIC_API_URL || 'https://tractorgyan.com'}${basePath}?page=${currentPage - 1}`
+                ? isMiniTractorBrandPage ? `${process.env.NEXT_PUBLIC_API_URL || 'https://tractorgyan.com' + '/' + 'mini-tractors-in-india/' + param.brand}?page=${currentPage - 1}` : `${process.env.NEXT_PUBLIC_API_URL || 'https://tractorgyan.com'}${basePath}?page=${currentPage - 1}`
                 : null,
             next: hasNextPage
-              ? `${process.env.NEXT_PUBLIC_API_URL || 'https://tractorgyan.com'}${basePath}?page=${currentPage + 1}`
+              ? isMiniTractorBrandPage ?
+                `${((process.env.NEXT_PUBLIC_API_URL || 'https://tractorgyan.com')) + '/' + 'mini-tractors-in-india/' + param.brand}?page=${currentPage + 1}` :
+                `${(process.env.NEXT_PUBLIC_API_URL || 'https://tractorgyan.com')}${(currentLang == 'hi' ? '/hi' : '') + basePath}?page=${currentPage + 1}`
               : null,
           }}
         />
@@ -260,12 +367,20 @@ export default async function TractorPageLayout(config, { params, searchParams }
               translation={translation}
               priceList={priceList || []}
               tyreTopContent={topContent || {}}
-              brandName=""
+              brandName={isMiniTractorBrandPage ? brandByLang.name + ' ' + translation.tractorBrandNames.mini : brandNameKey ? tg_getTittleFromNestedKey(translation, brandNameKey) : ''}
               tableHeaders={[
                 {
                   key: 'tractorModel',
                   width: 'w-[45%]',
-                  dataKey: item => `${item.brand} ${item.model}`,
+                  dataKey: item => (
+                    <Link
+                      href={(currentLang == 'hi' ? '/hi' : '') + item.page_url || '#'}
+                      className="hover:text-primary-dark font-bold text-primary transition-colors duration-200"
+                      title={`${item.brand} ${item.model}`}
+                    >
+                      {`${item.brand} ${item.model}`}
+                    </Link>
+                  ),
                 },
                 {
                   key: 'tractorHP',
@@ -278,7 +393,24 @@ export default async function TractorPageLayout(config, { params, searchParams }
                   dataKey: item => item.price_range,
                 },
               ]}
-              breadcrumbs={[
+              breadcrumbs={isMiniTractorBrandPage ? [
+                {
+                  label: translation?.breadcrubm?.tractorGyanHome,
+                  href: (currentLang == 'hi' ? '/hi' : '') + '/',
+                  title: translation?.breadcrubm?.tractorGyanHome,
+                },
+                {
+                  label: breadcrumbTitle,
+                  title: breadcrumbTitle,
+                  href: (currentLang == 'hi' ? '/hi' : '') + '/mini-tractors-in-india',
+                },
+                {
+                  label: brandByLang.name,
+                  title: brandByLang.name,
+                  isCurrent: true,
+
+                },
+              ] : [
                 {
                   label: translation?.breadcrubm?.tractorGyanHome,
                   href: (currentLang == 'hi' ? '/hi' : '') + '/',
@@ -324,31 +456,48 @@ export default async function TractorPageLayout(config, { params, searchParams }
 
         {/* Tractor Brands Section - only render if we have brands data */}
         {isMobile && tractorBrands && tractorBrands.length > 0 && (
-          <TractorsByBrands
+          // <TractorsByBrands
+          //   translation={translation}
+          //   langPrefix={currentLang}
+          //   allTractorBrands={tractorBrands}
+          //   bgColor="bg-section-gray"
+          //   cta={translation.buttons.viewAllBrands || 'View All Brands'}
+          // />
+          <DesktopTractorsByBrands
             translation={translation}
             langPrefix={currentLang}
             allTractorBrands={tractorBrands}
-            bgColor="bg-section-gray"
-            cta={translation.buttons.viewAllBrands || 'View All Brands'}
+            isMiniTractorPage={isMiniTractorPage}
+            heading={isMiniTractorPage ? translation.headings.topMiniTractorBrands : translation.headings.topTractorBrands}
           />
         )}
 
+        <PopularSection
+          langPrefix={currentLang}
+          popularData={popularTractors}
+          isMobile={isMobile}
+          translation={translation}
+          bgColor={'bg-whitesection-gray'}
+          redirectRoute="/tractors"
+        />
+
         {/* Second Hand Tractors Section - only render if we have data */}
-        {secondHandTractors && secondHandTractors.length > 0 && (
+        {secondHandTractors.data && secondHandTractors.data.length > 0 && (
           <SecondHandMiniTractorCards
-            bgColor="bg-white"
+            bgColor="bg-section-gray"
             heading={
-              translation?.tractorPages?.popularSecondHandTractors || 'Popular Second Hand Tractors'
+              isMiniTractorBrandPage ? translation.headings.popularSecondHandTractorsByBrand.replace('{brand}', brandByLang.name) : translation?.headings?.popularSecondHandTractors || 'Popular Second Hand Tractors'
             }
             buttonText={
-              (translation?.buttons?.viewAllSecondHandTractors).replace('{brandName}', brandName) ||
+              (translation?.secondHandTractors?.viewAllSecondHandTractors).replace('{brandName}', brandName) ||
               'View All Second Hand Tractors'
             }
-            buttonRedirectUrl={seoPageKey.includes('mini-tractors') ? `${currentLang == 'hi' ? 'hi/' : ''}second-hand-tractor/mini-tractor` : null}
+            buttonRedirectUrl={seoPageKey.includes('mini-tractors') ? `${currentLang == 'hi' ? '/hi/' : '/'}second-hand-tractor/mini-tractor` : null}
             showEmi={false}
             translation={translation}
             isMobile={isMobile}
-            data={secondHandTractors.slice(0, 4)}
+            currentLang={currentLang}
+            data={secondHandTractors.data.slice(0, 4)}
           />
         )}
 
@@ -360,6 +509,20 @@ export default async function TractorPageLayout(config, { params, searchParams }
             itemsCount={isMobile ? 3 : 4}
           />
         )} */}
+
+        {news ? (
+          <NewsSection
+            title={translation.headings.blogsAndNews.replace(
+              '{prefix}',
+              headingTitle
+            )}
+            translation={translation}
+            langPrefix={currentLang}
+            news={news || []}
+            showFilter={false}
+            bgColor={'bg-section-white'}
+          />
+        ) : null}
 
         {/* Updates Section - only render if we have content */}
         {(videos.length > 0 || reels.length > 0 || webstories.length > 0) && (
@@ -387,18 +550,18 @@ export default async function TractorPageLayout(config, { params, searchParams }
             translation={translation}
             headingKey={'tractorfaqs.brandTractors'}
             isDynamicTitle={true}
-            brandName={brandName}
+            brandName={isMiniTractorBrandPage ? brandByLang.name : brandName}
             bgColor="bg-white"
           />
         )}
         <JoinOurCommunityServer translation={translation} currentLang={currentLang} />
         <TractorGyanOfferings translation={translation} />
         <AboutTractorGyanServer
-          slug={(currentLang == 'hi' ? 'hi/' : '') + seoPageKey}
+          slug={isMiniTractorBrandPage ? (currentLang == 'hi' ? 'hi/' : '') + 'mini-tractors-in-india/' + param.brand : (currentLang == 'hi' ? 'hi/' : '') + seoPageKey}
           translation={translation}
         />
         <FooterComponents translation={translation} />
-        <WhatsAppTopButton translation={translation} currentLang={currentLang} />
+        <WhatsAppTopButton translation={translation} currentLang={currentLang} isMobile={isMobile} />
       </main>
     );
   } catch (error) {

@@ -9,8 +9,20 @@ export async function getTractorDetail({ productId, lang }) {
 
     if (result?.data?.[0]) {
       result.data[0].brand_logo = "https://images.tractorgyan.com/uploads" + result.data[0].brand_logo;
+
+      // Combine image_1, image_2, image_3 into single image key
+      const images = [];
+
+      if (result.data[0].image) images.push(result.data[0].image);
+      if (result.data[0].image_1) images.push(result.data[0].image_1);
+      if (result.data[0].image_2) images.push(result.data[0].image_2);
+      if (result.data[0].image_3) images.push(result.data[0].image_3);
+
+      if (images.length > 0) {
+        result.data[0].images = images.join(',');
+      }
     }
-    console.log('Tractor detail API response:', productId, lang);
+    console.log('Tractor detail API response:', productId, lang, result);
 
     return result?.data?.[0] || null;
   } catch (error) {

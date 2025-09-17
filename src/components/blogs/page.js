@@ -81,9 +81,8 @@ const BlogsMain = async ({ allBlogPosts, currentPage }) => {
         currentLang={prefLang}
       />
       <div
-        className={`container mx-auto ${styles.main_container_mobile} ${
-          isMobile ? "mt-[-10rem]" : ""
-        }`}
+        className={`container mx-auto ${styles.main_container_mobile} ${isMobile ? "mt-[-10rem]" : ""
+          }`}
       >
         <div className={isMobile ? `m-auto w-[90%]` : ``}>
           <TittleAndCrumbs
@@ -150,6 +149,7 @@ const BlogsMain = async ({ allBlogPosts, currentPage }) => {
           translation={translation}
           currentLang={prefLang}
           tyreBrands={[]}
+          isMobile={isMobile}
         />
         <JoinOurCommunityServer
           translation={translation}

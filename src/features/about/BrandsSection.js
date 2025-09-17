@@ -1,91 +1,107 @@
-
-
 import Image from 'next/image';
 import React from 'react';
 
 const brandLogos = [
-    { name: 'TVS', url: 'https://images.tractorgyan.com/uploads/120110/687f904fe435b-tvs.webp' },
+    //  Tractor Brands
+    {
+        name: 'Massey Ferguson',
+        url: 'https://images.tractorgyan.com/uploads/120585/689d8b5921b13-mf.webp',
+    },
     {
         name: 'Sonalika',
-        url: 'https://images.tractorgyan.com/uploads/120111/687f90851d178-sonalika.webp',
+        url: 'https://images.tractorgyan.com/uploads/120592/689d8bdc5fbd1-sonalika.webp',
     },
-    {
-        name: 'Sonalika Agro',
-        url: 'https://images.tractorgyan.com/uploads/120112/687f90a6d5a5b-sonalika-agro.webp',
-    },
-    { name: 'Solis', url: 'https://images.tractorgyan.com/uploads/120113/687f90b568690-solis.webp' },
-    {
-        name: 'Shriram',
-        url: 'https://images.tractorgyan.com/uploads/120114/687f90c489109-shriram.webp',
-    },
-    { name: 'RBL', url: 'https://images.tractorgyan.com/uploads/120115/687f90dd11661-rbl.webp' },
-    { name: 'Punni', url: 'https://images.tractorgyan.com/uploads/120116/1753190652punni.webp' },
     {
         name: 'Powertrac',
-        url: 'https://images.tractorgyan.com/uploads/120117/687f9111c6b0a-powertrac.webp',
+        url: 'https://images.tractorgyan.com/uploads/120587/689d8b7d21ff3-powertrac.webp',
     },
     {
         name: 'New Holland',
-        url: 'https://images.tractorgyan.com/uploads/120118/687f9123f1fb6-new-holland.webp',
-    },
-    {
-        name: 'Massey Ferguson',
-        url: 'https://images.tractorgyan.com/uploads/120119/687f915750d74-mf.webp',
+        url: 'https://images.tractorgyan.com/uploads/120586/689d8b7007d04-new-holland-tractor-logo.webp',
     },
     {
         name: 'Mahindra',
-        url: 'https://images.tractorgyan.com/uploads/120120/687f916aec05f-mahindra-(1).webp',
-    },
-    {
-        name: 'Kubota',
-        url: 'https://images.tractorgyan.com/uploads/120121/687f9177578f4-kubota.webp',
-    },
-    {
-        name: 'Finance',
-        url: 'https://images.tractorgyan.com/uploads/120122/687f91885a2fb-finance.webp',
+        url: 'https://images.tractorgyan.com/uploads/120584/689d8b4999ee3-mahindra-tractor-logo.webp',
     },
     {
         name: 'Farmtrac',
-        url: 'https://images.tractorgyan.com/uploads/120123/687f919b19d46-farmtrac.webp',
-    },
-    {
-        name: 'Garuda',
-        url: 'https://images.tractorgyan.com/uploads/120124/687f91b2efaa0-garuda.webp',
-    },
-    {
-        name: 'Escorts Kubota',
-        url: 'https://images.tractorgyan.com/uploads/120125/687f91c2e53b5-escorts-kubota.webp',
+        url: 'https://images.tractorgyan.com/uploads/120581/689d8aff52f81-farmtrac.webp',
     },
     {
         name: 'Eicher',
-        url: 'https://images.tractorgyan.com/uploads/120126/687f91d0d1ad4-eicher-(1).webp',
+        url: 'https://images.tractorgyan.com/uploads/120579/689d8adcbecdc-eicher-(1).webp',
+    },
+    {
+        name: 'Escorts Kubota',
+        url: 'https://images.tractorgyan.com/uploads/120580/689d8aecc6437-escorts-kubota.webp',
+    },
+    {
+        name: 'Solis',
+        url: 'https://images.tractorgyan.com/uploads/120591/689d8bbec1445-solis.webp',
+    },
+
+    //  Implements
+    {
+        name: 'Punni',
+        url: 'https://images.tractorgyan.com/uploads/120588/689d8b8d0e455-punni.webp',
     },
     {
         name: 'Agrizone',
-        url: 'https://images.tractorgyan.com/uploads/120127/687f91e1136e0-agrizone.webp',
+        url: 'https://images.tractorgyan.com/uploads/120578/689d8ac28447c-agrizone.webp',
+    },
+    {
+        name: 'Sonalika Agro',
+        url: 'https://images.tractorgyan.com/uploads/120593/689d8bee31583-sonalika-agro.webp',
+    },
+
+    //  Drone Brands
+    {
+        name: 'Garuda',
+        url: 'https://images.tractorgyan.com/uploads/120582/689d8b10a79c9-garuda.webp',
+    },
+    //  Finance / Banks
+    {
+        name: 'TVS',
+        url: 'https://images.tractorgyan.com/uploads/120594/689d8c008500a-tvs.webp',
+    },
+    {
+        name: 'Shriram',
+        url: 'https://images.tractorgyan.com/uploads/120590/689d8baae9aee-shriram.webp',
+    },
+    {
+        name: 'Kotak Mahindra Bank',
+        url: 'https://images.tractorgyan.com/uploads/120948/68bed0780af6f-Kotak_Mahindra_Bank.webp',
+    },
+    {
+        name: 'RBL',
+        url: 'https://images.tractorgyan.com/uploads/120589/689d8b9e569e4-rbl.webp',
+    },
+    {
+        name: 'Finance',
+        url: 'https://images.tractorgyan.com/uploads/120583/689d8b284d6a6-iti.webp',
     },
 ];
 
 const BrandsSection = ({ isMobile }) => {
     return (
         <section className="bg-blue-lighter">
-            <div className="mx-auto md:max-w-7xl container">
-                <h2 className="mb-8 font-bold text-black text-2xl md:text-3xl md:text-left text-start">
+            <div className="container mx-auto md:max-w-7xl">
+                <h2 className="mb-8 text-start text-2xl font-bold text-black md:text-left md:text-3xl">
                     Brands Who Trust Us
                 </h2>
-                <div className="gap-4 grid grid-cols-3 lg:grid-cols-6">
+                <div className="grid grid-cols-3 gap-4 lg:grid-cols-6">
                     {brandLogos.map((brand, index) => (
                         <div
                             key={index}
-                            className="flex justify-center items-center bg-white shadow-sm px-4 rounded-lg"
+                            className="shadow-sm flex items-center justify-center rounded-lg bg-white px-4 py-2"
                         >
                             <Image
                                 src={brand.url}
                                 alt={brand.name}
-                                height={88}
-                                width={88}
+                                height={200}
+                                width={200}
                                 title={brand.name}
-                                className="w-auto h-full max-h-[88px]"
+                                className="h-auto max-h-[88px] w-auto"
                             />
                         </div>
                     ))}

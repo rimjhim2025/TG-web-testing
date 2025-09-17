@@ -162,6 +162,7 @@ const FrontTyrePage = async ({ params, searchParams }) => {
           translation={translation}
           currentLang={prefLang}
           brandName={translation.headings.frontTyre}
+          isMobile={isMobile}
         />
         <UpdatesSection
           videos={videos}
@@ -187,6 +188,7 @@ const FrontTyrePage = async ({ params, searchParams }) => {
           currentLang={prefLang}
           tyreBrands={tyreBrands}
           defaultEnquiryType={'Tyre'}
+          isMobile={isMobile}
         />
         <JoinOurCommunityServer translation={translation} currentLang={prefLang} />
         <TractorGyanOfferings translation={translation} />

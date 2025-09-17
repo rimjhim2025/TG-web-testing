@@ -5,8 +5,6 @@ import Link from 'next/link';
 import MainButton from '@/src/features/tyreComponents/commonComponents/buttons/MainButton';
 import MainHeadings from '@/src/features/tyreComponents/commonComponents/MainHeadings';
 
-const currentLang = 'en';
-
 const ImplementBrandCard = ({ title, imgSrc, url }) => {
 
   return (
@@ -39,7 +37,11 @@ const TractorImplementBrands = ({
   bgColor = 'bg-white',
   placedInFilter = false,
   showAll = false,
+  prefLang,
+  translation,
+  parent
 }) => {
+
   return (
     <section className={bgColor}>
       <div className={`${placedInFilter ? '!px-0' : ''} container`}>
@@ -48,19 +50,34 @@ const TractorImplementBrands = ({
         )}
 
         <div className={`${placedInFilter || showAll ? 'lg:flex-wrap' : 'lg:flex-nowrap'} ${showAll ? 'justify-between gap-6' : 'justify-between gap-4'} flex flex-wrap mb-6`}>
-          {(showAll ? allImplementBrands : allImplementBrands?.slice(0, itemsShown))?.map((item, index) => (
+          {!parent && (showAll ? allImplementBrands : allImplementBrands?.slice(0, itemsShown))?.map((item, index) => (
             <ImplementBrandCard
               key={index}
-              title={currentLang == "en" ? item.name : item.name_hi}
-              imgSrc={`https://images.tractorgyan.com/uploads/${item?.image}`}
-              url={item.page_url || ''}
+              title={prefLang == "en" ? item.name : item?.name_hi}
+              imgSrc={`https://images.tractorgyan.com/uploads/${item.image}` || ''}
+              url={(prefLang == 'hi' ? '/hi' : '') + item.page_url || ''}
+            />
+          ))}
+
+          {parent && (showAll ? allImplementBrands : allImplementBrands?.slice(0, itemsShown))?.map((item, index) => (
+            <ImplementBrandCard
+              key={index}
+              title={item.title}
+              imgSrc={`https://images.tractorgyan.com/uploads${item.imgSrc}` || ''}
+              url={(prefLang === "en" ? item.url : `/hi${item.url}`) || ''}
             />
           ))}
         </div>
-        {!showAll && (
+        {parent != "brand-leading" && !showAll && (
           <MainButton
-            text={'View All Brands'}
-            linkUrl={`${currentLang == "en" ? "" : currentLang}/tractor-implements-brands-in-india`}
+            text={translation.buttons.viewAllBrands}
+            linkUrl={`${prefLang == "hi" ? "/hi" : ""}/tractor-implements-brands-in-india`}
+          />
+        )}
+        {parent === "brand-leading" && !showAll && (
+          <MainButton
+            text={translation.buttons.viewAllBrands}
+            linkUrl={`${prefLang == "en" ? "" : "/hi"}/tractor-brands`}
           />
         )}
       </div>

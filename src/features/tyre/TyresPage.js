@@ -69,6 +69,7 @@ export default async function TyresPage({ params, searchParams }) {
           translation={translation}
           currentLang={currentLang}
           brandName={''}
+          isMobile={isMobile}
         />
         <UpdatesData
           slug="tyres"
@@ -84,6 +85,7 @@ export default async function TyresPage({ params, searchParams }) {
           currentLang={currentLang}
           tyreBrands={tyreBrandsData}
           defaultEnquiryType={'Tyre'}
+          isMobile={isMobile}
         />
         <JoinOurCommunityServer translation={translation} currentLang={currentLang} />
         <TractorGyanOfferings translation={translation} />
