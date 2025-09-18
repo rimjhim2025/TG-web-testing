@@ -146,4 +146,16 @@
 .compare-tractors-slider .slick-list {
   padding-top: 20px;
   padding-bottom: 20px;
+  @media screen and (max-width: 768px) {
+    max-height: 372px;
+  }
 }
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+.hide-scrollbar {
+  -ms-overflow-style: none;  /* IE/Edge */
+  scrollbar-width: none;     /* Firefox */
+}
+

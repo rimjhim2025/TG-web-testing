@@ -14,6 +14,7 @@ const nextConfig = {
       'staging.tractorgyan.com',
       'tractorgyan.com',
       'tg-web-git-main-aniket-tgs-projects.vercel.app',
+      'tg-web-testing-rimjhim.vercel.app',
     ], // Add the allowed domain here
   },
   compiler: {
