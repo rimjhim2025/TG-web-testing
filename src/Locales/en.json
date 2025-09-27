@@ -243,7 +243,8 @@
     "selfPropelled": "Self Propelled",
     "tractorMounted": "Tractor Mounted",
     "sugarcane": "Sugarcane",
-    "combineHarvesterByCategory": "Combine Harvester By Category"
+    "combineHarvesterByCategory": "Combine Harvester By Category",
+    "farmpower": "Farmpower"
   },
   "common": {
     "rear": "Rear",
@@ -593,13 +594,14 @@
     "fixErrorsMessage": "Please fix the errors below",
     "submissionFailed": "Submission failed. Please try again.",
     "submissionError": "An error occurred during submission. Please try again.",
-    "close": "Close"
+    "close": "Close",
+    "getImplementPriceByType": "Inquire About {type} Price"
   },
   "faqs": {
     "dynamicFaq": "Frequently Asked Questions About {brandName}",
     "insurance": "Frequently Asked Questions About Insurance",
     "usedTractorfaqs": "Frequently Asked Questions About Second Hand Tractors",
-    "implements": "Frequently Asked Questions About Implements"
+    "implements": "Frequently Asked Questions About Implements {brandName}"
   },
   "tractorfaqs": {
     "allTractors": "Frequently Asked Questions About Tractors",
@@ -661,6 +663,38 @@
       "otherSpecs": "Other key specifications include",
       "liftingCap": "lifting capacity",
       "gears": "gears"
+    }
+  },
+  "implementDetails": {
+    "about": "About",
+    "sendEnquiry": "Send Enquiry",
+    "ploughModels": "Plough Models",
+    "johnDeerePloughModels": "John Deere Plough Models",
+    "defaultPloughModel": "Plough Models",
+    "subModelSpecs": {
+      "threePtLinkage": "3 Point Linkage",
+      "typeOfBlade": "Type of Blade",
+      "noOfBlades": "No. Of Blades",
+      "rotorShaftPipe": "Rotor Shaft Pipe",
+      "suitableTractor": "Suitable Tractor",
+      "pyramidType": "\"Pyramid Type\" for Strength",
+      "lTypeJapanese": "L Type \"Japanese Technology\"",
+      "farmPowerPipe": "FarmPower Uses Only High Grade \"Seamless Pipe\"",
+      "sizeModels": {
+        "sixFeet": "6 Feet Model",
+        "sevenFeet": "7 Feet Model",
+        "eightFeet": "8 Feet Model"
+      },
+      "tractorHpRanges": {
+        "fortyToFifty": "40-50 HP",
+        "fortyFiveToFiftyFive": "45-55 HP",
+        "fiftyFiveToSixtyFive": "55-65 HP"
+      },
+      "bladeNumbers": {
+        "fortyTwo": "42",
+        "fortyEight": "48",
+        "fiftyFour": "54"
+      }
     }
   },
   "tractorSpecs": {
@@ -875,6 +909,7 @@
     "updatesAboutTractor": "Updates About {brand} Tractor",
     "updatesAboutImplement": "Updates About {brand} Implement",
     "tyreNews": "Tyre News",
+    "ConstructionMachineryByBrands":"Construction Machinery By Brands",
     "recentlyAskedQuestionAboutTractorTyres": "Recently Asked Question About Tractor Tyres",
     "searchTyres": "Search Tyres",
     "searchByBrands": "Search by Brands",
@@ -905,6 +940,7 @@
     "topTractorBrands": "Top Tractor Brands",
     "topMiniTractorBrands": "Top Mini Tractor Brands",
     "allTractorsByBrand": "All {brand} Tractors in India",
+    "allImplementsByBrand": "All {brand} Implements in India",
     "tractorsSubsidyinIndia": "Tractors Subsidy in India",
     "searchTractordealersByStates": "Search Tractor Dealers by States",
     "popularTyreBrands": "Popular Tyre Brands",
@@ -927,6 +963,9 @@
     "leadingTractorGroup": "Leading Tractor Group",
     "selectTractorSubsidyStates": "Select Tractor Subsidy States",
     "ConstructionMachineryandEquipmentinIndia": "Construction Machinery and Equipment in India",
+    "AgricultureandFarmEquipmentinIndia":"Agriculture and Farm Equipment in India",
+            "BackhoeLoader": "Backhoe Loader",
+        "ConstructionMachineryByType": "Construction Machinery By Type",
     "TractorBrands": "Tractor brands",
     "MahindraMahindraTractorsinIndia": "Mahindra Tractors in India",
     "escortTractorsinIndia": "Escorts kubota Tractors in India",
@@ -941,7 +980,9 @@
     "miniTractorsByBrands": "{brand} Mini Tractors",
     "popularSecondHandTractorsByBrand": "Popular {brand} Second Hand Tractors",
     "popularTractorComparison": "Popular Tractor Comparison",
-    "tractorDealersByBrands": "Tractor Dealers by Brands"
+    "tractorDealersByBrands": "Tractor Dealers by Brands",
+    "implementNewsAndUpdates": "Implement News & Updates",
+    "allImplementBrands": "All Implement Brands"
   },
   "tyreDetail": {
     "about": "About",
@@ -1152,7 +1193,9 @@
   "breadcrumbs": {
     "tractorBrands": "Tractor Brands",
     "implementBrands": "Implement Brands",
-    "home": "Home"
+    "home": "Home",
+    "tractorImplements": "Tractor Implements",
+    "implements": "Implements"
   },
   "breadcrubm": {
     "home": "Home",

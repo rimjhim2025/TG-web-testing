@@ -17,49 +17,32 @@ import CareerSliderData from './CareerSliderData';
 import CarouselSkeletonUI from '@/src/components/ui/listingSkeleton/CaroselSkeleton';
 import CareerJobOpeneingsData from './CareerJobOpeneingsData';
 
+// Optimized dynamic imports with proper loading states
 const MobileFooter = nextDynamic(() => import('@/src/components/shared/footer/MobileFooter'), {
   ssr: true,
+  loading: () => null,
 });
 
 const FooterServer = nextDynamic(() => import('@/src/components/shared/footer/FooterServer'), {
   ssr: true,
+  loading: () => null,
 });
 
 export const dynamic = 'force-dynamic';
 
 const CareerPage = async () => {
-  let prefLang = 'en';
-  let translation = {};
-  let isMobile = false;
-  let seoData = null;
+  // Fetch all data in parallel for better performance
+  const [prefLang, translation, isMobile, seoData] = await Promise.all([
+    getSelectedLanguage().catch(() => 'en'),
+    getSelectedLanguage()
+      .then(lang => getDictionary(lang))
+      .catch(() => ({})),
+    isMobileView().catch(() => false),
+    getSEOByPage('career').catch(() => null),
+  ]);
+
   const apiUrl = getApiUrl();
-
-  try {
-    prefLang = await getSelectedLanguage();
-  } catch (error) {
-    console.error('Error fetching selected language:', error);
-  }
-
-  try {
-    translation = await getDictionary(prefLang);
-  } catch (error) {
-    console.error('Error fetching dictionary:', error);
-  }
-
-  try {
-    isMobile = await isMobileView();
-  } catch (error) {
-    console.error('Error determining mobile view:', error);
-  }
-
-  try {
-    const seoSlug = `career`;
-    seoData = await getSEOByPage(seoSlug);
-  } catch (err) {
-    console.error('⚠️ Failed to fetch SEO:', err);
-  }
-
-  const currentSlug = `career`;
+  const currentSlug = 'career';
   const baseUrl = `${apiUrl}/career`;
 
   return (
@@ -74,40 +57,53 @@ const CareerPage = async () => {
           canonical: baseUrl,
         }}
       />
+
+      {/* Above the fold content - prioritize loading */}
       <DesktopHeader
         isMobile={isMobile}
         translation={translation}
         currentLang={prefLang}
         showLanguageSelector={false}
       />
+
       <main className="lg:mt-[159px]">
         <ScrollToTopNavigate />
+
         <section className="pt-0">
+          {/* Critical content first */}
           <Suspense fallback={<CarouselSkeletonUI />}>
-            <CareerSliderData params={'career'} translation={translation} />
+            <CareerSliderData params="career" translation={translation} />
           </Suspense>
 
-          <div className={`container`}>
+          <div className="container">
             <CareerPerksBenifits />
             <CareerJoinUs isMobile={isMobile} />
             <CareerCoreValue />
           </div>
+
+          {/* Non-critical content with proper suspense boundaries */}
           <Suspense fallback={<CarouselSkeletonUI />}>
-            <CareerJobOpeneingsData params={'career'} translation={translation} />
+            <CareerJobOpeneingsData params="career" translation={translation} />
           </Suspense>
+
           <CareerStayUpdated isMobile={isMobile} />
         </section>
+
+        {/* Keep WhatsAppTopButton as is since it's likely already a client component */}
         <WhatsAppTopButton
           translation={translation}
           currentLang={prefLang}
           tyreBrands={[]}
-          defaultEnquiryType={'Tractor'}
+          defaultEnquiryType="Tractor"
           isMobile={isMobile}
         />
       </main>
+
+      {/* Footer components */}
       <FooterServer translation={translation} />
       {isMobile && <MobileFooter translation={translation} />}
     </>
   );
 };
+
 export default CareerPage;

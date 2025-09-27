@@ -78,7 +78,8 @@ const SubmitOtpForm = ({
   productNamePlural,
   enquiryType, // This will determine the main context ('Tyre', 'Tractor', 'Dealer', 'Insurance')
   currentLang,
-  encryptedOtp
+  encryptedOtp,
+  implementType
 }) => {
   // State
   const [otpTimer, setOtpTimer] = useState(20);
@@ -345,20 +346,36 @@ const SubmitOtpForm = ({
     if (dealerContactName || !enquiryType || enquiryType === 'Insurance') return; // Don't fetch for dealers, insurance, or if enquiryType is not set
 
     let endpoint = '';
+    let payload = {};
+
     if (enquiryType === 'Tractor') {
       endpoint = `api/suggested_tractor`;
+      payload = {
+        product_id, // This might be specific to the main product, ensure API handles it
+        brand_name: bradn_name, // This might be specific to the main product
+        otp_verify: existVerified,
+      };
     } else if (enquiryType === 'Tyre') {
       endpoint = `api/suggested_tyre`;
+      payload = {
+        product_id, // This might be specific to the main product, ensure API handles it
+        brand_name: bradn_name, // This might be specific to the main product
+        otp_verify: existVerified,
+      };
+    } else if (enquiryType === 'Implement') {
+      endpoint = `api/suggested_implement`;
+      payload = {
+        brand_name: bradn_name,
+        product_id: product_id,
+        otp_verified: 'yes',
+        implement_type: implementType || '',
+      };
     } else {
       return; // Do not fetch for other types like 'Dealer' or 'Insurance'
     }
     console.log('sgg : ', dealerContactName, enquiryType);
 
-    postData(endpoint, {
-      product_id, // This might be specific to the main product, ensure API handles it
-      brand_name: bradn_name, // This might be specific to the main product
-      otp_verify: existVerified,
-    })
+    postData(endpoint, payload)
       .then(res => {
         console.log('sgg : ', res);
 

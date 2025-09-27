@@ -14,13 +14,13 @@ export default async function CareerSliderData({ translation }) {
     const response = await getAllCareerSliderImages();
 
     if (response.code === 200 && response.success) {
-      desktopImages = response?.desktop_images;
-      mobileImages = response?.mobile_images;
+      desktopImages = response?.desktop_images || [];
+      mobileImages = response?.mobile_images || [];
     } else {
       imagesListError = true;
     }
   } catch (err) {
-    console.error('Failed to fetch blog list:', err);
+    console.error('Failed to fetch career slider images:', err);
     imagesListError = true;
   }
 

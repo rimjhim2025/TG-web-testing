@@ -34,6 +34,8 @@ import { getDetailsImplementFAQs } from '@/src/services/implement/get-implement-
 import { getRelatedImplements } from '@/src/services/implement/get-related-implements';
 import SeoHead from '@/src/components/shared/header/SeoHead';
 import { getDetailPageHeaderSEO } from '@/src/services/detailPageHeaderSeo';
+import { getTractorDetailBrandContent } from '@/src/services/tractor/tractor-detail-brand-content';
+import './globals.css';
 
 export const dynamic = 'force-dynamic';
 export default async function TractorImplementDetailPage({ params }) {
@@ -51,7 +53,6 @@ export default async function TractorImplementDetailPage({ params }) {
 
   // const params = await searchParams;
   const headingTitle = 'John Deere Single Bottom MB Plough (MB3001M)';
-  const brand = { name: 'John Deere' };
 
   const allImplementTypes = await getAllImplementTypes();
 
@@ -95,10 +96,13 @@ export default async function TractorImplementDetailPage({ params }) {
     console.log('==params::', param);
 
     implementDetail = await getAllImplementDetails(param?.brand, pageSlug[1]);
+    implementDetail.brand_name = currentLang === 'en' ? implementDetail.brand_name_en : implementDetail.brand_name_hi;
     // implementDetail = await getAllImplementDetails('plough', 93);
   } catch (error) {
     console.error('Failed to fetch implement brands data:', error);
   }
+
+  const brand = { name: implementDetail?.brand_name || 'Implement Brand' };
 
   const staticMetadata = {};
 
@@ -118,38 +122,36 @@ export default async function TractorImplementDetailPage({ params }) {
 
   const subModels = [
     {
-      size: '6 Feet Model',
+      size: translation?.implementDetails?.subModelSpecs?.sizeModels?.sixFeet || '6 Feet Model',
       specs: {
-        '3 Point Linkage': '“Pyramid Type” for Strength',
-        'Type of Blade': 'L Type “Japanese Technology”',
-        'No. Of Blades': '42',
-        'Rotor Shaft Pipe': 'FarmPower Uses Only High Grade “Seamless Pipe”',
-        'Suitable Tractor': '40-50 HP',
+        [translation?.implementDetails?.subModelSpecs?.threePtLinkage || '3 Point Linkage']: translation?.implementDetails?.subModelSpecs?.pyramidType || '"Pyramid Type" for Strength',
+        [translation?.implementDetails?.subModelSpecs?.typeOfBlade || 'Type of Blade']: translation?.implementDetails?.subModelSpecs?.lTypeJapanese || 'L Type "Japanese Technology"',
+        [translation?.implementDetails?.subModelSpecs?.noOfBlades || 'No. Of Blades']: translation?.implementDetails?.subModelSpecs?.bladeNumbers?.fortyTwo || '42',
+        [translation?.implementDetails?.subModelSpecs?.rotorShaftPipe || 'Rotor Shaft Pipe']: translation?.implementDetails?.subModelSpecs?.farmPowerPipe || 'FarmPower Uses Only High Grade "Seamless Pipe"',
+        [translation?.implementDetails?.subModelSpecs?.suitableTractor || 'Suitable Tractor']: translation?.implementDetails?.subModelSpecs?.tractorHpRanges?.fortyToFifty || '40-50 HP',
       },
     },
     {
-      size: '7 Feet Model',
+      size: translation?.implementDetails?.subModelSpecs?.sizeModels?.sevenFeet || '7 Feet Model',
       specs: {
-        '3 Point Linkage': '“Pyramid Type” for Strength',
-        'Type of Blade': 'L Type “Japanese Technology”',
-        'No. Of Blades': '48',
-        'Rotor Shaft Pipe': 'FarmPower Uses Only High Grade “Seamless Pipe”',
-        'Suitable Tractor': '45-55 HP',
+        [translation?.implementDetails?.subModelSpecs?.threePtLinkage || '3 Point Linkage']: translation?.implementDetails?.subModelSpecs?.pyramidType || '"Pyramid Type" for Strength',
+        [translation?.implementDetails?.subModelSpecs?.typeOfBlade || 'Type of Blade']: translation?.implementDetails?.subModelSpecs?.lTypeJapanese || 'L Type "Japanese Technology"',
+        [translation?.implementDetails?.subModelSpecs?.noOfBlades || 'No. Of Blades']: translation?.implementDetails?.subModelSpecs?.bladeNumbers?.fortyEight || '48',
+        [translation?.implementDetails?.subModelSpecs?.rotorShaftPipe || 'Rotor Shaft Pipe']: translation?.implementDetails?.subModelSpecs?.farmPowerPipe || 'FarmPower Uses Only High Grade "Seamless Pipe"',
+        [translation?.implementDetails?.subModelSpecs?.suitableTractor || 'Suitable Tractor']: translation?.implementDetails?.subModelSpecs?.tractorHpRanges?.fortyFiveToFiftyFive || '45-55 HP',
       },
     },
     {
-      size: '8 Feet Model',
+      size: translation?.implementDetails?.subModelSpecs?.sizeModels?.eightFeet || '8 Feet Model',
       specs: {
-        '3 Point Linkage': '“Pyramid Type” for Strength',
-        'Type of Blade': 'L Type “Japanese Technology”',
-        'No. Of Blades': '54',
-        'Rotor Shaft Pipe': 'FarmPower Uses Only High Grade “Seamless Pipe”',
-        'Suitable Tractor': '55-65 HP',
+        [translation?.implementDetails?.subModelSpecs?.threePtLinkage || '3 Point Linkage']: translation?.implementDetails?.subModelSpecs?.pyramidType || '"Pyramid Type" for Strength',
+        [translation?.implementDetails?.subModelSpecs?.typeOfBlade || 'Type of Blade']: translation?.implementDetails?.subModelSpecs?.lTypeJapanese || 'L Type "Japanese Technology"',
+        [translation?.implementDetails?.subModelSpecs?.noOfBlades || 'No. Of Blades']: translation?.implementDetails?.subModelSpecs?.bladeNumbers?.fiftyFour || '54',
+        [translation?.implementDetails?.subModelSpecs?.rotorShaftPipe || 'Rotor Shaft Pipe']: translation?.implementDetails?.subModelSpecs?.farmPowerPipe || 'FarmPower Uses Only High Grade "Seamless Pipe"',
+        [translation?.implementDetails?.subModelSpecs?.suitableTractor || 'Suitable Tractor']: translation?.implementDetails?.subModelSpecs?.tractorHpRanges?.fiftyFiveToSixtyFive || '55-65 HP',
       },
     },
-  ];
-
-  // const relatedTractors = await getRelatedTractors({ implementId });
+  ];  // const relatedTractors = await getRelatedTractors({ implementId });
   let relatedImplements = [];
   try {
     relatedImplements = await getRelatedImplements({
@@ -161,12 +163,27 @@ export default async function TractorImplementDetailPage({ params }) {
     console.error('Failed to fetch FAQs:', error);
   }
 
+
+  let banners = [];
+  try {
+    const tractorDetailTopContent = await getTractorDetailBrandContent({
+      ad_title: pageUrl,
+      ad_type_image_lang: currentLang,
+      device_type: isMobile ? 'mobile' : 'desktop'
+    });
+    banners = tractorDetailTopContent?.banner || [];
+    console.log("banners : ", banners);
+  } catch (error) {
+    console.error('Error fetching tyre brands data:', error);
+  }
+
+
   // TODO:: WIP - Tractor About Section
   const aboutSectionSlot = (
     <div className="rounded-2xl border-[1px] border-gray-light p-4 pe-0 md:max-h-[468px]">
       <div className="pe-4">
         <h2 className="border-b-3 mb-4 inline-block border-secondary pb-1 text-lg font-semibold md:mb-6 lg:text-2xl">
-          About {` ${implementDetail?.brand_name_en}  ${implementDetail?.model}`}
+          {currentLang == 'en' ? translation?.implementDetails?.about || 'About' : ''} {` ${implementDetail.brand_name}  ${implementDetail?.model}`} {currentLang == 'hi' ? translation?.implementDetails?.about || 'About' : ''}
         </h2>
       </div>
       <div className="custom-scroller h-full max-h-[160px] overflow-auto pe-4 text-sm font-normal text-gray-dark md:max-h-[340px]">
@@ -178,7 +195,7 @@ export default async function TractorImplementDetailPage({ params }) {
         ) : (
           <div>
             <p className="mb-3">
-              With the help of {`${implementDetail?.brand_name_en} ${implementDetail?.model}`}, it's
+              With the help of {`${implementDetail.brand_name} ${implementDetail?.model}`}, it's
               easy for a farmer to move the tractor in a field and use different kinds of
               implements.
             </p>
@@ -223,7 +240,10 @@ export default async function TractorImplementDetailPage({ params }) {
     return (
       <div>
         <div className="rounded-t-xl bg-black py-3 text-center text-lg font-semibold text-white">
-          John Deere Plough Models
+          {implementDetail.brand_name === 'John Deere'
+            ? (translation?.implementDetails?.johnDeerePloughModels || 'John Deere Plough Models')
+            : (translation?.implementDetails?.ploughModels || 'Plough Models')
+          }
         </div>
         <div className="rounded-b-xl border border-gray-light">
           {subModels.map((model, idx) => (
@@ -280,19 +300,25 @@ export default async function TractorImplementDetailPage({ params }) {
         <TittleAndCrumbs
           showBack={true}
           breadcrumbs={[
-            { label: 'Home', href: '/', title: 'Home' },
+            { label: translation?.breadcrubm?.tractorGyanHome || 'Home', href: '/', title: translation?.breadcrumbs?.home || 'Home' },
             {
-              label: 'Tractor Implements',
-              href: '/tractor-implements-in-india',
-              title: 'Tractor Implements',
+              label: translation?.breadcrumbs?.tractorImplements || 'Tractor Implements',
+              href: (currentLang == 'hi' ? '/hi' : '') + '/tractor-implements-in-india',
+              title: translation?.breadcrumbs?.tractorImplements || 'Tractor Implements',
             },
             {
-              label: `${implementDetail?.brand_name_en} Implements`,
-              title: `${implementDetail?.brand_name_en} Implements`,
+              label: translation?.breadcrumbs?.implementBrands || 'Implements Brands',
+              href: (currentLang == 'hi' ? '/hi' : '') + '/tractor-implements-brands-in-india',
+              title: translation?.breadcrumbs?.implementBrands || 'Implements Brands',
             },
             {
-              label: `${implementDetail?.model}`,
-              title: `${implementDetail?.model}`,
+              label: `${implementDetail.brand_name} ${translation?.breadcrumbs?.implements || 'Implements'}`,
+              title: `${implementDetail.brand_name} ${translation?.breadcrumbs?.implements || 'Implements'}`,
+              href: `${currentLang == 'hi' ? '/hi' : ''}/tractor-implements/${(implementDetail.brand_name).replaceAll(/\s+/g, '-').toLowerCase()}`,
+            },
+            {
+              label: `${implementDetail.brand_name} ${implementDetail?.model}`,
+              title: `${implementDetail.brand_name} ${implementDetail?.model}`,
               isCurrent: true,
             },
           ]}
@@ -311,12 +337,12 @@ export default async function TractorImplementDetailPage({ params }) {
             <SubModelsTable />
           </div>
           <div className="relative mt-4 h-full w-full md:w-1/4">
-            <TG_Banner
-              imgUrl={'https://placehold.co/300x200/00522e/FFF?text=Custom+Ad+Banner+300x200'}
-              mobileImgUrl={'https://placehold.co/300x200/00522e/FFF?text=Custom+Ad+Banner+300x200'}
+            {banners && banners.length > 0 ? <TG_Banner
+              imgUrl={banners[0].image}
+              mobileImgUrl={banners[0].image}
               imageClasses="max-h-[200px]"
               unoptimized={true}
-            />
+            /> : null}
             {/* TODO:: WIP */}
             {/* <TractorDetailsSpecs translation={translation} tractorDetail={implementDetail} /> */}
             <div className="mt-1.5 text-center">
@@ -336,8 +362,8 @@ export default async function TractorImplementDetailPage({ params }) {
                   }
                   height={200}
                   width={200}
-                  alt="All Tractor Page Banner"
-                  title="All Tractor Page Banner"
+                  alt={translation?.tractorReview?.allTractorPageBanner || "All Tractor Page Banner"}
+                  title={translation?.tractorReview?.allTractorPageBanner || "All Tractor Page Banner"}
                   className="h-full w-full object-contain object-center"
                 />
               </Link>
@@ -359,7 +385,7 @@ export default async function TractorImplementDetailPage({ params }) {
       </div>
 
       <LoanCalculator
-        title={'Calculate EMI'}
+        title={translation?.emiCalcytranslate?.CalculateEMI || 'Calculate EMI'}
         translation={translation}
         currentLang={currentLang}
         isMobile={isMobile}
@@ -370,15 +396,21 @@ export default async function TractorImplementDetailPage({ params }) {
       <TyreRatingAndReviews
         reviewData={[]}
         headingTitleKey={'headings.tyreRatingAndReviews'}
-        dynamicTitle={`test`}
+        dynamicTitle={` ${implementDetail.brand_name}  ${implementDetail?.model}`}
         translation={translation}
         reviewTitleKey={'headings.tyreUserReview'}
         bgColor={'bg-section-gray'}
         brand={brand}
         modelId={implementId}
         model={implementDetail.model_name}
-        // TODO:: Update No Review Image
-        noReviewImg="https://images.tractorgyan.com/uploads/117235/6773e5b906cbc-no-review-card.webp"
+        showUserReviewTitle={isMobile}
+        noReviewImg="https://images.tractorgyan.com/uploads/115159/66e7ef5355658-no-review-card-banner.webp"
+        // Implement-specific props for payload
+        mode="implement"
+        implementType={implementType}
+        implementBrand={implementDetail.brand_name}
+        implementModel={implementDetail?.model}
+        formPageName="implement_model_detail"
       />
 
       <div className='my-4 md:my-6'>
@@ -386,30 +418,34 @@ export default async function TractorImplementDetailPage({ params }) {
         <TyrePriceInquireForm
           translation={translation}
           currentLang={currentLang}
-          brandName={implementDetail.brand_name_en}
+          brandName={` ${implementDetail.brand_name}  ${implementDetail?.model}`}
           tyreBrands={allImplementBrandsWithDetails}
           type='IMPLEMENT'
           heading={'headings.inquireforTyrePrice'}
           banner={tgb_implement_on_road_price}
           mobileBanner={tgb_implement_on_road_price_mobile}
-          submitBtnText="Send Enquiry"
+          submitBtnText={translation?.implementDetails?.sendEnquiry || "Send Enquiry"}
           implementType={implementType}
           pageSource={pageUrl}
           pageName={'implement_details'}
+          implementDetail={implementDetail}
+          isMobile={isMobile}
         />
       </div>
 
       <TractorImplementTypes
-        heading="Implements By Types"
+        heading={translation?.headerNavbar?.implementsByTypes || "Implements By Types"}
         allImplementTypes={allImplementTypes}
         floatingBg={true}
         slider={true}
         isMobile={isMobile}
+        currentLang={currentLang}
+
       />
 
       <TractorImplementBrands
         bgColor={'bg-section-gray'}
-        heading="Implements By Brands"
+        heading={translation?.headerNavbar?.implementsByBrands || "Implements By Brands"}
         allImplementBrands={allImplementBrandsWithDetails}
         itemsShown={isMobile ? 9 : 12}
         translation={translation}
@@ -418,17 +454,17 @@ export default async function TractorImplementDetailPage({ params }) {
 
       <ImplementsCategorySlider
         isMobile={isMobile}
-        heading="Implement By Category"
+        heading={translation?.headerNavbar?.implementByCategory || "Implement By Category"}
         categories={implementCategories}
       />
 
-      <TyreFAQs faqs={faqs} translation={translation} headingKey={'faqs.implements'} />
+      <TyreFAQs faqs={faqs} translation={translation} headingKey={'faqs.implements'} brandName={implementDetail?.brand_name + ' ' + implementDetail?.model} isDynamicTitle={true} />
 
       <JoinOurCommunityServer translation={translation} currentLang={currentLang} />
 
       <TractorGyanOfferings translation={translation} />
 
-      <AboutTractorGyanServer slug={'tractor-implements-in-india'} translation={translation} />
+      {/* <AboutTractorGyanServer slug={pageSlug} translation={translation} /> */}
 
       <FooterComponents translation={translation} />
 
@@ -436,7 +472,7 @@ export default async function TractorImplementDetailPage({ params }) {
         translation={translation}
         currentLang={currentLang}
         tyreBrands={tyreBrandsData}
-        defaultEnquiryType={'Implement'}
+        defaultEnquiryType={translation?.headerNavbar?.implement || 'Implement'}
         isMobile={isMobile}
       />
     </main>

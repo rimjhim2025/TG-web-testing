@@ -56,7 +56,6 @@ const ImplementHomePageBannerSearchClient = ({ currentLang }) => {
       setSelectedBrand(null);
     } else {
       setSelectedBrand(brand);
-      setSelectedCategory(null);
     }
     setIsOpen(prev => ({ ...prev, brand: false }));
   };
@@ -67,16 +66,25 @@ const ImplementHomePageBannerSearchClient = ({ currentLang }) => {
       setSelectedCategory(null);
     } else {
       setSelectedCategory(category);
-      setSelectedBrand(null);
     }
     setIsOpen(prev => ({ ...prev, category: false }));
   };
 
   const handleSearch = () => {
-    if (selectedBrand?.page_url) {
-      router.push(selectedBrand.page_url);
-    } else if (selectedCategory?.url) {
-      router.push(selectedCategory.url);
+    const langPrefix = currentLang === 'hi' ? '/hi' : '';
+
+    if (selectedBrand && selectedCategory) {
+      // Both brand and category selected: /tractor-implements-in-india/backhoe-loader/abs
+      const url = `${langPrefix}/tractor-implements-in-india/${selectedCategory.slug || selectedCategory.name}/${selectedBrand.slug || selectedBrand.name}`;
+      router.push(url);
+    } else if (selectedBrand && !selectedCategory) {
+      // Only brand selected: /tractor-implements/abs
+      const url = `${langPrefix}/tractor-implements-in-india/${selectedBrand.slug || selectedBrand.name}`;
+      router.push(url);
+    } else if (selectedCategory && !selectedBrand) {
+      // Only category selected: /tractor-implements-in-india/backhoe-loader
+      const url = `${langPrefix}/tractor-implements-in-india/${selectedCategory.slug || selectedCategory.name}`;
+      router.push(url);
     } else {
       alert('Please select a brand or type to search');
     }
@@ -92,7 +100,7 @@ const ImplementHomePageBannerSearchClient = ({ currentLang }) => {
   const DropdownButton = ({ type, placeholder, selectedValue, disabled = false }) => (
     <button
       type="button"
-      className={`shadow-sm ring-gray-300 hover:bg-gray-50 inline-flex w-full items-center justify-between gap-x-1.5 rounded-md bg-white px-2 py-1.5 text-xs font-normal ring-1 ring-inset ${disabled ? 'text-gray-400 bg-gray-100 cursor-not-allowed' : 'text-[#AFAFAF]'
+      className={`shadow-sm ring-gray-300 hover:bg-gray-50 inline-flex w-full items-center justify-between gap-x-1.5 rounded-md bg-white px-2 py-1.5 text-xs font-normal ring-1 ring-inset ${disabled ? 'text-gray-400 bg-gray-100 cursor-not-allowed' : selectedValue ? 'text-gray-800 font-medium' : 'text-[#AFAFAF]'
         }`}
       onClick={() => !disabled && toggleDropdown(type)}
       disabled={disabled}
@@ -113,12 +121,11 @@ const ImplementHomePageBannerSearchClient = ({ currentLang }) => {
     </button>
   );
 
-  const Dropdown = ({ type, items, onSelect, isLoading }) => {
+  const Dropdown = ({ type, items, onSelect, selectedItem, isLoading }) => {
     // Create default option based on type
     const defaultOption = {
       isDefault: true,
-      name: type === 'brand' ? 'Select Brand' : undefined,
-      title: type === 'category' ? 'Select Type' : undefined,
+      name: type === 'brand' ? 'Select Brand' : type === 'category' ? 'Select Type' : undefined
     };
 
     // Combine default option with items
@@ -139,11 +146,12 @@ const ImplementHomePageBannerSearchClient = ({ currentLang }) => {
                 key={index}
                 className={`${item.isDefault
                   ? 'text-gray-500 border-gray-200 border-b font-medium'
-                  : 'text-gray-700 hover:bg-gray-100'
-                  } block w-full px-4 py-1 text-left text-xs`}
+                  : 'text-gray-700 hover:bg-gray-100 hover:text-primary cursor-pointer'
+                  } block w-full px-4 py-1 text-left text-xs
+                ${item.name === selectedItem ? 'text-primary' : ''}`}
                 onClick={() => onSelect(item)}
               >
-                {item.name}
+                {currentLang === 'hi' ? item.name_hi : item.name}
               </button>
             ))
           ) : (
@@ -155,7 +163,7 @@ const ImplementHomePageBannerSearchClient = ({ currentLang }) => {
   };
 
   return (
-    <div className="ms-auto mt-7 hidden h-[251px] w-full max-w-[302px] rounded-xl bg-white p-[18px] shadow-[0px_2.89px_12.28px_0px_#50635054] md:block">
+    <div className="ms-auto mt-0 hidden h-[251px] w-full max-w-[302px] rounded-xl bg-white p-[18px] shadow-[0px_2.89px_12.28px_0px_#50635054] md:block">
       <h5 className="mb-4 text-lg font-semibold leading-5">Search Implements</h5>
       <p className="mb-1.5 text-xs font-medium text-[#595959]">Search by Brands</p>
       <div className="mb-2.5 flex gap-2.5">
@@ -164,17 +172,17 @@ const ImplementHomePageBannerSearchClient = ({ currentLang }) => {
             type="brand"
             placeholder="Select brand"
             selectedValue={selectedBrand?.name}
-            disabled={selectedCategory}
           />
           <Dropdown
             type="brand"
             items={brands}
             onSelect={handleBrandSelect}
+            selectedItem={selectedBrand?.name}
             isLoading={loading.brands}
           />
         </div>
       </div>
-      <p className="mb-2.5 text-center text-xs font-bold text-[#595959]">OR</p>
+      <p className="mb-2.5 text-center text-xs font-bold text-[#595959]">AND / OR</p>
 
       <p className="mb-1.5 text-xs font-medium text-[#595959]">Search by Type</p>
       <div className="mb-2.5 flex gap-2.5">
@@ -183,9 +191,14 @@ const ImplementHomePageBannerSearchClient = ({ currentLang }) => {
             type="category"
             placeholder="Select Type"
             selectedValue={selectedCategory?.name}
-            disabled={selectedBrand}
           />
-          <Dropdown type="category" items={categoryOptions} onSelect={handleCategorySelect} isLoading={loading.category} />
+          <Dropdown
+            type="category"
+            items={categoryOptions}
+            onSelect={handleCategorySelect}
+            selectedItem={selectedCategory?.name}
+            isLoading={loading.category}
+          />
         </div>
       </div>
       <button

@@ -48,6 +48,7 @@ import TractorListingData from '../tractors/listing/TractorListingData';
 import { getAllImplementTypeListing } from '@/src/services/implement/get-all-implement-type-listing';
 import { getAllImplementBrandListing } from '@/src/services/implement/get-all-implement-brand-listing';
 import { getImplementBrandFAQs } from '@/src/services/implement/get-all-implement-brand-faqs';
+import { getImplementCategoryFilter } from '@/src/services/implement/get-implement-category-filter';
 import TyresPriceList from '../tyre/tyre-price/ListingMainSection';
 import Link from 'next/link';
 
@@ -135,12 +136,26 @@ export default async function TractorImplementByBrandPage({ params, searchParams
     faqs = [];
   }
 
-  // TODO:: For UI Only
-  const subcategories = [
-    { name: 'Self Propelled', img: tgi_implement_combine_harvester },
-    { name: 'Tractor Mounted', img: tgi_implement_combine_harvester },
-    { name: 'Sugarcane', img: tgi_implement_combine_harvester }
-  ];
+  // Fetch subcategories dynamically
+  let subcategories = [];
+  try {
+    const categoryFilterResponse = await getImplementCategoryFilter({
+      implement_type: param.brand,
+      lang: currentLang,
+    });
+    if (categoryFilterResponse && categoryFilterResponse.success) {
+      subcategories = categoryFilterResponse.data.map(item => ({
+        name: item.name,
+        name_en: item.name_en,
+        img: item.image,
+        url: item.url,
+        sr_no: item.sr_no,
+      }));
+    }
+  } catch (error) {
+    console.error('Failed to fetch subcategories:', error);
+    // Fallback to hardcoded subcategories
+  }
 
   const { tyresListingClientProps, tyresListingProps } = await prepareTyreListingComponent({
     param: params,
@@ -214,10 +229,11 @@ export default async function TractorImplementByBrandPage({ params, searchParams
   let latestImplement = 'no';
   let popularImplement = 'no';
 
-  if (sortBy.toLowerCase() === 'popularity') {
+  // Use translation-based comparison for consistent sorting logic
+  if (sortBy === translation?.headings?.popularity) {
     popularImplement = 'yes';
   }
-  if (sortBy.toLowerCase() === 'latest launches') {
+  if (sortBy === translation?.headings?.latestLaunches) {
     latestImplement = 'yes';
   }
 
@@ -318,7 +334,7 @@ export default async function TractorImplementByBrandPage({ params, searchParams
           />
           {/* Sub Category Filter */}
           {subcategories?.length && isMobile && (
-            <SubCategoryTabs heading="Combine Harvester By Category" subcategories={subcategories} />
+            <SubCategoryTabs heading="Combine Harvester By Category" subcategories={subcategories} currentLang={currentLang} />
           )}
           <div className="flex flex-col gap-6 md:flex-row lg:gap-2 xl:gap-6">
             {!isMobile && (

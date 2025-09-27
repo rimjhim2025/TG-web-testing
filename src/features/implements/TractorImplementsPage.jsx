@@ -28,6 +28,8 @@ import { getImplementHomeBanner } from '@/src/services/implement/get-implement-h
 import { getAllImplementBrandsDetail } from '@/src/services/implement/get-all-implement-brands';
 import { getLatestImplements } from '@/src/services/implement/get-latest-implements';
 import { getImplementReels, getImplementVideos, getImplementWebstories } from '@/src/services/implement/implement-updates';
+import GoogleAdVertical from '../social/GoogleAdVertical/GoogleAdVertical';
+import GoogleAdHorizontal from '../social/GoogleAdHorizontal/GoogleAdHorizontal';
 
 export const dynamic = 'force-dynamic';
 export default async function TractorImplementsPage({ params }) {
@@ -91,11 +93,12 @@ export default async function TractorImplementsPage({ params }) {
   let latestData;
   try {
     latestData = await getLatestImplements(currentLang);
+    // console.log('latest implements = ', latestData);
   } catch (error) {
     latestData = [];
   }
 
-  const allImplementTypes = await getAllImplementTypes();
+  const allImplementTypes = await getAllImplementTypes({ lang: currentLang });
 
   let banner;
   try {
@@ -114,7 +117,7 @@ export default async function TractorImplementsPage({ params }) {
 
   let allImplementBrandsWithDetails;
   try {
-    allImplementBrandsWithDetails = await getAllImplementBrandsDetail();
+    allImplementBrandsWithDetails = await getAllImplementBrandsDetail({ lang: currentLang });
   } catch (error) {
     console.error('Failed to fetch implement brands data:', error);
     allImplementBrandsWithDetails = [];
@@ -134,6 +137,9 @@ export default async function TractorImplementsPage({ params }) {
         seo={seoData}
         staticMetadata={staticMetadata}
         preloadUrls={[]}
+        paginationLinks={{
+          cannonical: `https://tractorgyan.com/${currentLang === 'hi' ? 'hi/' : ''}tractor-implements-in-india`,
+        }}
       />
       <NavComponents
         translation={translation}
@@ -158,7 +164,7 @@ export default async function TractorImplementsPage({ params }) {
         bgColor={'bg-section-gray'}
         heading={translation.headerNavbar.implementsByBrands}
         allImplementBrands={allImplementBrandsWithDetails}
-        itemsShown={isMobile ? 12 : 10}
+        itemsShown={isMobile ? 9 : 10}
         translation={translation}
         prefLang={currentLang}
       />
@@ -196,8 +202,12 @@ export default async function TractorImplementsPage({ params }) {
       />
 
       {/* TODO:: Upload and Replace Banner Image */}
-      <section className="container">
-        <TG_Banner
+      {/* <GoogleAdVertical /> */}
+      <GoogleAdHorizontal />
+      {/* <section className="container">
+        </section> */}
+
+      {/* <TG_Banner
           imgUrl={
             'https://images.tractorgyan.com/uploads/120752/1756192422tractor-finance.webp'
           }
@@ -206,8 +216,7 @@ export default async function TractorImplementsPage({ params }) {
           }
           title={translation.headerNavbar.tractorLoanBanner}
           additionalClasses={'my-6 md:my-10'}
-        />
-      </section>
+        /> */}
 
       <div className="mt-4">
         <LoanCalculator
@@ -229,9 +238,9 @@ export default async function TractorImplementsPage({ params }) {
         slug={'tractor-implements-in-india'}
         brandName={''}
         linkUrls={{
-          videos: `${currentLang === 'hi' ? '/hi' : ''}/implement-videos`,
+          videos: `${currentLang === 'hi' ? '/hi' : ''}/tractor-videos`,
           webstories: `${currentLang === 'hi' ? '/hi' : ''}/web-story-in-india`,
-          reels: `${currentLang === 'hi' ? '/hi' : ''}/implement-reels-and-shorts`,
+          reels: `${currentLang === 'hi' ? '/hi' : ''}/tractor-reels-and-shorts`,
         }}
       />
 
@@ -239,7 +248,7 @@ export default async function TractorImplementsPage({ params }) {
         translation={translation}
         langPrefix={currentLang}
         news={news}
-        title={translation.headerNavbar.news}
+        title={translation.headings.implementNewsAndUpdates}
         bgColor={'bg-section-gray'}
         showFilter={false}
       />

@@ -344,18 +344,17 @@ export const prepareTyreListingComponent = async ({
   // Handle different pageTypes with unified data fetching
   if (pageType === 'implements') {
     // Use implement listing API with proper server-side pagination
-    const startLimit = (currentPage - 1) * ITEMS_PER_PAGE;
-    const endLimit = startLimit + ITEMS_PER_PAGE;
+    const startLimit = (currentPage - 1) * 22;
+    const endLimit = startLimit + 22;
 
     let latestImplement = 'no';
     let popularImplement = 'no';
 
-    // More robust sorting detection
-    const sortByLower = activeFilters.sortBy?.toLowerCase() || '';
-    if (sortByLower.includes('popularity') || sortByLower.includes('popular')) {
+    // Use translation-based comparison like tyres and tractors sections
+    if (activeFilters.sortBy === translation?.headings?.popularity) {
       popularImplement = 'yes';
     }
-    if (sortByLower.includes('latest') || sortByLower.includes('launch')) {
+    if (activeFilters.sortBy === translation?.headings?.latestLaunches) {
       latestImplement = 'yes';
     }
 

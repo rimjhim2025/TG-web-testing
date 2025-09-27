@@ -243,7 +243,8 @@
     "selfPropelled": "स्व-चालित",
     "tractorMounted": "ट्रैक्टर माउंटेड",
     "sugarcane": "गन्ना",
-    "combineHarvesterByCategory": "श्रेणी के अनुसार कम्बाइन हार्वेस्टर"
+    "combineHarvesterByCategory": "श्रेणी के अनुसार कम्बाइन हार्वेस्टर",
+    "farmpower": "फार्मपावर"
   },
   "common": {
     "rear": "रियर",
@@ -675,13 +676,14 @@
     "fixErrorsMessage": "कृपया नीचे दिए गए त्रुटियों को ठीक करें",
     "submissionFailed": "सबमिशन विफल। कृपया पुनः प्रयास करें।",
     "submissionError": "सबमिशन के दौरान एक त्रुटि हुई। कृपया पुनः प्रयास करें।",
-    "close": "बंद करें"
+    "close": "बंद करें",
+    "getImplementPriceByType": "{type} की कीमत के बारे मे पूछताछ"
   },
   "faqs": {
     "dynamicFaq": "{brandName} के बारे में अक्सर पूछे जाने वाले प्रश्न",
     "insurance": "इंश्योरेंस के बारे में अक्सर पूछे जाने वाले प्रश्न",
     "usedTractorfaqs": "सेकेंड हैंड ट्रैक्टर के बारे में अक्सर पूछे जाने वाले प्रश्न",
-    "implements": "इम्प्लीमेंट के बारे में अक्सर पूछे जाने वाले प्रश्न"
+    "implements": "{brandName} इम्प्लीमेंट के बारे में अक्सर पूछे जाने वाले प्रश्न"
   },
   "tractorfaqs": {
     "allTractors": "ट्रैक्टर के बारे में अक्सर पूछे जाने वाले प्रश्न",
@@ -743,6 +745,38 @@
       "otherSpecs": "अन्य मुख्य विशेषताओं में शामिल हैं",
       "liftingCap": "उठाने की क्षमता",
       "gears": "गियर"
+    }
+  },
+  "implementDetails": {
+    "about": "के बारे में",
+    "sendEnquiry": "जानकारी मांगें",
+    "ploughModels": "हल के प्रकार",
+    "johnDeerePloughModels": "जॉन डीयर के हल",
+    "defaultPloughModel": "हल के प्रकार",
+    "subModelSpecs": {
+      "threePtLinkage": "तीन बिंदु कड़ी",
+      "typeOfBlade": "फाल का प्रकार",
+      "noOfBlades": "फालों की संख्या",
+      "rotorShaftPipe": "रोटर शाफ्ट नली",
+      "suitableTractor": "उपयुक्त ट्रैक्टर",
+      "pyramidType": "\"पिरामिड प्रकार\" मजबूती हेतु",
+      "lTypeJapanese": "एल प्रकार \"जापानी तकनीक\"",
+      "farmPowerPipe": "फार्मपावर केवल उच्च गुणवत्ता की \"सीमलेस पाइप\" का प्रयोग करता है",
+      "sizeModels": {
+        "sixFeet": "6 फुट का हल",
+        "sevenFeet": "7 फुट का हल",
+        "eightFeet": "8 फुट का हल"
+      },
+      "tractorHpRanges": {
+        "fortyToFifty": "40-50 एचपी",
+        "fortyFiveToFiftyFive": "45-55 एचपी",
+        "fiftyFiveToSixtyFive": "55-65 एचपी"
+      },
+      "bladeNumbers": {
+        "fortyTwo": "42",
+        "fortyEight": "48",
+        "fiftyFour": "54"
+      }
     }
   },
   "tractorSpecs": {
@@ -956,6 +990,7 @@
     "updatesAboutTractor": "{brand} ट्रैक्टर के बारे में अपडेट",
     "updatesAboutImplement": "{brand} इम्प्लीमेंट के बारे में अपडेट",
     "tyreNews": "टायर समाचार",
+   "ConstructionMachineryByBrands": "निर्माण मशीनरी ब्रांड",
     "recentlyAskedQuestionAboutTractorTyres": "ट्रैक्टर टायरों के बारे में हाल ही में पूछे गए प्रश्न",
     "searchTyres": "टायर खोजें",
     "searchByBrands": "ब्रांड द्वारा खोजें",
@@ -971,9 +1006,9 @@
     "findImplementDealerNearYou": "अपने आस-पास इम्प्लीमेंट डीलर ढूंढें",
     "TyreDealersByBrands": "ब्रांड के अनुसार टायर विक्रेता",
     "TyreDealersByStates": "राज्यों के अनुसार टायर विक्रेता",
-    "dataLastUpdatedOn": "डेटा अंतिम बार अपडेट किया गया ",
+    "dataLastUpdatedOn": "जानकारी अंतिम बार अपडेट हुई",
     "priceMayVaryFromStateToState": "कीमत* अलग-अलग राज्यों में अलग-अलग हो सकती है",
-    "inquireforTyrePrice": "{brand} की कीमत पूछें",
+    "inquireforTyrePrice": "{brand} की कीमत जानें",
     "byTeamTractorGyan": "ट्रैक्टर ज्ञान द्वारा",
     "tractorGyanBlogs": "ट्रैक्टर ज्ञान ब्लॉग्स",
     "applyforSecondHandImplementLoan": "सेकेंड हैंड इम्प्लीमेंट लोन के लिए आवेदन करें",
@@ -986,6 +1021,7 @@
     "topTractorBrands": "टॉप ट्रैक्टर ब्रांड",
     "topMiniTractorBrands": "टॉप मिनी ट्रैक्टर ब्रांड",
     "allTractorsByBrand": "भारत में {brand} ट्रैक्टर",
+    "allImplementsByBrand": "भारत में {brand} इम्प्लीमेंट",
     "tractorsSubsidyinIndia": "भारत में ट्रैक्टर सब्सिडी",
     "searchTractordealersByStates": "राज्यों के अनुसार ट्रैक्टर डीलर खोजें",
     "popularTyreBrands": "लोकप्रिय टायर ब्रांड",
@@ -1008,6 +1044,9 @@
     "leadingTractorGroup": "अग्रणी ट्रैक्टर समूह",
     "selectTractorSubsidyStates": "राज्यों के अनुसार ट्रैक्टर सब्सिडी का चयन करें",
     "ConstructionMachineryandEquipmentinIndia": "भारत में निर्माण मशीनरी और उपकरण",
+   "AgricultureandFarmEquipmentinIndia": "भारत में खेती और कृषि उपकरण",
+    "BackhoeLoader": "बैकहो लोडर",
+    "ConstructionMachineryByType": "निर्माण मशीनरी के प्रकार",
     "TractorBrands": "ट्रैक्टर ब्रांड्स",
     "MahindraMahindraTractorsinIndia": "भारत में महिंद्रा ट्रैक्टर",
     "escortTractorsinIndia": "भारत में एस्कॉर्ट्स कुबोटा ट्रैक्टर",
@@ -1022,7 +1061,9 @@
     "miniTractorsByBrands": "{brand} मिनी ट्रैक्टर्स",
     "popularSecondHandTractorsByBrand": "लोकप्रिय सेकेंड हैंड {brand} ट्रैक्टर",
     "popularTractorComparison": "लोकप्रिय ट्रैक्टर तुलना",
-    "tractorDealersByBrands": "ब्रांड्स द्वारा ट्रैक्टर डीलर"
+    "tractorDealersByBrands": "ब्रांड्स द्वारा ट्रैक्टर डीलर",
+    "implementNewsAndUpdates": "इम्प्लीमेंट समाचार और अपडेट",
+    "allImplementBrands": "सभी इम्प्लीमेंट ब्रांड"
   },
   "tyreDetail": {
     "about": "के बारे में",

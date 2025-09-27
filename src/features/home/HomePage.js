@@ -278,6 +278,7 @@ const TG_HomePage = async ({ searchParams, prefLangs }) => {
           heading="Implements"
           allImplementTypes={allImplementTypes}
           cta="View All Implements"
+          currentLang={prefLang}
         />
 
         <UpdatesSection

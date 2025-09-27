@@ -4,7 +4,7 @@ import React from "react";
 import { tgi_arrow_right_white, tgi_star } from "@/src/utils/assets/icons";
 
 import TractorMainSlider from "../secondHand/secondHandDetails/TractorMainSlider";
-import TG_Button from "@/src/components/ui/buttons/MainButtons";
+// import TG_Button from "@/src/components/ui/buttons/MainButtons";
 import Tooltip from "@/src/features/tyreComponents/commonComponents/Tooltip";
 import SocialMediaLinksShare from "@/src/components/shared/social-media/SocialMediaShare";
 import Image from "next/image";
@@ -53,18 +53,27 @@ const ImplementDetailsCard = ({
     <div className="justify-around rounded-2xl md:flex md:shadow-main md:p-6">
       <Tooltip content={tooltipContent}>
         <h1 className="mb-2 block md:hidden cursor-pointer text-lg font-bold text-black md:text-2xl">
-          {` ${implementDetail.brand_name}  ${implementDetail.model_name}`}
-        </h1>
+          {currentLang === 'en' ?
+            (
+              <>
+                {`${implementDetail.brand_name_en}  ${implementDetail.model}`}
+              </>
+            ) : (
+              <>
+                {`${implementDetail.brand_name_hi}  ${implementDetail.model}`}
+              </>
+            )
+          }        </h1>
       </Tooltip>
-      <div className="block md:hidden md:block md:pb-4 text-sm text-gray-description">
-        Category: Landscaping
-      </div>
+      {implementDetail.category_name ? <div className="block md:hidden md:block md:pb-4 text-sm text-gray-description">
+        Category: {implementDetail.category_name}
+      </div> : null}
       <div className="relative h-full w-full pt-3 md:max-h-[480px] md:max-w-[350px] lg:max-w-[335px] xl:max-w-[350px]">
         <TractorMainSlider
           title={` ${implementDetail.brand_name_en}  ${implementDetail.model} image`}
           imgUrl={`/${implementDetail.image}`} // TODO:: API is not returning array of images
           // imgUrl={implementDetail.images}
-          brandLogo={implementDetail.brand_logo}
+          brandLogo={implementDetail.brand_url}
           showThumbnails={false}
           isPopular={implementDetail?.popular_implement === 'Yes'}
         />
@@ -79,15 +88,15 @@ const ImplementDetailsCard = ({
                 </>
               ) : (
                 <>
-                  {`${implementDetail.brand_name_hi}  ${implementDetail.model_hi}`}
+                  {`${implementDetail.brand_name_hi}  ${implementDetail.model}`}
                 </>
               )
             }
           </h1>
         </Tooltip>
-        <div className="hidden md:block pb-4 text-sm text-gray-description">
+        {implementDetail.category_name ? <div className="hidden md:block pb-4 text-sm text-gray-description">
           Category: {implementDetail?.category_name}
-        </div>
+        </div> : null}
         <h5 className="mb-4 text-lg font-semibold text-black">
           Highlights
         </h5>

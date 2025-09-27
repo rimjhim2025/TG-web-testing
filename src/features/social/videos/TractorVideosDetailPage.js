@@ -15,13 +15,11 @@ import { getDetailPageHeaderSEO } from '@/src/services/detailPageHeaderSeo';
 
 export default async function TractorVideosDetailPage({ params }) {
   const prefLang = await getSelectedLanguage();
-
-  const [translation, isMobile] = await Promise.all([
-    getDictionary(prefLang),
-    isMobileView()
-  ]);
+  const translation = await getDictionary(prefLang);
+  const isMobile = await isMobileView();
 
   let seoDescription = null;
+
   const param = params?.slug;
 
   try {
@@ -48,12 +46,7 @@ export default async function TractorVideosDetailPage({ params }) {
 
       <ScrollToTopNavigate />
 
-      <SeoHead
-        seo={{}}
-        staticMetadata={{}}
-        preloadUrls={[]}
-        seoHTMLDescription={seoDescription}
-      />
+      <SeoHead seo={{}} staticMetadata={{}} preloadUrls={[]} seoHTMLDescription={seoDescription} />
 
       <main className="lg:mt-[0px]">
         <VideosDetailsSectionData params={params} />

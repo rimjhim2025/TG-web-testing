@@ -96,6 +96,7 @@ const ImplementOnRoadPricePage = async () => {
           floatingBg={true}
           slider={true}
           isMobile={isMobile}
+          currentLang={currentLang}
         />
 
         <TractorImplementBrands

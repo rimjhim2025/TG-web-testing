@@ -14,6 +14,7 @@ import { getTractorModelsByBrand } from '@/src/services/tractor/get-tractor-mode
 import { usePathname } from 'next/navigation';
 import { tgi_arrow_right } from '@/src/utils/assets/icons';
 import { getAllImplementBrandsDetail } from '@/src/services/implement/get-all-implement-brands';
+import { getAllImplementBrandListing } from '@/src/services/implement/get-all-implement-brand-listing';
 
 const WhatsAppTopButton = ({
   translation,
@@ -38,6 +39,38 @@ const WhatsAppTopButton = ({
       </div>
     );
   }
+
+  // Wrapper function to fetch implement models by brand
+  const getImplementModelsByBrand = async (brandName) => {
+    try {
+      const response = await getAllImplementBrandListing({
+        brand: brandName,
+        lang: currentLang,
+        start_limit: 0,
+        end_limit: 1000
+      });
+
+      if (response && response.items) {
+        // Transform the response to match the expected model structure
+        return response.items.map(item => ({
+          id: item.id,
+          modal_name: item.model, // Map 'model' field to 'modal_name' for consistency
+          model: item.model,
+          brand_name: item.brand_name,
+          implement_power: item.implement_power,
+          price: item.price,
+          image: item.image,
+          page_url: item.page_url,
+        }));
+      }
+
+      return [];
+    } catch (error) {
+      console.error('Error fetching implement models for brand:', brandName, error);
+      return [];
+    }
+  };
+
   const enquiryConfigs = {
     Tyre: {
       formTitle: translation?.enquiryForm?.tyreEnquiryForm || 'Tyre Enquiry Form',
@@ -84,7 +117,7 @@ const WhatsAppTopButton = ({
       brandLabel: translation?.enquiryForm?.implementBrand || 'Implement Brand',
       modelLabel: translation?.enquiryForm?.implementModel || 'Implement Model',
       fetchBrandsFn: getAllImplementBrandsDetail,
-      fetchModelsFn: getTyreModal,
+      fetchModelsFn: getImplementModelsByBrand,
       typeId: isMobile ? 104 : 103,
       payloadType: 'Implement',
       showBrandModelFields: true,
@@ -237,6 +270,10 @@ const WhatsAppTopButton = ({
           const match = String(modelItem.id) === String(preFilledTractorModelId);
           console.log(`Checking tractor model ${modelItem.model} (product_id: ${modelItem.id}) against ${preFilledTractorModelId}:`, match);
           return match;
+        } else if (defaultEnquiryType === 'Implement') {
+          const match = String(modelItem.id) === String(preFilledTractorModelId);
+          console.log(`Checking implement model ${modelItem.model} (id: ${modelItem.id}) against ${preFilledTractorModelId}:`, match);
+          return match;
         } else {
           return String(modelItem.id) === String(preFilledTractorModelId);
         }
@@ -250,6 +287,12 @@ const WhatsAppTopButton = ({
             ...f,
             model: matchingModel.model,
             product_id: matchingModel.product_id,
+          }));
+        } else if (defaultEnquiryType === 'Implement') {
+          setForm(f => ({
+            ...f,
+            model: matchingModel.model,
+            product_id: matchingModel.id,
           }));
         } else {
           setForm(f => ({
@@ -349,6 +392,12 @@ const WhatsAppTopButton = ({
           ...f,
           model: selectedModelObject.model, // Tractor uses .model
           product_id: selectedModelObject.product_id, // Tractor uses .product_id
+        }));
+      } else if (defaultEnquiryType === 'Implement') {
+        setForm(f => ({
+          ...f,
+          model: selectedModelObject.model, // Implement uses .model
+          product_id: selectedModelObject.id, // Implement uses .id
         }));
       } else {
         // Default to Tyre structure

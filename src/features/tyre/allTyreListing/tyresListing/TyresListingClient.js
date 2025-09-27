@@ -215,7 +215,7 @@ const TyresListingClient = ({
     <div className="w-full md:sticky md:top-0 md:min-h-screen">
       {/* <div className="w-full md:sticky md:top-0 md:h-screen md:overflow-y-auto"> */}
       {/* Mobile Filter Toggle Button */}
-      {isMobileViewProp && (
+      {isMobileViewProp ? (
         <button
           onClick={handleFilterToggle}
           className="flex max-w-[100px] items-center rounded-lg bg-primary px-2.5 py-2 text-white md:mb-4 md:hidden" // md:hidden to ensure it's only on mobile
@@ -230,20 +230,20 @@ const TyresListingClient = ({
           />
           {translation.buttons.filter}
         </button>
-      )}
+      ) : null}
 
       {/* Overlay for mobile filter popup */}
-      {isMobileViewProp && filterPopup && (
+      {(isMobileViewProp && filterPopup) ? (
         <div
           className="fixed bottom-0 left-0 right-0 top-0 z-10 bg-[#151414] bg-opacity-30 md:hidden"
           onClick={handleFilterToggle} // Close on overlay click
         ></div>
-      )}
+      ) : null}
 
       {/* Sub Category Filter */}
-      {subcategories?.length && !isMobileViewProp && (
-        <SubCategoryTabs heading={translation.headings.CombineHarvesterByCategory} subcategories={subcategories} />
-      )}
+      {(subcategories?.length && !isMobileViewProp) ? (
+        <SubCategoryTabs heading={translation.headings.CombineHarvesterByCategory} subcategories={subcategories} currentLang={currentLang} />
+      ) : null}
 
       {/* Filter Section Panel */}
       {isFilterPanelVisible && (
@@ -513,6 +513,7 @@ const TyresListingClient = ({
               slider={false}
               placedInFilter={true}
               cta={translation.buttons.ViewAllImplements}
+              currentLang={currentLang}
             />
           )}
         </>

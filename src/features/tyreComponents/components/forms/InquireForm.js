@@ -14,6 +14,7 @@ import { getFetchTehsil } from '@/src/services/tyre/all-tehsil';
 import { tg_getTittleFromNestedKey } from '@/src/utils';
 import { tgi_arrow_right } from '@/src/utils/assets/icons';
 import { getAllImplementBrandListing } from '@/src/services/implement/get-all-implement-brand-listing';
+import { getImplementEnquiryTypeId } from '@/src/services/implement/get-implement-enquiry-type-id';
 
 const TyrePriceInquireForm = ({
   hideBanner = false,
@@ -36,7 +37,9 @@ const TyrePriceInquireForm = ({
   isMobile,
   pageName,
   pageSource,
-  implementType
+  implementType,
+  implementStaticPayload = {},
+  implementDetail
 }) => {
   useEffect(() => {
     console.log("TyrePriceInquireForm props:", { pageName, pageSource });
@@ -71,6 +74,18 @@ const TyrePriceInquireForm = ({
   const [existVerified, setExistVerified] = useState('');
   const [otp, setOtp] = useState('');
   const [primaryId, setPrimaryId] = useState(null);
+  const [typeId, setTypeId] = useState('');
+
+  // Effect to set pre-filled brand and model for implements
+  useEffect(() => {
+    if (type === 'IMPLEMENT' && implementDetail) {
+      setSelectedBrand(implementDetail.brand_name);
+      setSelectedModel(implementDetail.model);
+      setProductId(implementDetail.id);
+    } else if (preFilledBrand) {
+      setSelectedBrand(preFilledBrand);
+    }
+  }, [preFilledBrand, type, implementDetail]);
 
   useEffect(() => {
     if (!showOtpPopup) {
@@ -85,20 +100,6 @@ const TyrePriceInquireForm = ({
     }
   }, [showOtpPopup]);
 
-  // useEffect(() => {
-  //   const fetchModels = async () => {
-  //     try {
-  //       const result = await postData("/api/tyre_modal", {
-  //         brand_name: selectedBrand,
-  //       });
-  //       setTyreModels(result.data);
-  //     } catch (error) {
-  //       console.error("Error fetching in tyre models:", error);
-  //     }
-  //   };
-  //   fetchModels();
-  // }, [selectedBrand]);
-
   useEffect(() => {
     const fetchModels = async () => {
       if (type === 'TRACTOR' && selectedBrand !== '') {
@@ -109,7 +110,7 @@ const TyrePriceInquireForm = ({
 
           data.forEach(modelItem => {
             if ((+modelItem?.product_id == +preFilledModelId) || (+modelItem.id == +preFilledModelId)) {
-
+              setProductId(modelItem.id);
               setSelectedModel(modelItem.model_en || modelItem.model);
             }
           })
@@ -119,11 +120,19 @@ const TyrePriceInquireForm = ({
         const data = await getAllImplementBrandListing({
           brand: selectedBrand,
           start_limit: 0,
-          end_limit: 100, // TODO:: Refactor | This is a required field, so setting 100 for now
+          end_limit: 1000, // TODO:: Refactor | This is a required field, so setting 100 for now
           // lang: currentLang,
         });
         setTyreModels(data.items);
-      } else {
+        // If we have a pre-filled implement detail, ensure it's in the model list
+        if (implementDetail && data.items) {
+          const existingModel = data.items.find(item => item.id === implementDetail.id);
+          if (!existingModel) {
+            // Add the current implement to the models list if not already present
+            setTyreModels([implementDetail, ...data.items]);
+          }
+        }
+      } else if (selectedBrand !== '') {
         const data = await getTyreModal(selectedBrand);
         setTyreModels(data);
       }
@@ -133,58 +142,33 @@ const TyrePriceInquireForm = ({
   }, [selectedBrand, type]);
 
   useEffect(() => {
-    // const fetchBrands = async () => {
-    //   try {
-    //     const result = await postData("/api/all_tyre_brands");
-    //     setBrands(result.data);
-    //   } catch (error) {
-    //     console.error("Error fetching in brands:", error);
-    //   }
-    // };
-
-    // const fetchState = async () => {
-    //   try {
-    //     const result = await fetchData("/api/all_state");
-    //     setStates(result.data || []);
-    //   } catch (error) {
-    //     console.error("Error fetching states:", error);
-    //   }
-    // };
-
     const fetchState = async () => {
       const data = await getAllStates();
       setStates(data || []);
     };
 
-    // fetchBrands();
     fetchState();
   }, []);
 
-  // Effect to set pre-filled brand and model
+  // Fetch type_id for implement enquiry
   useEffect(() => {
-    if (preFilledBrand) {
-      setSelectedBrand(preFilledBrand);
-    }
-
-  }, [preFilledBrand]);
-
-  // useEffect(() => {
-  //   const fetchDistricts = async () => {
-  //     if (!selectedState) return;
-  //     try {
-  //       const result = await postData("/api/all_district", {
-  //         state: selectedState,
-  //       });
-  //       setDistricts(result.data);
-  //       setTehsils([]);
-  //       // setTehsils(result.data)
-  //     } catch (error) {
-  //       console.error("Error fetching districts:", error);
-  //     }
-  //   };
-
-  //   fetchDistricts();
-  // }, [selectedState]);
+    const fetchTypeId = async () => {
+      if (type === 'IMPLEMENT' && implementType) {
+        try {
+          const result = await getImplementEnquiryTypeId({
+            implement_type: implementType,
+            device_type: isMobile ? 'mobile' : 'desktop'
+          });
+          if (result.success) {
+            setTypeId(result.enquiry_id);
+          }
+        } catch (error) {
+          console.error('Error fetching type_id for implement:', error);
+        }
+      }
+    };
+    fetchTypeId();
+  }, [type, implementType, isMobile]);
 
   useEffect(() => {
     if (!selectedState) return;
@@ -196,22 +180,6 @@ const TyrePriceInquireForm = ({
     };
     fetchModels();
   }, [selectedState]);
-
-  // useEffect(() => {
-  //   const fetchTehsils = async () => {
-  //     if (!selectedDistrict) return;
-  //     try {
-  //       const result = await postData("/api/all_tehsil", {
-  //         district: selectedDistrict,
-  //       });
-  //       console.log("tehsil", result);
-  //       setTehsils(result.data || []);
-  //     } catch (error) {
-  //       console.error("Error fetching tehsil:", error);
-  //     }
-  //   };
-  //   fetchTehsils();
-  // }, [selectedDistrict]);
 
   useEffect(() => {
     if (!selectedDistrict) return;
@@ -249,25 +217,23 @@ const TyrePriceInquireForm = ({
         type_id: isMobile ? 6 : 5,
       };
       apiEndpoint = '/api/enquiry_data_otp_send';
-    } if (type === 'IMPLEMENT') {
+    } else if (type === 'IMPLEMENT') {
       // Payload for implement
       payload = {
-        // 'user-message': 'Enquiry',
-        // Enquiry: '',
-        // otp_type: 'form_submit_otp_send',
         name: name,
-        mobile: mobile,
-        model: selectedModel,
-        brand: selectedBrand,
-        implement_type: implementType,
-        state: selectedState,
+        mobile_name: mobile,
+        manufacture_id: selectedBrand,
+        first: selectedModel,
+        demo_field_4: '',
         district: selectedDistrict,
-        tehsil: selectedTehsil,
-        type_id: 34, // TODO:: Confirm and Update the type ID for mobile
-        page_name: pageName,
-        page_source: pageSource
+        tahsil: selectedTehsil,
+        implement_type: implementType || '',
+        state: selectedState,
+        type_id: typeId || '',
+        'user-message': 'Enquiry',
+        otp_type: 'form_submit_otp_send',
       };
-      apiEndpoint = '/api/all_implement_enquiry';
+      apiEndpoint = '/api/enquiry_data_otp_send';
     } else {
       // Original API and payload for tyre
       payload = {
@@ -290,10 +256,12 @@ const TyrePriceInquireForm = ({
 
     console.log('payload', payload);
     try {
-      const result = await postData(apiEndpoint, payload);
-      console.log('result', result);
+      let result = await postData(apiEndpoint, payload);
 
       if (result.status === 'success' || result.message == "success") {
+        // if (type == 'IMPLEMENT') {
+        //   result = result.data
+        // }
         setOtp(result.otp);
         setShowOtpPopup(new Date());
         setPrimaryId(result.primary_id);
@@ -424,6 +392,7 @@ const TyrePriceInquireForm = ({
                         value={selectedBrand}
                         onChange={e => setSelectedBrand(e.target.value)}
                         className="h-[38px] w-full rounded-lg border border-gray-light bg-transparent px-4 py-2 text-sm text-black focus:outline-none"
+                      // disabled={type === 'IMPLEMENT' && implementDetail}
                       >
                         <option value="">{translation.enquiryForm.selectBrand}</option>
                         {tyreBrands?.length > 0 ? (
@@ -459,7 +428,7 @@ const TyrePriceInquireForm = ({
                             const selectedModelItem = tyreModels[selectedIndex];
                             if (type === 'TRACTOR') {
                               setSelectedModel(selectedModelItem.model_en);
-                              setProductId(selectedModelItem.product_id);
+                              setProductId(selectedModelItem.id);
                             } if (type === 'IMPLEMENT') {
                               setSelectedModel(selectedModelItem.model);
                               setProductId(selectedModelItem.id);
@@ -609,7 +578,10 @@ const TyrePriceInquireForm = ({
                             ? submitBtnText
                             : type === 'TRACTOR'
                               ? `₹ ${translation.enquiryForm.getTractorPrice || 'Get Tractor Price'}`
-                              : `₹ ${translation.enquiryForm.getTyrePrice}`}
+                              : type === "IMPLEMENT"
+                                ? `₹ ${translation.enquiryForm.getImplementPrice || 'Get Implement Price'}`
+                                : `₹ ${translation.enquiryForm.getTyrePrice}`
+                        }
                       </span>
                       <Image
                         src={tgi_arrow_right}
@@ -666,15 +638,16 @@ const TyrePriceInquireForm = ({
           product_id={product_id}
           existVerified={existVerified}
           closeEnquryPopup={() => setShowOtpPopup(false)}
-          enquiryType={type === 'TRACTOR' ? 'Tractor' : 'Tyre'}
-          productNameSingular={type === 'TRACTOR' ? 'tractor' : 'tyre'}
-          productNamePlural={type === 'TRACTOR' ? 'tractors' : 'tyres'}
+          enquiryType={type === 'TRACTOR' ? 'Tractor' : type === 'IMPLEMENT' ? 'Implement' : 'Tyre'}
+          productNameSingular={type === 'TRACTOR' ? 'tractor' : type === 'IMPLEMENT' ? 'implement' : 'tyre'}
+          productNamePlural={type === 'TRACTOR' ? 'tractors' : type === 'IMPLEMENT' ? 'implements' : 'tyres'}
           onClose={() => setShowOtpPopup(false)}
           tehsil={selectedTehsil}
           state={selectedState}
           district={selectedDistrict}
           name={name}
           successDealerFormShow={'No'}
+          implementType={implementType}
         />
       )}
     </>
