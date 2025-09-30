@@ -33,11 +33,13 @@ const TyresListingClient = ({
   tractorHPs, // Add tractorHPs prop
   isMiniTractorPage = false, // New prop to identify mini tractor page
   isMiniTractorBrandPage = false, // New prop to identify mini tractor brand page
+  brandFilterLabel, // Label for brand filter (can be "Brand" or "Type")
+  brandFilterKey = 'brand', // Key for brand filter (can be "brand" or "type")
 }) => {
   const router = useRouter();
 
   const [selectedBrand, setSelectedBrand] = useState(
-    initialActiveFilters?.brand || brandName || null
+    brandFilterKey === 'type' ? initialActiveFilters?.type || brandName || null : initialActiveFilters?.brand || brandName || null
   );
   const [selectedSize, setSelectedSize] = useState(initialActiveFilters?.size || null);
   const [selectedOption, setSelectedOption] = useState(initialActiveFilters?.sortBy || null);
@@ -96,7 +98,7 @@ const TyresListingClient = ({
     const finalHPRange = typeof hpRange !== 'undefined' ? hpRange : selectedHPRange;
 
     const queryParams = new URLSearchParams();
-    if (finalBrand) queryParams.set('brand', finalBrand);
+    if (finalBrand) queryParams.set(brandFilterKey, finalBrand);
     if (finalSize) queryParams.set('size', finalSize);
     if (finalOption) queryParams.set('sortBy', finalOption);
     if (finalHPRange) queryParams.set('hpRange', finalHPRange);
@@ -367,7 +369,7 @@ const TyresListingClient = ({
                 {!isMiniTractorBrandPage && showBrandFilter && tyreBrands && tyreBrands.length > 0 && (
                   <div className="mb-2 md:mb-6">
                     <h4 className="mb-2 text-base font-semibold md:mb-4">
-                      {translation.headings.brand}
+                      {brandFilterLabel || translation.headings.brand}
                     </h4>
                     <div className="flex flex-wrap gap-x-1 gap-y-2 md:gap-2 xl:gap-4">
                       {(showAllBrands ? tyreBrands : tyreBrands.slice(0, 12)).map((brand, index) => (

@@ -19,7 +19,8 @@ import AboutTractorGyanServer from '@/src/components/shared/about/AboutTractorGy
 import { getConstructionMachineryBrand } from '@/src/services/construction-machinery-brand/construction-machinery-brand';
 import { getTyreReels, getTyreVideos, getTyreWebstories } from '@/src/services/tyre/tyre-brand-webstore';
 import TractorImplementBrands from '@/src/components/shared/tractor-implement-brands/TractorImplementBrands';
-import UpdatesSection from '../tyreComponents/components/updatesAbouteTyre/UpdatesSection';
+import ConstructionMachineryBrands from './ConstructionMachineryBrands';
+import GoogleAdHorizontalClientWrapper from '../social/GoogleAdHorizontal/GoogleAdHorizontalClientWrapper';
 
 const unwrap = (settledResult, fallback = null) => {
   return settledResult && settledResult.status === 'fulfilled' ? settledResult.value : fallback;
@@ -117,32 +118,17 @@ export default async function ConstructionMachineryPage({ searchParams }) {
         />
 
         {/* Tractor Implement Brands */}
-        <TractorImplementBrands
+        <ConstructionMachineryBrands
           heading={translation.headings?.ConstructionMachineryByBrands}
           allImplementBrands={normalizedImplementBrands}
-          itemsShown={isMobile ? 9 : 12}
           translation={translation}
           bgColor={'bg-section-gray'}
           prefLang={currentLang}
+          toggleView={true}
         />
-
-        {/* <UpdatesSection
-          videos={videos}
-          reels={reels}
-          webstories={webstories}
-          translation={translation}
-          slug={pageSlug}
-          brandName={
-            translation.headerNavbar?.constructionMachinery ||
-            'Construction Machinery'
-          }
-          bgColor={'bg-section-gray'}
-          linkUrls={{
-            videos: `${langPrefix}/tractor-videos`,
-            webstories: `${langPrefix}/web-story-in-india`,
-            reels: `${langPrefix}/tractor-reels-and-shorts`,
-          }}
-        /> */}
+        {isMobile && (
+          <GoogleAdHorizontalClientWrapper />
+        )}
 
         <TyreFAQs
           faqs={faqs}

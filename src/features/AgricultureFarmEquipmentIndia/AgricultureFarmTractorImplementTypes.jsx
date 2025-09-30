@@ -113,7 +113,7 @@ const AgricultureFarmTractorImplementTypes = ({
     const visibleItems = showAll ? allImplementTypes : (allImplementTypes || []).slice(0, itemsShown);
 
     // CTA link fallback (kept as-is)
-    const tractorBrandsUrl = currentLang === "en" ? "/implements-brands" : `/${currentLang}/implements-brands`;
+    const tractorBrandsUrl = currentLang === "en" ? "/tractor-implements-in-india" : `/${currentLang}/tractor-implements-in-india`;
 
     // handler that intercepts clicks on MainButton (capture phase)
     const handleToggleCapture = (e) => {
@@ -215,8 +215,8 @@ const AgricultureFarmTractorImplementTypes = ({
                                     ? (translation.blogs.showLess || "Show Less")
                                     : (cta || translation?.buttons?.ViewAllImplements || "View All Implements")
                             }
-                            // keep linkUrl as-is so visual style remains consistent
-                            linkUrl={tractorBrandsUrl}
+                        // keep linkUrl as-is so visual style remains consistent
+                        // linkUrl={tractorBrandsUrl}
                         />
                     </div>
                 )}

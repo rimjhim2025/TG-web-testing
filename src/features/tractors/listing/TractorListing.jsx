@@ -24,6 +24,9 @@ const TractorListing = ({
   const totalPages = Math.ceil(totalTyresCount / itemsPerPage);
   const showReelAfter = isMobile ? 1 : 3;
 
+  console.log("Aniket : ", pageType);
+
+
   const buildPageLink = pageNumber => {
     const queryParams = new URLSearchParams();
     if (activeFilters?.brand) queryParams.set('brand', activeFilters.brand);
@@ -167,13 +170,13 @@ const TractorListing = ({
             </div>
           )}
 
-          {pageType === 'implements' && (
+          {(pageType === 'implements' || pageType == 'implement-brand') && (
             <div className="flex flex-wrap gap-4 lg:gap-4 xl:gap-4">
               {initialTyres?.map((implement, index) => (
                 <TG_HorizontalCard
                   title={`${implement.brand_name} ${implement.model}`}
                   imageSrc={`https://images.tractorgyan.com/uploads${implement.image}`}
-                  detailUrl={implement?.page_url}
+                  detailUrl={(currentLang == 'hi' ? '/hi' : '') + implement?.page_url}
                   specs={{ HP: implement?.implement_power }}
                   buttonText={translation.headerNavbar.ViewPrice}
                   buttonPrefix="₹ "

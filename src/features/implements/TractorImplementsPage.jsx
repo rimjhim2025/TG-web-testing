@@ -4,7 +4,6 @@ import { isMobileView } from '@/src/utils';
 import JoinOurCommunityServer from '@/src/components/shared/community/JoinOurCommunityServer';
 import TractorGyanOfferings from '@/src/components/shared/offerings/TractorGyanOfferings';
 import AboutTractorGyanServer from '@/src/components/shared/about/AboutTractorGyanServer';
-import TG_Banner from '@/src/components/shared/bannners/Banner';
 import PopularSection from '@/src/components/shared/popularSection/PopularSection';
 import LatestTractorSection from '@/src/components/shared/latestSection/LatestTractorSection';
 import TractorImplementTypes from '@/src/components/shared/tractor-implements/TractorImplementTypes';
@@ -30,6 +29,8 @@ import { getLatestImplements } from '@/src/services/implement/get-latest-impleme
 import { getImplementReels, getImplementVideos, getImplementWebstories } from '@/src/services/implement/implement-updates';
 import GoogleAdVertical from '../social/GoogleAdVertical/GoogleAdVertical';
 import GoogleAdHorizontal from '../social/GoogleAdHorizontal/GoogleAdHorizontal';
+import TyreFAQs from '../tyre/tyreFAQs/TyreFAQs';
+import { getImplementBrandFAQs } from '@/src/services/implement/get-all-implement-brand-faqs';
 
 export const dynamic = 'force-dynamic';
 export default async function TractorImplementsPage({ params }) {
@@ -46,7 +47,7 @@ export default async function TractorImplementsPage({ params }) {
   const reels = reelsData || [];
   const webstories = webstoriesData || [];
 
-  const seoSlug = 'tractor-implements-in-india';
+  const seoSlug = (currentLang == 'hi' ? 'hi/' : '') + 'tractor-implements-in-india';
 
   // TODO:: Update this
   const staticMetadata = {
@@ -98,6 +99,24 @@ export default async function TractorImplementsPage({ params }) {
     latestData = [];
   }
 
+
+  let faqs = [];
+  try {
+    const faqResponse = await getImplementBrandFAQs(
+      {
+        faq_tag: 'tractor-implements-in-india', // 'seeding-and-planting'
+        faq_lang: currentLang,
+      }
+    );
+    if (faqResponse && faqResponse.success) {
+      faqs = faqResponse.data || [];
+    }
+  } catch (error) {
+    console.error('Failed to fetch FAQs:', error);
+    faqs = [];
+  }
+
+
   const allImplementTypes = await getAllImplementTypes({ lang: currentLang });
 
   let banner;
@@ -135,10 +154,9 @@ export default async function TractorImplementsPage({ params }) {
       {/* TODO:: Update SEO Data */}
       <SeoHead
         seo={seoData}
-        staticMetadata={staticMetadata}
         preloadUrls={[]}
         paginationLinks={{
-          cannonical: `https://tractorgyan.com/${currentLang === 'hi' ? 'hi/' : ''}tractor-implements-in-india`,
+          canonical: `https://tractorgyan.com/${currentLang === 'hi' ? 'hi/' : ''}tractor-implements-in-india`,
         }}
       />
       <NavComponents
@@ -149,7 +167,7 @@ export default async function TractorImplementsPage({ params }) {
         showMobileTab={true}
       />
 
-      <ImplementHomePageBanner banner={banner} isMobile={isMobile} currentLang={currentLang} />
+      <ImplementHomePageBanner translation={translation} banner={banner} isMobile={isMobile} currentLang={currentLang} />
 
       <TractorImplementTypes
         heading={translation.headerNavbar.implementsByTypes}
@@ -164,7 +182,7 @@ export default async function TractorImplementsPage({ params }) {
         bgColor={'bg-section-gray'}
         heading={translation.headerNavbar.implementsByBrands}
         allImplementBrands={allImplementBrandsWithDetails}
-        itemsShown={isMobile ? 9 : 10}
+        itemsShown={isMobile ? 9 : 9}
         translation={translation}
         prefLang={currentLang}
       />
@@ -253,6 +271,14 @@ export default async function TractorImplementsPage({ params }) {
         showFilter={false}
       />
 
+      <TyreFAQs
+        faqs={faqs}
+        translation={translation}
+        headingKey={'faqs.implements'}
+        bgColor="bg-white"
+        brandName={' '}
+        isDynamicTitle={true}
+      />
       <JoinOurCommunityServer translation={translation} currentLang={currentLang} />
 
       <TractorGyanOfferings translation={translation} />
@@ -264,7 +290,7 @@ export default async function TractorImplementsPage({ params }) {
       <WhatsAppTopButton
         translation={translation}
         currentLang={currentLang}
-        defaultEnquiryType={translation.headerNavbar.implement}
+        defaultEnquiryType={'Implement'}
         isMobile={isMobile}
       />
     </main>

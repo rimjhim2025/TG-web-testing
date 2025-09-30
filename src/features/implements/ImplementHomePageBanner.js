@@ -1,6 +1,7 @@
 'use client';
-import React from 'react';
+import React, { useState } from 'react';
 import ImplementHomePageBannerSearchClient from './ImplementHomePageBannerSearchClient';
+import BannerFormModal from '../../components/shared/bannners/BannerFormModal';
 import Slider from 'react-slick';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -43,11 +44,23 @@ const settings = {
   prevArrow: <PrevArrow />,
 };
 
-const ImplementHomePageBanner = ({ banner, isMobile = false, currentLang }) => {
+const ImplementHomePageBanner = ({
+  banner,
+  isMobile = false,
+  currentLang,
+  translation = {},
+}) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const bgImg = banner[0]?.slider_image;
   console.log('=======', banner);
   const gradientOverlay = "linear-gradient(180deg, rgba(0, 0, 0, 0) 66.09%, rgba(0, 0, 0, 0.75) 100%)";
+
+  const handleBannerClick = (bannerItem) => {
+    if (bannerItem.banner_enquiry === 'yes') {
+      setIsModalOpen(true);
+    }
+  };
 
   return (
     // TODO:: Update banner images and implement slider
@@ -61,11 +74,33 @@ const ImplementHomePageBanner = ({ banner, isMobile = false, currentLang }) => {
     //     </div>
     //   )}
     // </section>
-    <section className='relative p-0 m-0 h-full min-h-[200px] max-h-[202px] w-full bg-cover bg-center md:max-h-[344px]'>
-      <Slider {...settings} className="home-banner-slider pb-4 mb-4 md:mb-6">
+    <section className='relative p-0 m-0 h-full min-h-[200px] max-h-[202px] w-full bg-cover bg-center md:max-h-[344px] border-2 border-gray-300 rounded-lg '>
+      <Slider {...settings} className="home-banner-slider">
         {banner?.map((bannerItem, index) => (
           <div key={index} className="relative h-full w-full">
-            {bannerItem.url ? (
+            {bannerItem.banner_enquiry === 'yes' ? (
+              <div
+                className="block h-full w-full relative z-0 cursor-pointer"
+                onClick={() => handleBannerClick(bannerItem)}
+              >
+                <div className="relative h-full w-full">
+                  <Image
+                    src={bannerItem.slider_image}
+                    alt='Implement Banner Image'
+                    title={`Implement Banner Image ${index + 1}`}
+                    height={300}
+                    width={1920}
+                    className='h-full w-full object-cover'
+                  />
+                  <div
+                    className="absolute inset-0 pointer-events-none"
+                    style={{
+                      background: 'linear-gradient(180deg, rgba(0, 0, 0, 0) 66.09%, rgba(0, 0, 0, 0) 100%)'
+                    }}
+                  />
+                </div>
+              </div>
+            ) : bannerItem.url ? (
               <Link href={bannerItem.url} className="block h-full w-full relative z-0">
                 <div className="relative h-full w-full">
                   <Image
@@ -117,12 +152,19 @@ const ImplementHomePageBanner = ({ banner, isMobile = false, currentLang }) => {
         ))} */}
       </Slider>
       {!isMobile && (
-        <div className="absolute top-6 right-6 w-[20%] z-20 pointer-events-none">
+        <div className="absolute top-6 right-6 w-[20%] pointer-events-none">
           <div className="pointer-events-auto">
             <ImplementHomePageBannerSearchClient currentLang={currentLang} />
           </div>
         </div>
       )}
+      <BannerFormModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        translation={translation}
+        currentLang={currentLang}
+        isMobile={isMobile}
+      />
     </section>
   );
 };

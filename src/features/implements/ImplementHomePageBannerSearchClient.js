@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { getAllImplementCategories } from '@/src/services/implement/all-implement-categories';
 import { getAllImplementBrandsDetail } from '@/src/services/implement/get-all-implement-brands';
+import { getAllImplementTypes } from '@/src/services/implement/all-implement-types';
 
 const ImplementHomePageBannerSearchClient = ({ currentLang }) => {
   const router = useRouter();
@@ -41,7 +42,7 @@ const ImplementHomePageBannerSearchClient = ({ currentLang }) => {
   const loadCategories = async () => {
     setLoading(prev => ({ ...prev, category: true }));
     try {
-      const categoriesData = await getAllImplementCategories();
+      const categoriesData = await getAllImplementTypes();
       setCategories(categoriesData || []);
     } catch (error) {
       console.error('Error loading Categories:', error);
@@ -79,7 +80,7 @@ const ImplementHomePageBannerSearchClient = ({ currentLang }) => {
       router.push(url);
     } else if (selectedBrand && !selectedCategory) {
       // Only brand selected: /tractor-implements/abs
-      const url = `${langPrefix}/tractor-implements-in-india/${selectedBrand.slug || selectedBrand.name}`;
+      const url = `${langPrefix}/tractor-implements/${selectedBrand.slug || selectedBrand.name}`;
       router.push(url);
     } else if (selectedCategory && !selectedBrand) {
       // Only category selected: /tractor-implements-in-india/backhoe-loader

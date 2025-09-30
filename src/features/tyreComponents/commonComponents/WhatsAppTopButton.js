@@ -111,14 +111,13 @@ const WhatsAppTopButton = ({
       productNamePlural: 'Dealers',
       getSubmitButtonText: () => translation?.buttons?.submit || 'Submit',
     },
-    // TODO::WIP
     Implement: {
       formTitle: translation?.enquiryForm?.implementEnquiryForm || 'Implement Enquiry Form',
       brandLabel: translation?.enquiryForm?.implementBrand || 'Implement Brand',
       modelLabel: translation?.enquiryForm?.implementModel || 'Implement Model',
       fetchBrandsFn: getAllImplementBrandsDetail,
       fetchModelsFn: getImplementModelsByBrand,
-      typeId: isMobile ? 104 : 103,
+      typeId: isMobile ? 97 : 98,
       payloadType: 'Implement',
       showBrandModelFields: true,
       productNameSingular: 'Implement',

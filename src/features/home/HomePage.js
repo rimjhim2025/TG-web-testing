@@ -250,7 +250,7 @@ const TG_HomePage = async ({ searchParams, prefLangs }) => {
 
         <div className="mt-4">
           <LoanCalculator
-            title={'Calculate EMI'}
+            title={translation?.emiCalcytranslate?.CalculateEMI || 'Calculate EMI'}
             allSectionUse={true}
             bgColor={'bg-section-gray'}
             translation={translation}

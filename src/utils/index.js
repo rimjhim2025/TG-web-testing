@@ -5,6 +5,7 @@ import { getBrandSeriesListing } from '../services/tractor/brand-series-listing'
 import { getAllTractorsListing } from '../services/tractor/get-all-tractors-listing';
 import { getTractorHPs } from '../services/tractor/get-tractor-hps';
 import { getAllImplementTypeListing } from '../services/implement/get-all-implement-type-listing';
+import { getAllImplementBrandListing } from '../services/implement/get-all-implement-brand-listing';
 
 const { headers } = require('next/headers');
 
@@ -327,11 +328,17 @@ export const prepareTyreListingComponent = async ({
   brandPageUrl,
   basePathFromUrl,
   basePath,
+  customListingData,
+  customTotalCount,
+  customCurrentPage,
+  customTotalPages,
+  customHasNextPage,
 }) => {
   const currentPage = parseInt(searchParamsObj?.page) || 1;
 
   const activeFilters = {
-    brand: showBrandFilter ? param?.brand || searchParamsObj?.brand || null : null,
+    brand: showBrandFilter && pageType !== 'implement-brand' ? param?.brand || searchParamsObj?.brand || null : null,
+    type: showBrandFilter && pageType === 'implement-brand' ? searchParamsObj?.type || null : null,
     size: showSizeFilter ? searchParamsObj?.size || null : null,
     sortBy: searchParamsObj?.sortBy || null,
     search: searchParamsObj?.search || null,
@@ -341,8 +348,13 @@ export const prepareTyreListingComponent = async ({
   let initialTyres = [];
   let totalTyresCount = 0;
 
+  // Use custom data if provided (for brand/sub-type pages)
+  if (customListingData) {
+    initialTyres = customListingData;
+    totalTyresCount = customTotalCount || 0;
+  }
   // Handle different pageTypes with unified data fetching
-  if (pageType === 'implements') {
+  else if (pageType === 'implements') {
     // Use implement listing API with proper server-side pagination
     const startLimit = (currentPage - 1) * 22;
     const endLimit = startLimit + 22;
@@ -378,6 +390,45 @@ export const prepareTyreListingComponent = async ({
     totalTyresCount = implementListingData.totalCount || 0;
 
     console.log(`Implements API response - Items: ${initialTyres.length}, Total Count: ${totalTyresCount}`);
+  } else if (pageType === 'implement-brand') {
+    // Use implement brand listing API with proper server-side pagination
+    const startLimit = (currentPage - 1) * ITEMS_PER_PAGE;
+    const endLimit = startLimit + ITEMS_PER_PAGE;
+
+    let latestImplement = 'no';
+    let popularImplement = 'no';
+
+    // Use translation-based comparison like tyres and tractors sections
+    if (activeFilters.sortBy === translation?.headings?.popularity) {
+      popularImplement = 'yes';
+    }
+    if (activeFilters.sortBy === translation?.headings?.latestLaunches) {
+      latestImplement = 'yes';
+    }
+
+    console.log(`Implement Brand API call - Page ${currentPage}: start_limit=${startLimit}, end_limit=${endLimit}`);
+
+    // Get the page data with proper pagination using implement brand API
+    const implementBrandListingData = await getAllImplementBrandListing({
+      brand: basePath || param?.brand,
+      search_keyword: activeFilters.search || '',
+      start_limit: startLimit,
+      end_limit: endLimit,
+      latest_implement: latestImplement,
+      popular_implement: popularImplement,
+      lang: prefLang,
+      implement_type: activeFilters.type
+    });
+
+    console.log("implementBrandListingData : ", implementBrandListingData);
+
+
+    initialTyres = implementBrandListingData.items || [];
+
+    // Use totalCount from API response if available
+    totalTyresCount = implementBrandListingData.totalCount || 0;
+
+    console.log(`Implement Brand API response - Items: ${initialTyres.length}, Total Count: ${totalTyresCount}`);
   } else {
     // Use tyre listing API with proper server-side pagination
     const startLimit = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -421,9 +472,11 @@ export const prepareTyreListingComponent = async ({
     showTractorHPFilter,
     filterBySize,
     isMobileViewProp: isMobile,
-    brandName: activeFilters.brand,
+    brandName: pageType === 'implement-brand' ? activeFilters.type : activeFilters.brand,
     basePath: basePathFromUrl || basePath,
-    pageOrigin: pageType === 'implements' ? 'implement' : 'tyre',
+    pageOrigin: pageType === 'implements' || pageType === 'implement-brand' ? 'implement' : 'tyre',
+    brandFilterLabel: pageType === 'implement-brand' ? translation?.headings?.type : translation?.headings?.brand,
+    brandFilterKey: pageType === 'implement-brand' ? 'type' : 'brand',
   };
 
   const currentDate = new Date()
@@ -437,21 +490,21 @@ export const prepareTyreListingComponent = async ({
   const tyresListingProps = {
     initialTyres: initialTyres,
     totalTyresCount: totalTyresCount,
-    currentPage,
+    currentPage: customCurrentPage || currentPage,
     itemsPerPage: ITEMS_PER_PAGE,
     activeFilters,
     tyreBrands: tyreBrands,
     translation,
     currentLang: prefLang,
     currentDate,
-    brandName: activeFilters.brand,
+    brandName: pageType === 'implement-brand' ? activeFilters.type : activeFilters.brand,
     tyreSize: activeFilters.size,
     basePath: basePathFromUrl || basePath,
     pageType,
-    pageOrigin: pageType === 'implements' ? 'implement' : 'tyre',
-    // Add pagination info
-    hasNextPage: currentPage < Math.ceil(totalTyresCount / ITEMS_PER_PAGE),
-    totalPages: Math.ceil(totalTyresCount / ITEMS_PER_PAGE),
+    pageOrigin: pageType === 'implements' || pageType === 'implement-brand' ? 'implement' : 'tyre',
+    // Add pagination info - use custom pagination if provided
+    hasNextPage: customHasNextPage !== undefined ? customHasNextPage : currentPage < Math.ceil(totalTyresCount / ITEMS_PER_PAGE),
+    totalPages: customTotalPages || Math.ceil(totalTyresCount / ITEMS_PER_PAGE),
     totalItems: totalTyresCount,
   };
 

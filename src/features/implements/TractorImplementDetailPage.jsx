@@ -35,6 +35,7 @@ import { getRelatedImplements } from '@/src/services/implement/get-related-imple
 import SeoHead from '@/src/components/shared/header/SeoHead';
 import { getDetailPageHeaderSEO } from '@/src/services/detailPageHeaderSeo';
 import { getTractorDetailBrandContent } from '@/src/services/tractor/tractor-detail-brand-content';
+import ImplementDetailsSpecs from './ImplementDetailsSpecs';
 import './globals.css';
 
 export const dynamic = 'force-dynamic';
@@ -95,8 +96,9 @@ export default async function TractorImplementDetailPage({ params }) {
   try {
     console.log('==params::', param);
 
-    implementDetail = await getAllImplementDetails(param?.brand, pageSlug[1]);
+    implementDetail = await getAllImplementDetails(param?.brand, pageSlug[1], currentLang);
     implementDetail.brand_name = currentLang === 'en' ? implementDetail.brand_name_en : implementDetail.brand_name_hi;
+    implementDetail.model_name = currentLang === 'en' ? implementDetail.model : implementDetail.model_hi;
     // implementDetail = await getAllImplementDetails('plough', 93);
   } catch (error) {
     console.error('Failed to fetch implement brands data:', error);
@@ -183,7 +185,7 @@ export default async function TractorImplementDetailPage({ params }) {
     <div className="rounded-2xl border-[1px] border-gray-light p-4 pe-0 md:max-h-[468px]">
       <div className="pe-4">
         <h2 className="border-b-3 mb-4 inline-block border-secondary pb-1 text-lg font-semibold md:mb-6 lg:text-2xl">
-          {currentLang == 'en' ? translation?.implementDetails?.about || 'About' : ''} {` ${implementDetail.brand_name}  ${implementDetail?.model}`} {currentLang == 'hi' ? translation?.implementDetails?.about || 'About' : ''}
+          {currentLang == 'en' ? translation?.implementDetails?.about || 'About' : ''} {` ${implementDetail.brand_name}  ${implementDetail?.model_name}`} {currentLang == 'hi' ? translation?.implementDetails?.about || 'About' : ''}
         </h2>
       </div>
       <div className="custom-scroller h-full max-h-[160px] overflow-auto pe-4 text-sm font-normal text-gray-dark md:max-h-[340px]">
@@ -195,7 +197,7 @@ export default async function TractorImplementDetailPage({ params }) {
         ) : (
           <div>
             <p className="mb-3">
-              With the help of {`${implementDetail.brand_name} ${implementDetail?.model}`}, it's
+              With the help of {`${implementDetail.brand_name} ${implementDetail?.model_name}`}, it's
               easy for a farmer to move the tractor in a field and use different kinds of
               implements.
             </p>
@@ -293,7 +295,7 @@ export default async function TractorImplementDetailPage({ params }) {
 
   return (
     <main>
-      <SeoHead seo={seoData} staticMetadata={staticMetadata} />
+      <SeoHead seo={{}} seoHTMLDescription={seoData} staticMetadata={staticMetadata} />
       <NavComponents translation={translation} isMobile={isMobile} prefLang={currentLang} />
       {/* TODO:: Setup Common Layout Class */}
       <div className="container mx-auto !pt-4 md:mt-[164px]">
@@ -302,9 +304,9 @@ export default async function TractorImplementDetailPage({ params }) {
           breadcrumbs={[
             { label: translation?.breadcrubm?.tractorGyanHome || 'Home', href: '/', title: translation?.breadcrumbs?.home || 'Home' },
             {
-              label: translation?.breadcrumbs?.tractorImplements || 'Tractor Implements',
+              label: translation?.headerNavbar?.tractorImplements || 'Tractor Implements',
               href: (currentLang == 'hi' ? '/hi' : '') + '/tractor-implements-in-india',
-              title: translation?.breadcrumbs?.tractorImplements || 'Tractor Implements',
+              title: translation?.headerNavbar?.tractorImplements || 'Tractor Implements',
             },
             {
               label: translation?.breadcrumbs?.implementBrands || 'Implements Brands',
@@ -312,13 +314,13 @@ export default async function TractorImplementDetailPage({ params }) {
               title: translation?.breadcrumbs?.implementBrands || 'Implements Brands',
             },
             {
-              label: `${implementDetail.brand_name} ${translation?.breadcrumbs?.implements || 'Implements'}`,
-              title: `${implementDetail.brand_name} ${translation?.breadcrumbs?.implements || 'Implements'}`,
-              href: `${currentLang == 'hi' ? '/hi' : ''}/tractor-implements/${(implementDetail.brand_name).replaceAll(/\s+/g, '-').toLowerCase()}`,
+              label: `${implementDetail.brand_name} ${translation?.whatsappPopup?.implements || 'Implements'}`,
+              title: `${implementDetail.brand_name} ${translation?.whatsappPopup?.implements || 'Implements'}`,
+              href: `${currentLang == 'hi' ? '/hi' : ''}/tractor-implements/${(implementDetail.brand_name_en).replaceAll(/\s+/g, '-').toLowerCase()}`,
             },
             {
-              label: `${implementDetail.brand_name} ${implementDetail?.model}`,
-              title: `${implementDetail.brand_name} ${implementDetail?.model}`,
+              label: `${implementDetail.brand_name} ${implementDetail?.model_name}`,
+              title: `${implementDetail.brand_name} ${implementDetail?.model_name}`,
               isCurrent: true,
             },
           ]}
@@ -333,42 +335,23 @@ export default async function TractorImplementDetailPage({ params }) {
               isMobile={isMobile}
               translation={translation}
             />
-            {aboutSectionSlot}
-            <SubModelsTable />
+            <div className="hidden lg:block">{aboutSectionSlot}</div>
+            {/* <div className="hidden lg:block"><SubModelsTable /></div> */}
           </div>
-          <div className="relative mt-4 h-full w-full md:w-1/4">
-            {banners && banners.length > 0 ? <TG_Banner
-              imgUrl={banners[0].image}
-              mobileImgUrl={banners[0].image}
-              imageClasses="max-h-[200px]"
-              unoptimized={true}
-            /> : null}
-            {/* TODO:: WIP */}
-            {/* <TractorDetailsSpecs translation={translation} tractorDetail={implementDetail} /> */}
-            <div className="mt-1.5 text-center">
-              <span className="mx-auto text-sm text-gray-main">
-                {translation?.headings?.dataLastUpdatedOn || 'Data last updated on'}:{' '}
-                {currentDate}{' '}
-              </span>
-            </div>
-            <div className="mt-4 flex w-full justify-center">
-              <Link
-                href={'https://tractorgyan.com/tractors'}
-                className="hidden h-full max-h-[526px] w-full max-w-[270px] overflow-hidden rounded-2xl lg:block"
-              >
-                <Image
-                  src={
-                    'https://images.tractorgyan.com/uploads/118099/67c1903aa3cb5-Implement-Listing-Banner-Desk.webp'
-                  }
-                  height={200}
-                  width={200}
-                  alt={translation?.tractorReview?.allTractorPageBanner || "All Tractor Page Banner"}
-                  title={translation?.tractorReview?.allTractorPageBanner || "All Tractor Page Banner"}
-                  className="h-full w-full object-contain object-center"
-                />
-              </Link>
-            </div>
+          <div className="relative h-full w-full md:w-1/4">
+            <ImplementDetailsSpecs
+              currentLang={currentLang}
+              translation={translation}
+              implementDetail={implementDetail}
+              bannerDetail={{
+                imgUrl: banners && banners.length > 0 ? banners[0].image : null,
+                imageClasses: 'max-h-[200px]',
+                unoptimized: true
+              }}
+            />
           </div>
+          <div className="block lg:hidden">{aboutSectionSlot}</div>
+          {/* <div className="block lg:hidden"><SubModelsTable /></div> */}
         </div>
       </div>
 
@@ -396,7 +379,7 @@ export default async function TractorImplementDetailPage({ params }) {
       <TyreRatingAndReviews
         reviewData={[]}
         headingTitleKey={'headings.tyreRatingAndReviews'}
-        dynamicTitle={` ${implementDetail.brand_name}  ${implementDetail?.model}`}
+        dynamicTitle={` ${implementDetail.brand_name}  ${implementDetail?.model_name}`}
         translation={translation}
         reviewTitleKey={'headings.tyreUserReview'}
         bgColor={'bg-section-gray'}
@@ -409,7 +392,7 @@ export default async function TractorImplementDetailPage({ params }) {
         mode="implement"
         implementType={implementType}
         implementBrand={implementDetail.brand_name}
-        implementModel={implementDetail?.model}
+        implementModel={implementDetail?.model_name}
         formPageName="implement_model_detail"
       />
 
@@ -418,7 +401,7 @@ export default async function TractorImplementDetailPage({ params }) {
         <TyrePriceInquireForm
           translation={translation}
           currentLang={currentLang}
-          brandName={` ${implementDetail.brand_name}  ${implementDetail?.model}`}
+          brandName={` ${implementDetail.brand_name}  ${implementDetail?.model_name}`}
           tyreBrands={allImplementBrandsWithDetails}
           type='IMPLEMENT'
           heading={'headings.inquireforTyrePrice'}
@@ -458,7 +441,7 @@ export default async function TractorImplementDetailPage({ params }) {
         categories={implementCategories}
       />
 
-      <TyreFAQs faqs={faqs} translation={translation} headingKey={'faqs.implements'} brandName={implementDetail?.brand_name + ' ' + implementDetail?.model} isDynamicTitle={true} />
+      <TyreFAQs faqs={faqs} translation={translation} headingKey={'faqs.implements'} brandName={implementDetail?.brand_name + ' ' + implementDetail?.model_name} isDynamicTitle={true} />
 
       <JoinOurCommunityServer translation={translation} currentLang={currentLang} />
 

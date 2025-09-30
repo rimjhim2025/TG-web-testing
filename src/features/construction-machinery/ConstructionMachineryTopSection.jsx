@@ -118,9 +118,7 @@ const ConstructionMachineryTopSection = ({
                         {/* Right side (Ads only if content exists) */}
                         {hasHtml && (
                             <div className="flex-1 lg:max-w-[300px]">
-                                {isMobile ? (
-                                    <GoogleAdHorizontalClientWrapper />
-                                ) : (
+                                {!isMobile && (
                                     <GoogleAdVerticalClientWrapper />
                                 )}
                             </div>

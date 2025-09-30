@@ -25,6 +25,7 @@ const TyresPriceList = ({
   showBanner = false,
   tableHeaders = null,
   productType = 'tyre',
+  showOutline = false
 }) => {
   // Ensure currentLang is correct
   // const langPrefix = currentLang === 'hi' ? '/hi' : '';
@@ -100,7 +101,7 @@ const TyresPriceList = ({
             {/* Use BannerSlider if banners are available from tyreTopContent, otherwise use default TG_Banner */}
             {
               banners && banners.length > 0 && (
-                <BannerSlider banners={banners} additionalClasses="max-h-auto" />
+                <BannerSlider translation={translation} isMobile={isMobile} banners={banners} additionalClasses="max-h-auto" showOutline={showOutline} />
               )
               // : (
               //   <TG_Banner
